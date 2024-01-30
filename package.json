@@ -9,8 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@types/web-bluetooth": "^0.0.20",
     "expo": "~50.0.4",
     "expo-dev-client": "~3.3.7",
+    "expo-device": "~5.9.3",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "react": "18.2.0",

@@ -2,15 +2,17 @@
 
 import { useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
-import { BleManager, Device } from "react-native-ble-plx";
+import { BleError, BleManager, Characteristic, Device } from "react-native-ble-plx";
 import * as ExpoDevice from "expo-device";
+import base64 from "react-native-base64";
+import { Tindeq } from "../tindeq";
 
-interface BluetoothLowEnergyApi  {
+interface BluetoothLowEnergyApi {
 	requestPermissions(): Promise<boolean>;
 	scanForPeripherals(): void;
 	allDevices: Device[];
 	connectToDevice: (deviceId: Device) => Promise<void>;
-	connectedDevice: Device | null; 
+	connectedDevice: Device | null;
 	disconnectFromDevice: () => void;
 	forceWeight: number;
 }
@@ -104,18 +106,54 @@ const useBLE = (): BluetoothLowEnergyApi => {
 			setConnectedDevice(deviceConnection);
 			await deviceConnection.discoverAllServicesAndCharacteristics();
 			bleManager.stopDeviceScan();
+			startStreamingData(deviceConnection);
 		} catch (e) {
 			console.log("Error connecting to device", e);
 		}
 	}
 
-	  const disconnectFromDevice = () => {
-    if (connectedDevice) {
-      bleManager.cancelDeviceConnection(connectedDevice.id);
-      setConnectedDevice(null);
-      setForceWeight(0);
-    }
-  };
+	const disconnectFromDevice = () => {
+		if (connectedDevice) {
+			bleManager.cancelDeviceConnection(connectedDevice.id);
+			setConnectedDevice(null);
+			setForceWeight(0);
+		}
+	};
+	const onDataRecieved = (error: BleError | null, characteristic: Characteristic | null) => {
+		if (error) {
+			console.log(error);
+			return
+		} else if (!characteristic?.value) {
+			console.log("No data recieved")
+			return
+		}
+
+		const rawData = base64.decode(characteristic.value);
+		let weight: number = -1;
+
+		const firstBitValue: number = Number(rawData) & 0x01;
+
+		if (firstBitValue === 0) {
+			weight =
+				Number(rawData[1].charCodeAt(0) << 8) +
+				Number(rawData[2].charCodeAt(2));
+		}
+
+		setForceWeight(weight);
+	}
+
+	const startStreamingData = async (device: Device) => {
+		if (device) {
+			device.monitorCharacteristicForService(
+				Tindeq.services.uuid,
+				Tindeq.services.characteristics[0].uuid,
+				onDataRecieved
+			);
+		}else {
+			console.log("No device connected");
+		}
+	};
+
 	return {
 		scanForPeripherals,
 		requestPermissions,

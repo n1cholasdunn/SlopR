@@ -48,17 +48,16 @@ export default function App() {
         )}
       </View>
       <TouchableOpacity
-        onPress={openModal}
+        onPress={connectedDevice  ? disconnectFromDevice : openModal}
       >
-        <Text>{"Connect"}</Text>
+        <Text>{connectedDevice ? "Diconnect" : "Connect"}</Text>
       </TouchableOpacity>
       <DeviceModal
         closeModal={hideModal}
         visible={isModalVisible}
         connectToPeripheral={connectToDevice}
-        devices={[]}
+        devices={allDevices}
       />
-      <StatusBar style="auto" />
     </SafeAreaView>
   );
 }

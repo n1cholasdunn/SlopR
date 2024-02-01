@@ -5,8 +5,14 @@ import { useState } from 'react';
 import DeviceModal from './components/BTDeviceConnectionModal';
 
 export default function App() {
-  const { requestPermissions,
-    scanForPeripherals
+  const { 
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    disconnectFromDevice,
+    forceWeight
   } = useBLE();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -29,7 +35,17 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View>
-        <Text>Connect to a BT Device</Text>
+        {connectedDevice ? (
+        <>
+        {/* <ForceGauge/>*/}
+        <Text>Pulling:</Text>
+        <Text>{forceWeight}lbs or kgs</Text>
+        </>
+        ): (
+         <Text>
+            Please Connect to a Tindeq Progressor
+          </Text>
+        )}
       </View>
       <TouchableOpacity
         onPress={openModal}
@@ -39,7 +55,7 @@ export default function App() {
       <DeviceModal
         closeModal={hideModal}
         visible={isModalVisible}
-        connectToPeripheral={()=>{}}
+        connectToPeripheral={connectToDevice}
         devices={[]}
       />
       <StatusBar style="auto" />

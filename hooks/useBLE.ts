@@ -5,15 +5,21 @@ import { PermissionsAndroid, Platform } from "react-native";
 import { BleManager, Device } from "react-native-ble-plx";
 import * as ExpoDevice from "expo-device";
 
-type BluetoothLowEnergyApi = {
-	requestPermissions: () => Promise<boolean>;
-	scanForPeripherals: () => void;
+interface BluetoothLowEnergyApi  {
+	requestPermissions(): Promise<boolean>;
+	scanForPeripherals(): void;
+	allDevices: Device[];
+	connectToDevice: (deviceId: Device) => Promise<void>;
+	connectedDevice: Device | null; 
+	disconnectFromDevice: () => void;
+	forceWeight: number;
 }
 
 const useBLE = (): BluetoothLowEnergyApi => {
 	const bleManager = useMemo(() => new BleManager(), []);
-
 	const [allDevices, setAllDevices] = useState<Device[]>([]);
+	const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+	const [forceWeight, setForceWeight] = useState(0);
 
 	const requestAndroid31Permissions = async () => {
 		const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -81,7 +87,7 @@ const useBLE = (): BluetoothLowEnergyApi => {
 			if (error) {
 				console.log(error);
 			}
-			if (device && device.name?.includes("tindeq")) {
+			if (device && device.name?.includes("progressor")) {
 				setAllDevices(prevState => {
 					if (!isDuplicateDevice(prevState, device)) {
 						return [...prevState, device]
@@ -92,9 +98,32 @@ const useBLE = (): BluetoothLowEnergyApi => {
 		});
 	};
 
+	const connectToDevice = async (device: Device) => {
+		try {
+			const deviceConnection = await bleManager.connectToDevice(device.id);
+			setConnectedDevice(deviceConnection);
+			await deviceConnection.discoverAllServicesAndCharacteristics();
+			bleManager.stopDeviceScan();
+		} catch (e) {
+			console.log("Error connecting to device", e);
+		}
+	}
+
+	  const disconnectFromDevice = () => {
+    if (connectedDevice) {
+      bleManager.cancelDeviceConnection(connectedDevice.id);
+      setConnectedDevice(null);
+      setForceWeight(0);
+    }
+  };
 	return {
 		scanForPeripherals,
-		requestPermissions
+		requestPermissions,
+		allDevices,
+		connectToDevice,
+		connectedDevice,
+		disconnectFromDevice,
+		forceWeight
 	}
 
 

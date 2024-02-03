@@ -5,14 +5,16 @@ import { useState } from 'react';
 import DeviceModal from './components/BTDeviceConnectionModal';
 
 export default function App() {
-  const { 
+  const {
     requestPermissions,
     scanForPeripherals,
     allDevices,
     connectToDevice,
     connectedDevice,
     disconnectFromDevice,
-    forceWeight
+    forceWeight,
+    tareScale,
+    startMeasuring
   } = useBLE();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -36,21 +38,28 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <View>
         {connectedDevice ? (
-        <>
-        {/* <ForceGauge/>*/}
-        <Text>Pulling:</Text>
-        <Text>{forceWeight}lbs or kgs</Text>
-        </>
-        ): (
-         <Text>
+          <>
+            {/* <ForceGauge/>*/}
+            <Text>Pulling:</Text>
+            <Text style={styles.weightDisplay}>{forceWeight}lbs or kgs</Text>
+            <TouchableOpacity style={styles.button} onPress={startMeasuring}>
+              <Text style={styles.buttonText}>Start Measuring</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={tareScale}>
+              <Text style={styles.buttonText}>Tare</Text>
+            </TouchableOpacity>
+
+          </>
+        ) : (
+          <Text>
             Please Connect to a Tindeq Progressor
           </Text>
         )}
       </View>
       <TouchableOpacity
-        onPress={connectedDevice  ? disconnectFromDevice : openModal}
+        onPress={connectedDevice ? disconnectFromDevice : openModal}
       >
-        <Text>{connectedDevice ? "Diconnect" : "Connect"}</Text>
+        <Text style={styles.buttonText}>{connectedDevice ? "Disconnect" : "Connect"}</Text>
       </TouchableOpacity>
       <DeviceModal
         closeModal={hideModal}
@@ -69,4 +78,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  weightDisplay: {
+    marginVertical: 20,
+    fontSize: 18
+  },
+  button: {
+    borderWidth: 1,
+    borderColor: '#007BFF',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#007BFF',
+    fontSize: 16,
+  }
 });

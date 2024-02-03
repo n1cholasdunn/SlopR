@@ -5,7 +5,8 @@ import { PermissionsAndroid, Platform } from "react-native";
 import { BleError, BleManager, Characteristic, Device } from "react-native-ble-plx";
 import * as ExpoDevice from "expo-device";
 import base64 from "react-native-base64";
-import { Tindeq } from "../tindeq";
+import { Tindeq, TindeqCommands, TindeqNotificationCodes } from "../tindeq";
+import { Buffer } from "buffer";
 
 interface BluetoothLowEnergyApi {
 	requestPermissions(): Promise<boolean>;
@@ -15,6 +16,8 @@ interface BluetoothLowEnergyApi {
 	connectedDevice: Device | null;
 	disconnectFromDevice: () => void;
 	forceWeight: number;
+	tareScale: () => void;
+	startMeasuring: () => void;
 }
 
 const useBLE = (): BluetoothLowEnergyApi => {
@@ -22,6 +25,9 @@ const useBLE = (): BluetoothLowEnergyApi => {
 	const [allDevices, setAllDevices] = useState<Device[]>([]);
 	const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
 	const [forceWeight, setForceWeight] = useState(0);
+
+	const serviceUUID = Tindeq.services.uuid;
+	const characteristicUUID = Tindeq.services.characteristics.find(c => c.id === "tx")?.uuid;
 
 	const requestAndroid31Permissions = async () => {
 		const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -89,7 +95,7 @@ const useBLE = (): BluetoothLowEnergyApi => {
 			if (error) {
 				console.log(error);
 			}
-			if (device && device.name?.includes("progressor")) {
+			if (device && device.name?.includes("Progressor")) {
 				setAllDevices(prevState => {
 					if (!isDuplicateDevice(prevState, device)) {
 						return [...prevState, device]
@@ -119,40 +125,85 @@ const useBLE = (): BluetoothLowEnergyApi => {
 			setForceWeight(0);
 		}
 	};
+
+	let lastUpdateTime = 0;
+	const updateInterval = 1000;
+
 	const onDataRecieved = (error: BleError | null, characteristic: Characteristic | null) => {
 		if (error) {
-			console.log(error);
+			console.log("Data Recieving Error: ", error);
 			return
 		} else if (!characteristic?.value) {
 			console.log("No data recieved")
 			return
 		}
+		const currentTime = Date.now();
+		if (currentTime - lastUpdateTime < updateInterval) return;
+		lastUpdateTime = currentTime;
+
 
 		const rawData = base64.decode(characteristic.value);
-		let weight: number = -1;
+		const buffer = new ArrayBuffer(rawData.length);
+		const bufferView = new Uint8Array(buffer);
 
-		const firstBitValue: number = Number(rawData) & 0x01;
-
-		if (firstBitValue === 0) {
-			weight =
-				Number(rawData[1].charCodeAt(0) << 8) +
-				Number(rawData[2].charCodeAt(2));
+		for (let i = 0; i < rawData.length; i++) {
+			bufferView[i] = rawData.charCodeAt(i);
 		}
 
-		setForceWeight(weight);
+		const dataView = new DataView(buffer);
+		const responseCode = dataView.getUint8(0);
+
+		if (responseCode === 0x01) { 
+			const length = dataView.getUint8(1); 
+
+			if (length >= 8) { // Expecting at least 8 bytes (4 for weight + 4 for timestamp)
+				const weight = dataView.getFloat32(2, true); 
+				const timestamp = dataView.getUint32(6, true);
+
+				setForceWeight(parseFloat(weight.toFixed(2)));
+				console.log("Weight:", weight);
+				console.log("Timestamp:", timestamp);
+			} else {
+				console.error("Unexpected data length:", length);
+			}
+		} else if (responseCode === TindeqNotificationCodes.LOW_BATTERY_WARNING) {
+			console.log("Low battery warning");
+		}
 	}
 
 	const startStreamingData = async (device: Device) => {
 		if (device) {
 			device.monitorCharacteristicForService(
 				Tindeq.services.uuid,
-				Tindeq.services.characteristics[0].uuid,
+				Tindeq.services.characteristics[1].uuid,
 				onDataRecieved
 			);
-		}else {
+		} else {
 			console.log("No device connected");
 		}
 	};
+
+	const writeCommandToDevice = async (command: number) => {
+		if (connectedDevice) {
+			if (!characteristicUUID) return;
+
+			const commandBuffer = Buffer.from([command]);
+			const base64Command = base64.encode(commandBuffer.toString("binary"));
+
+			try {
+				await connectedDevice.writeCharacteristicWithResponseForService(serviceUUID, characteristicUUID, base64Command);
+				console.log("Command sent successfully");
+			} catch (error) {
+				console.log("Error sending command", error);
+			}
+		} else {
+			console.log("No device connected");
+		}
+
+	}
+
+	const tareScale = () => writeCommandToDevice(TindeqCommands.TARE_SCALE);
+	const startMeasuring = () => writeCommandToDevice(TindeqCommands.START_MEASURING);
 
 	return {
 		scanForPeripherals,
@@ -161,7 +212,9 @@ const useBLE = (): BluetoothLowEnergyApi => {
 		connectToDevice,
 		connectedDevice,
 		disconnectFromDevice,
-		forceWeight
+		forceWeight,
+		tareScale,
+		startMeasuring
 	}
 
 

@@ -1,12 +1,13 @@
 /* eslint-disable no-bitwise */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import { BleError, BleManager, Characteristic, Device } from "react-native-ble-plx";
 import * as ExpoDevice from "expo-device";
 import base64 from "react-native-base64";
 import { Tindeq, TindeqCommands, TindeqNotificationCodes } from "../tindeq";
 import { Buffer } from "buffer";
+import { ForceDataPoint } from "../types/chartData";
 
 interface BluetoothLowEnergyApi {
 	requestPermissions(): Promise<boolean>;
@@ -25,6 +26,11 @@ const useBLE = (): BluetoothLowEnergyApi => {
 	const [allDevices, setAllDevices] = useState<Device[]>([]);
 	const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
 	const [forceWeight, setForceWeight] = useState(0);
+	const [dataPoints, setDataPoints] = useState<ForceDataPoint[]>([]);
+
+	useEffect(() => {
+		console.log("Data Points:", dataPoints);
+	}, [dataPoints]);
 
 	const serviceUUID = Tindeq.services.uuid;
 	const characteristicUUID = Tindeq.services.characteristics.find(c => c.id === "tx")?.uuid;
@@ -127,7 +133,7 @@ const useBLE = (): BluetoothLowEnergyApi => {
 	};
 
 	let lastUpdateTime = 0;
-	const updateInterval = 1000;
+	const updateInterval = 12.5;
 
 	const onDataRecieved = (error: BleError | null, characteristic: Characteristic | null) => {
 		if (error) {
@@ -137,10 +143,10 @@ const useBLE = (): BluetoothLowEnergyApi => {
 			console.log("No data recieved")
 			return
 		}
+
 		const currentTime = Date.now();
 		if (currentTime - lastUpdateTime < updateInterval) return;
 		lastUpdateTime = currentTime;
-
 
 		const rawData = base64.decode(characteristic.value);
 		const buffer = new ArrayBuffer(rawData.length);
@@ -153,16 +159,24 @@ const useBLE = (): BluetoothLowEnergyApi => {
 		const dataView = new DataView(buffer);
 		const responseCode = dataView.getUint8(0);
 
-		if (responseCode === 0x01) { 
-			const length = dataView.getUint8(1); 
+		if (responseCode === 0x01) {
+			const length = dataView.getUint8(1);
 
 			if (length >= 8) { // Expecting at least 8 bytes (4 for weight + 4 for timestamp)
-				const weight = dataView.getFloat32(2, true); 
+				const weight = dataView.getFloat32(2, true);
 				const timestamp = dataView.getUint32(6, true);
 
+				const newDataPoint: ForceDataPoint = {
+					weight,
+					timestamp
+				};
+				//TODO when submitting to DB use the average of last 5 or 10 data points
+
+				setDataPoints((currentDataPoints) => [...currentDataPoints, newDataPoint]);
 				setForceWeight(parseFloat(weight.toFixed(2)));
+
 				console.log("Weight:", weight);
-				console.log("Timestamp:", timestamp);
+				//console.log("Timestamp:", timestamp);
 			} else {
 				console.error("Unexpected data length:", length);
 			}

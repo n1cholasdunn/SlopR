@@ -11,6 +11,7 @@
     "start-server": "npx expo start --dev-client"
   },
   "dependencies": {
+    "@shopify/react-native-skia": "^0.1.237",
     "@types/react-native-base64": "^0.2.2",
     "@types/web-bluetooth": "^0.0.20",
     "buffer": "^6.0.3",

@@ -1,5 +1,5 @@
 export type ForceDataPoint = {
-  weight: number;
-  timestamp: Date | string | number;
+    weight: number;
+    timestamp: Date | string | number;
 }
 

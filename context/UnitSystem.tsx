@@ -6,7 +6,7 @@ import React, {
     ReactElement,
 } from 'react';
 
-interface UnitSystemContextType {
+export interface UnitSystemContextType {
     unitSystem: {
         weight: string;
         distance: string;
@@ -22,7 +22,7 @@ const defaultContextValue: UnitSystemContextType = {
     updateUnitSystem: () => { },
 };
 
-const UnitSystemContext =
+export const UnitSystemContext =
     createContext<UnitSystemContextType>(defaultContextValue);
 
 interface UnitSystemProviderProps {

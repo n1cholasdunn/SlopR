@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import useBLE from './hooks/useBLE';
 import { useState } from 'react';
 import DeviceModal from './components/BTDeviceConnectionModal';
+import { UnitSystemProvider } from './context/UnitSystem';
 
 export default function App() {
     const {
@@ -35,39 +36,41 @@ export default function App() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View>
-                {connectedDevice ? (
-                    <>
-                        {/* <ForceGauge/>*/}
-                        <Text>Pulling:</Text>
-                        <Text style={styles.weightDisplay}>{forceWeight}lbs or kgs</Text>
-                        <TouchableOpacity style={styles.button} onPress={startMeasuring}>
-                            <Text style={styles.buttonText}>Start Measuring</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={tareScale}>
-                            <Text style={styles.buttonText}>Tare</Text>
-                        </TouchableOpacity>
+        <UnitSystemProvider>
+            <SafeAreaView style={styles.container}>
+                <View>
+                    {connectedDevice ? (
+                        <>
+                            {/* <ForceGauge/>*/}
+                            <Text>Pulling:</Text>
+                            <Text style={styles.weightDisplay}>{forceWeight}lbs or kgs</Text>
+                            <TouchableOpacity style={styles.button} onPress={startMeasuring}>
+                                <Text style={styles.buttonText}>Start Measuring</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={tareScale}>
+                                <Text style={styles.buttonText}>Tare</Text>
+                            </TouchableOpacity>
 
-                    </>
-                ) : (
-                    <Text>
-                        Please Connect to a Tindeq Progressor
-                    </Text>
-                )}
-            </View>
-            <TouchableOpacity
-                onPress={connectedDevice ? disconnectFromDevice : openModal}
-            >
-                <Text style={styles.buttonText}>{connectedDevice ? "Disconnect" : "Connect"}</Text>
-            </TouchableOpacity>
-            <DeviceModal
-                closeModal={hideModal}
-                visible={isModalVisible}
-                connectToPeripheral={connectToDevice}
-                devices={allDevices}
-            />
-        </SafeAreaView>
+                        </>
+                    ) : (
+                        <Text>
+                            Please Connect to a Tindeq Progressor
+                        </Text>
+                    )}
+                </View>
+                <TouchableOpacity
+                    onPress={connectedDevice ? disconnectFromDevice : openModal}
+                >
+                    <Text style={styles.buttonText}>{connectedDevice ? "Disconnect" : "Connect"}</Text>
+                </TouchableOpacity>
+                <DeviceModal
+                    closeModal={hideModal}
+                    visible={isModalVisible}
+                    connectToPeripheral={connectToDevice}
+                    devices={allDevices}
+                />
+            </SafeAreaView>
+        </UnitSystemProvider>
     );
 }
 

@@ -1,9 +1,15 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {StatusBar} from 'expo-status-bar';
+import {
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import useBLE from './hooks/useBLE';
-import { useState } from 'react';
+import {useState} from 'react';
 import DeviceModal from './components/BTDeviceConnectionModal';
-import { UnitSystemProvider } from './context/UnitSystem';
+import {UnitSystemProvider} from './context/UnitSystem';
 
 export default function App() {
     const {
@@ -15,7 +21,7 @@ export default function App() {
         disconnectFromDevice,
         forceWeight,
         tareScale,
-        startMeasuring
+        startMeasuring,
     } = useBLE();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
@@ -43,25 +49,33 @@ export default function App() {
                         <>
                             {/* <ForceGauge/>*/}
                             <Text>Pulling:</Text>
-                            <Text style={styles.weightDisplay}>{forceWeight}lbs or kgs</Text>
-                            <TouchableOpacity style={styles.button} onPress={startMeasuring}>
-                                <Text style={styles.buttonText}>Start Measuring</Text>
+                            <Text style={styles.weightDisplay}>
+                                {forceWeight}lbs or kgs
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={startMeasuring}>
+                                <Text style={styles.buttonText}>
+                                    Start Measuring
+                                </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} onPress={tareScale}>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={tareScale}>
                                 <Text style={styles.buttonText}>Tare</Text>
                             </TouchableOpacity>
-
                         </>
                     ) : (
-                        <Text>
-                            Please Connect to a Tindeq Progressor
-                        </Text>
+                        <Text>Please Connect to a Tindeq Progressor</Text>
                     )}
                 </View>
                 <TouchableOpacity
-                    onPress={connectedDevice ? disconnectFromDevice : openModal}
-                >
-                    <Text style={styles.buttonText}>{connectedDevice ? "Disconnect" : "Connect"}</Text>
+                    onPress={
+                        connectedDevice ? disconnectFromDevice : openModal
+                    }>
+                    <Text style={styles.buttonText}>
+                        {connectedDevice ? 'Disconnect' : 'Connect'}
+                    </Text>
                 </TouchableOpacity>
                 <DeviceModal
                     closeModal={hideModal}
@@ -83,7 +97,7 @@ const styles = StyleSheet.create({
     },
     weightDisplay: {
         marginVertical: 20,
-        fontSize: 18
+        fontSize: 18,
     },
     button: {
         borderWidth: 1,
@@ -96,5 +110,5 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#007BFF',
         fontSize: 16,
-    }
+    },
 });

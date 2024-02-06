@@ -38,3 +38,6 @@ yarn-error.*
 # fastlane
 builds/
 *.ipa
+
+android/
+ios/

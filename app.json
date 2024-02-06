@@ -5,7 +5,7 @@
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
-        "scheme": "sloprapp",
+        "scheme": "com.ndunn.slopr",
         "userInterfaceStyle": "light",
         "plugins": ["react-native-ble-plx", "expo-router"],
         "splash": {

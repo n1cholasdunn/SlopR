@@ -19,6 +19,13 @@ export default function Layout() {
                         title: 'Settings',
                     }}
                 />
+                <Tabs.Screen
+                    name="Graph1"
+                    options={{
+                        href: '/graph1',
+                        title: 'Graph1',
+                    }}
+                />
             </Tabs>
         </UnitSystemProvider>
     );

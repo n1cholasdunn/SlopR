@@ -7,7 +7,21 @@
         "icon": "./assets/icon.png",
         "scheme": "com.ndunn.slopr",
         "userInterfaceStyle": "light",
-        "plugins": ["react-native-ble-plx", "expo-router"],
+        "plugins": [
+            "react-native-ble-plx",
+            "@react-native-firebase/app",
+            "@react-native-firebase/auth",
+            "@react-native-firebase/crashlytics",
+            [
+                "expo-build-properties",
+                {
+                    "ios": {
+                        "useFrameworks": "static"
+                    }
+                }
+            ],
+            "expo-router"
+        ],
         "splash": {
             "image": "./assets/splash.png",
             "resizeMode": "contain",
@@ -16,9 +30,11 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
+            "googleServicesFile": "./GoogleService-Info.plist",
             "bundleIdentifier": "com.ndunn.slopr"
         },
         "android": {
+            "googleServicesFile": "./google-services.json",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"

@@ -39,3 +39,9 @@ yarn-error.*
 builds/
 *.ipa
 
+ios/
+android/
+
+GoogleService-Info.plist
+google-services.json
+

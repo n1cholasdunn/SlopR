@@ -43,6 +43,7 @@
 		D232F8A02B74516D00200E7D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D232F89F2B74516D00200E7D /* FirebaseStorage */; };
 		D232F8A22B74516D00200E7D /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = D232F8A12B74516D00200E7D /* FirebaseStorageCombine-Community */; };
 		F810A336AABBB3750E5E0CBC /* Pods_slopr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F92DC93870EBA944F154249 /* Pods_slopr.framework */; };
+		E3F1AC64F12F4F92B41D882B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		E428AA557F674598AC899AFF /* slopr-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "slopr-Bridging-Header.h"; path = "slopr/slopr-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-slopr/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "slopr/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				659FD7C83DC4405B966BB0D1 /* noop-file.swift */,
 				E428AA557F674598AC899AFF /* slopr-Bridging-Header.h */,
+				022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */,
 			);
 			name = slopr;
 			sourceTree = "<group>";
@@ -292,6 +295,7 @@
 				D232F86B2B7444C700200E7D /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
+				E3F1AC64F12F4F92B41D882B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -476,7 +480,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ndunn.slopr;
-				PRODUCT_NAME = slopr;
+				PRODUCT_NAME = "slopr";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "slopr/slopr-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -511,7 +515,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ndunn.slopr;
-				PRODUCT_NAME = slopr;
+				PRODUCT_NAME = "slopr";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "slopr/slopr-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

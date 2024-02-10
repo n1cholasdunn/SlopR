@@ -34,7 +34,6 @@
             "bundleIdentifier": "com.ndunn.slopr"
         },
         "android": {
-            "googleServicesFile": "./google-services.json",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
@@ -44,6 +43,7 @@
                 "android.permission.BLUETOOTH_ADMIN",
                 "android.permission.BLUETOOTH_CONNECT"
             ],
+            "googleServicesFile": "./google-services.json",
             "package": "com.ndunn.slopr"
         },
         "web": {
@@ -53,6 +53,12 @@
             "eas": {
                 "projectId": "ad50c12e-d239-4f16-a48a-22f2d00b8db7"
             }
+        },
+        "runtimeVersion": {
+            "policy": "appVersion"
+        },
+        "updates": {
+            "url": "https://u.expo.dev/ad50c12e-d239-4f16-a48a-22f2d00b8db7"
         }
     }
 }

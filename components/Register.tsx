@@ -1,61 +1,90 @@
-import React, {useEffect, useState} from 'react';
-import {Button, View, Text} from 'react-native';
-import auth from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import React, {useState} from 'react';
+import {
+    View,
+    Text,
+    Pressable,
+    TextInput,
+    Keyboard,
+    TouchableOpacity,
+    Alert,
+} from 'react-native';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import firestore from '@react-native-firebase/firestore';
+import {router} from 'expo-router';
 
-async function onGoogleButtonPress() {
-    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-    // Get the users ID token
-    const {idToken} = await GoogleSignin.signIn();
+const RegisterPage = () => {
+    const [name, setName] = useState<string | undefined>(undefined);
+    const [email, setEmail] = useState<string | undefined>(undefined);
+    const [password, setPassword] = useState<string | undefined>(undefined);
 
-    // Create a Google credential with the token
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    const createProfile = async (
+        response: FirebaseAuthTypes.UserCredential,
+    ) => {
+        firestore()
+            .collection('users')
+            .doc(response.user?.uid)
+            .set({
+                name,
+                email,
+            })
+            .then(() => {
+                console.log('user added');
+            });
+    };
+    const registerUser = async () => {
+        if (email && password) {
+            try {
+                const response = await auth().createUserWithEmailAndPassword(
+                    email,
+                    password,
+                );
 
-    // Sign-in the user with the credential
-    return auth().signInWithCredential(googleCredential);
-}
-
-function GoogleSignIn() {
-    return (
-        <Button
-            title="Google Sign-In"
-            onPress={() =>
-                onGoogleButtonPress().then(() =>
-                    console.log('Signed in with google'),
-                )
+                if (response.user) {
+                    await createProfile(response);
+                    //go to homepage
+                    router.replace('/');
+                }
+            } catch (err) {
+                Alert.alert('Woops', 'Please check the form and try again');
             }
-        />
-    );
-}
-
-function LoginPage() {
-    const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState();
-
-    // Handle user state changes
-    function onAuthStateChanged(user) {
-        setUser(user);
-        if (initializing) setInitializing(false);
-    }
-
-    useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber; // unsubscribe on unmount
-    }, []);
-
-    if (initializing) return null;
-
-    if (!user) {
-        return (
-            <View>
-                <Text>Login</Text>
-            </View>
-        );
-    }
+        }
+    };
 
     return (
-        <View>
-            <Text>Welcome {user.email}</Text>
-        </View>
+        <Pressable onPress={Keyboard.dismiss}>
+            <SafeAreaView>
+                <View>
+                    <View>
+                        <Text>Register</Text>
+                    </View>
+                    <View>
+                        <TextInput
+                            placeholder="Name"
+                            value={name}
+                            onChangeText={setName}
+                        />
+                        <TextInput
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
+                            inputMode="email"
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
+                    </View>
+                    <TouchableOpacity onPress={registerUser}>
+                        <Text>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </Pressable>
     );
-}
+};
+
+export default RegisterPage;

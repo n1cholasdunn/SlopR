@@ -1,28 +1,37 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import {View, Text, Button} from 'react-native';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import RegisterPage from './Register';
 
-function CredentialLogin() {
-    const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState();
+//interface ExtendedUser extends FirebaseAuthTypes.User {
+//  name?: string;
+//}
 
-    // Handle user state changes
-    function onAuthStateChanged(user) {
-        setUser(user);
-        if (initializing) setInitializing(false);
-    }
+const LoginPage = () => {
+    const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber; // unsubscribe on unmount
-    }, []);
+        auth().onAuthStateChanged(userState => {
+            setUser(userState);
 
-    if (initializing) return null;
+            if (loading) setLoading(false);
+        });
+    }, []);
+    const handleLogout = () => {
+        auth()
+            .signOut()
+            .then(() => console.log('User signed out!'));
+    };
+
+    if (loading) return null;
 
     if (!user) {
         return (
             <View>
-                <Text>Login</Text>
+                {/*<Text>Login</Text>
+                 */}
+                <RegisterPage />
             </View>
         );
     }
@@ -30,6 +39,9 @@ function CredentialLogin() {
     return (
         <View>
             <Text>Welcome {user.email}</Text>
+            <Button title="Logout" onPress={handleLogout} />
         </View>
     );
-}
+};
+
+export default LoginPage;

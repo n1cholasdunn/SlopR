@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Button} from 'react-native';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import RegisterPage from './Register';
+import Login from './CredentialLogin';
 
 //interface ExtendedUser extends FirebaseAuthTypes.User {
 //  name?: string;
@@ -29,6 +30,7 @@ const LoginPage = () => {
     if (!user) {
         return (
             <View>
+                <Login />
                 {/*<Text>Login</Text>
                  */}
                 <RegisterPage />

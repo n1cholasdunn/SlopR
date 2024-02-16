@@ -8,6 +8,7 @@ import {
 import useBLE from '../hooks/useBLE';
 import {useState} from 'react';
 import DeviceModal from '../components/BTDeviceConnectionModal';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 export default function Page() {
     const {
@@ -22,6 +23,17 @@ export default function Page() {
         startMeasuring,
     } = useBLE();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
+        offlineAccess: true,
+        forceCodeForRefreshToken: true,
+        iosClientId: process.env.EXPO_PUBLIC_DEV_IOS_CLIENT_ID,
+        googleServicePlistPath:
+            process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST,
+    });
+    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID, 'GWebID');
+    console.log(process.env.EXPO_PUBLIC_DEV_IOS_CLIENT_ID, 'IOS clientid');
+    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST, 'PLIST');
 
     const scanForDevices = async () => {
         const isPermissionsEnabled = await requestPermissions();

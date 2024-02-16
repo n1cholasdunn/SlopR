@@ -3,6 +3,7 @@ import {View, Text, Button} from 'react-native';
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import RegisterPage from './Register';
 import Login from './CredentialLogin';
+import GoogleLogin from './GoogleLogin';
 
 //interface ExtendedUser extends FirebaseAuthTypes.User {
 //  name?: string;
@@ -34,6 +35,7 @@ const LoginPage = () => {
                 {/*<Text>Login</Text>
                  */}
                 <RegisterPage />
+                <GoogleLogin />
             </View>
         );
     }

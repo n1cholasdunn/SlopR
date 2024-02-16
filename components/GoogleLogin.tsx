@@ -15,7 +15,7 @@ async function onGoogleButtonPress() {
     return auth().signInWithCredential(googleCredential);
 }
 
-const GoogleSignIn = () => {
+const GoogleLogin = () => {
     return (
         <Button
             title="Google Sign-In"
@@ -28,4 +28,4 @@ const GoogleSignIn = () => {
     );
 };
 
-export default GoogleSignIn;
+export default GoogleLogin;

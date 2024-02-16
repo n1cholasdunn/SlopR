@@ -1,7 +1,5 @@
 import {ExpoConfig, ConfigContext} from 'expo/config';
 import 'dotenv/config';
-import fs from 'fs';
-
 const IS_DEV = process.env.APP_VARIANT === 'development';
 // const getFileContent = (path?: string) => {
 //     if (path && fs.existsSync(path)) {
@@ -43,8 +41,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ios: {
         supportsTablet: true,
         googleServicesFile: IS_DEV
-            ? process.env.GOOGLE_SERVICES_PLIST
-            : process.env.GOOGLE_SERVICES_PLIST,
+            ? process.env.DEV_GOOGLE_SERVICE_PLIST
+            : process.env.DEV_GOOGLE_SERVICE_PLIST,
         // : process.env.GOOGLE_SERVICE_INFO_PLIST,
         bundleIdentifier: 'com.ndunn.slopr',
     },
@@ -59,8 +57,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
             'android.permission.BLUETOOTH_CONNECT',
         ],
         googleServicesFile: IS_DEV
-            ? process.env.GOOGLE_SERVICES_JSON
-            : process.env.GOOGLE_SERVICES_JSON,
+            ? process.env.DEV_GOOGLE_SERVICES_JSON
+            : process.env.DEV_GOOGLE_SERVICES_JSON,
         package: 'com.ndunn.slopr',
     },
     web: {

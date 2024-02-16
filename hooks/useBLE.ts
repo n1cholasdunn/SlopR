@@ -12,20 +12,7 @@ import * as ExpoDevice from 'expo-device';
 import base64 from 'react-native-base64';
 import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
 import {Buffer} from 'buffer';
-import {ForceDataPoint} from '../types/chartData';
-
-interface BluetoothLowEnergyApi {
-    requestPermissions(): Promise<boolean>;
-    scanForPeripherals(): void;
-    allDevices: Device[];
-    connectToDevice: (deviceId: Device) => Promise<void>;
-    connectedDevice: Device | null;
-    disconnectFromDevice: () => void;
-    forceWeight: number;
-    tareScale: () => void;
-    startMeasuring: () => void;
-    dataPoints: ForceDataPoint[];
-}
+import {BluetoothLowEnergyApi, ForceDataPoint} from '../types/BLETypes';
 
 const useBLE = (): BluetoothLowEnergyApi => {
     const bleManager = useMemo(() => new BleManager(), []);
@@ -246,6 +233,10 @@ const useBLE = (): BluetoothLowEnergyApi => {
     const tareScale = () => writeCommandToDevice(TindeqCommands.TARE_SCALE);
     const startMeasuring = () =>
         writeCommandToDevice(TindeqCommands.START_MEASURING);
+    const stopMeasuring = () => {
+        console.log('Stop Measuring');
+        return writeCommandToDevice(TindeqCommands.STOP_MEASURING);
+    };
 
     return {
         scanForPeripherals,
@@ -257,7 +248,9 @@ const useBLE = (): BluetoothLowEnergyApi => {
         forceWeight,
         tareScale,
         startMeasuring,
+        stopMeasuring,
         dataPoints,
+        setDataPoints,
     };
 };
 

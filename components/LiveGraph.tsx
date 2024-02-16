@@ -1,9 +1,9 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text} from 'react-native';
 import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../utils/graph';
-import useBLE from '../hooks/useBLE';
-import {ForceDataPoint, GraphData} from '../types/chartData';
+import {GraphData} from '../types/chartData';
+import {ForceDataPoint} from '../types/BLETypes';
 
 type LiveGraphProps = {
     dataPoints: ForceDataPoint[];

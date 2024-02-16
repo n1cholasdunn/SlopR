@@ -10,6 +10,9 @@ import {useState} from 'react';
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import LiveGraph from '../components/LiveGraph';
+import Timer from '../components/Timer';
+import ForceGauge from '../components/ForceGauge';
+import {useBLEContext} from '../context/BLEContext';
 
 export default function Page() {
     const {
@@ -23,7 +26,7 @@ export default function Page() {
         tareScale,
         startMeasuring,
         dataPoints,
-    } = useBLE();
+    } = useBLEContext();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
@@ -33,9 +36,6 @@ export default function Page() {
         googleServicePlistPath:
             process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST,
     });
-    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID, 'GWebID');
-    console.log(process.env.EXPO_PUBLIC_DEV_IOS_CLIENT_ID, 'IOS clientid');
-    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST, 'PLIST');
 
     const scanForDevices = async () => {
         const isPermissionsEnabled = await requestPermissions();
@@ -58,13 +58,13 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
+                        <ForceGauge initialSeconds={4} mode="down" />
                         {/* <ForceGauge/>*/}
                         {/*
                         <Text>Pulling:</Text>
                         <Text style={styles.weightDisplay}>
                             {forceWeight}lbs or kgs
                         </Text>
-            */}
                         <LiveGraph dataPoints={dataPoints} />
                         <TouchableOpacity
                             style={styles.button}
@@ -78,6 +78,7 @@ export default function Page() {
                             onPress={tareScale}>
                             <Text style={styles.buttonText}>Tare</Text>
                         </TouchableOpacity>
+            */}
                     </>
                 ) : (
                     <Text>Please Connect to a Tindeq Progressor</Text>
@@ -89,6 +90,7 @@ export default function Page() {
                     {connectedDevice ? 'Disconnect' : 'Connect'}
                 </Text>
             </TouchableOpacity>
+            {/* <Timer mode="down" startSeconds={2} />*/}
             <DeviceModal
                 closeModal={hideModal}
                 visible={isModalVisible}

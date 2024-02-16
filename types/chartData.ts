@@ -2,7 +2,7 @@ import {SkPath} from '@shopify/react-native-skia';
 
 export type ForceDataPoint = {
     weight: number;
-    timestamp: Date | string | number;
+    timestamp: number;
 };
 
 export type GraphData = {

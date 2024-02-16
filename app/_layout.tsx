@@ -26,6 +26,13 @@ export default function Layout() {
                         title: 'Graph1',
                     }}
                 />
+                <Tabs.Screen
+                    name="LiveGraph"
+                    options={{
+                        href: '/graph1/livegraph',
+                        title: 'Live Graph',
+                    }}
+                />
             </Tabs>
         </UnitSystemProvider>
     );

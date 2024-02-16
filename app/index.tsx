@@ -9,6 +9,7 @@ import useBLE from '../hooks/useBLE';
 import {useState} from 'react';
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import LiveGraph from '../components/LiveGraph';
 
 export default function Page() {
     const {
@@ -21,6 +22,7 @@ export default function Page() {
         forceWeight,
         tareScale,
         startMeasuring,
+        dataPoints,
     } = useBLE();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     GoogleSignin.configure({
@@ -57,10 +59,13 @@ export default function Page() {
                 {connectedDevice ? (
                     <>
                         {/* <ForceGauge/>*/}
+                        {/*
                         <Text>Pulling:</Text>
                         <Text style={styles.weightDisplay}>
                             {forceWeight}lbs or kgs
                         </Text>
+            */}
+                        <LiveGraph dataPoints={dataPoints} />
                         <TouchableOpacity
                             style={styles.button}
                             onPress={startMeasuring}>

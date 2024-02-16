@@ -99,4 +99,5 @@ export const testData2: DataPoint[] = [
     {timestamp: 7507309, weight: 0.03504544496536255},
     {timestamp: 7680011, weight: -0.000976860523223877},
     {timestamp: 7852663, weight: 0.02820730209350586},
+    {timestamp: 51379, weight: 0.007570803165435791},
 ];

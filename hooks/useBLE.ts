@@ -13,6 +13,7 @@ import base64 from 'react-native-base64';
 import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
 import {Buffer} from 'buffer';
 import {BluetoothLowEnergyApi, ForceDataPoint} from '../types/BLETypes';
+import {useUnitConversion} from './useUnitConversion';
 
 const useBLE = (): BluetoothLowEnergyApi => {
     const bleManager = useMemo(() => new BleManager(), []);
@@ -20,6 +21,7 @@ const useBLE = (): BluetoothLowEnergyApi => {
     const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
     const [forceWeight, setForceWeight] = useState(0);
     const [dataPoints, setDataPoints] = useState<ForceDataPoint[]>([]);
+    const {convertWeight} = useUnitConversion();
 
     useEffect(() => {
         console.log('Data Points:', dataPoints);
@@ -164,9 +166,10 @@ const useBLE = (): BluetoothLowEnergyApi => {
 
             if (length >= 8) {
                 // Expecting at least 8 bytes (4 for weight + 4 for timestamp)
-                const weight = parseFloat(
+                let weight = parseFloat(
                     dataView.getFloat32(2, true).toFixed(2),
                 );
+                weight = convertWeight(weight);
                 const timestamp = dataView.getUint32(6, true);
 
                 const newDataPoint: ForceDataPoint = {

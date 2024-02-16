@@ -4,6 +4,7 @@ import useTimer from '../hooks/useTimer';
 import LiveGraph from './LiveGraph';
 import {useBLEContext} from '../context/BLEContext';
 import {ForceDataPoint} from '../types/BLETypes';
+import {useUnitConversion} from '../hooks/useUnitConversion';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -24,6 +25,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         forceWeight,
         dataPoints,
         setDataPoints,
+        tareScale,
     } = useBLEContext();
     const [reps, setReps] = useState<ForceDataPoint[][]>([]);
     const [measurementStarted, setMeasurementStarted] = useState(false);
@@ -75,6 +77,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             />
             <Button title="Stop" onPress={handleStop} disabled={!isRunning} />
             <Button title="Reset" onPress={handleReset} />
+            <Button title="Tare" onPress={tareScale} />
         </View>
     );
 };

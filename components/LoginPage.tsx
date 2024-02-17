@@ -4,6 +4,7 @@ import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import RegisterPage from './Register';
 import Login from './CredentialLogin';
 import GoogleLogin from './GoogleLogin';
+import GoogleSignOutButton from './GoogleSignOut';
 
 //interface ExtendedUser extends FirebaseAuthTypes.User {
 //  name?: string;
@@ -44,6 +45,7 @@ const LoginPage = () => {
         <View>
             <Text>Welcome {user.email}</Text>
             <Button title="Logout" onPress={handleLogout} />
+            <GoogleSignOutButton />
         </View>
     );
 };

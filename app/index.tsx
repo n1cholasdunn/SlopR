@@ -13,6 +13,7 @@ import LiveGraph from '../components/LiveGraph';
 import Timer from '../components/Timer';
 import ForceGauge from '../components/ForceGauge';
 import {useBLEContext} from '../context/BLEContext';
+import WorkoutPicker from '../components/RepPicker';
 
 export default function Page() {
     const {
@@ -81,7 +82,10 @@ export default function Page() {
             */}
                     </>
                 ) : (
-                    <Text>Please Connect to a Tindeq Progressor</Text>
+                    <View>
+                        <Text>Please Connect to a Tindeq Progressor</Text>
+                        <WorkoutPicker />
+                    </View>
                 )}
             </View>
             <TouchableOpacity

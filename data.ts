@@ -1,9 +1,6 @@
-export type DataPoint = {
-    weight: number;
-    timestamp: number;
-};
+import {ForceDataPoint} from './types/BLETypes';
 
-export const testData1: DataPoint[] = [
+export const testData1: ForceDataPoint[] = [
     {timestamp: 51359, weight: 0.0009768903255462646},
     {timestamp: 223916, weight: 0.04102882742881775},
     {timestamp: 396516, weight: 0.0015874207019805908},
@@ -52,7 +49,7 @@ export const testData1: DataPoint[] = [
     {timestamp: 7852663, weight: 0.02820730209350586},
 ];
 
-export const testData2: DataPoint[] = [
+export const testData2: ForceDataPoint[] = [
     {timestamp: 51359, weight: 0.0009768903255462646},
     {timestamp: 223916, weight: 0.04102882742881775},
     {timestamp: 396516, weight: 0.0015874207019805908},
@@ -100,4 +97,56 @@ export const testData2: DataPoint[] = [
     {timestamp: 7680011, weight: -0.000976860523223877},
     {timestamp: 7852663, weight: 0.02820730209350586},
     {timestamp: 51379, weight: 0.007570803165435791},
+];
+
+export const testRepData: ForceDataPoint[][] = [
+    [
+        {timestamp: 51565, weight: -0.3},
+        {timestamp: 224782, weight: -0.29},
+        {timestamp: 398060, weight: -0.09},
+        {timestamp: 571364, weight: 0.1},
+        {timestamp: 744659, weight: 0.6},
+        {timestamp: 928742, weight: 1.69},
+        {timestamp: 1102014, weight: 5.33},
+        {timestamp: 1286109, weight: 5.42},
+        {timestamp: 1459371, weight: 5.35},
+        {timestamp: 1632626, weight: 5.49},
+        {timestamp: 1805884, weight: 5.97},
+        {timestamp: 1979164, weight: 6.08},
+        {timestamp: 2152466, weight: 6.08},
+        {timestamp: 2325790, weight: 4.92},
+        {timestamp: 2499060, weight: 5},
+        {timestamp: 2672353, weight: 4.96},
+        {timestamp: 2845631, weight: 4.86},
+        {timestamp: 3018906, weight: 4.98},
+        {timestamp: 3192181, weight: 5.58},
+        {timestamp: 3365429, weight: 6.46},
+        {timestamp: 3538719, weight: 7.05},
+        {timestamp: 3712001, weight: 7.72},
+        {timestamp: 3896089, weight: 7.87},
+    ],
+    [
+        {timestamp: 51578, weight: -0.31},
+        {timestamp: 224786, weight: -0.18},
+        {timestamp: 397998, weight: 0.2},
+        {timestamp: 571241, weight: 1.81},
+        {timestamp: 744479, weight: 5.73},
+        {timestamp: 917731, weight: 5.11},
+        {timestamp: 1091014, weight: 2.63},
+        {timestamp: 1275138, weight: 3.08},
+        {timestamp: 1448396, weight: 3.81},
+        {timestamp: 1621649, weight: 3.96},
+        {timestamp: 1794897, weight: 3.87},
+        {timestamp: 1968130, weight: 3.16},
+        {timestamp: 2141428, weight: 2.68},
+        {timestamp: 2314732, weight: 4.6},
+        {timestamp: 2488042, weight: 5.43},
+        {timestamp: 2661332, weight: 4.9},
+        {timestamp: 2834599, weight: 4.52},
+        {timestamp: 3007850, weight: 3.24},
+        {timestamp: 3181147, weight: 2.42},
+        {timestamp: 3354391, weight: 0.59},
+        {timestamp: 3527701, weight: 0.07},
+        {timestamp: 3700945, weight: -0.18},
+    ],
 ];

@@ -14,8 +14,10 @@ import Timer from '../components/Timer';
 import ForceGauge from '../components/ForceGauge';
 import {useBLEContext} from '../context/BLEContext';
 import WorkoutPicker from '../components/RepPicker';
+import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
+    /*
     const {
         requestPermissions,
         scanForPeripherals,
@@ -28,6 +30,19 @@ export default function Page() {
         startMeasuring,
         dataPoints,
     } = useBLEContext();
+*/
+    const {
+        requestPermissions,
+        scanForPeripherals,
+        devices,
+        connectToDevice,
+        connectedDevice,
+        disconnectFromDevice,
+        forceWeight,
+        tareScale,
+        startMeasuring,
+        dataPoints,
+    } = useBLEStore();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
@@ -84,7 +99,7 @@ export default function Page() {
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
-                        <WorkoutPicker />
+                        {/* <WorkoutPicker />*/}
                     </View>
                 )}
             </View>
@@ -99,7 +114,7 @@ export default function Page() {
                 closeModal={hideModal}
                 visible={isModalVisible}
                 connectToPeripheral={connectToDevice}
-                devices={allDevices}
+                devices={devices}
             />
         </SafeAreaView>
     );

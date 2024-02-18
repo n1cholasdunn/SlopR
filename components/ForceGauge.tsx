@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Button} from 'react-native';
 import useTimer from '../hooks/useTimer';
 import LiveGraph from './LiveGraph';
 import {useBLEContext} from '../context/BLEContext';
 import {ForceDataPoint} from '../types/BLETypes';
-import {useUnitConversion} from '../hooks/useUnitConversion';
+import useBLEStore from '../stores/useBLEStore';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -19,7 +19,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         initialSeconds,
         mode,
     );
-    const {
+    /*const {
         startMeasuring,
         stopMeasuring,
         forceWeight,
@@ -27,9 +27,25 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         setDataPoints,
         tareScale,
     } = useBLEContext();
+  */
+
+    const {
+        startMeasuring,
+        stopMeasuring,
+        forceWeight,
+        dataPoints,
+        tareScale,
+        setDataPoints,
+        resetDataPoints,
+    } = useBLEStore();
+
     const [reps, setReps] = useState<ForceDataPoint[][]>([]);
     const [measurementStarted, setMeasurementStarted] = useState(false);
     const [allowStart, setAllowStart] = useState(true);
+
+    useEffect(() => {
+        console.log('Data Points use effect:', dataPoints);
+    }, [dataPoints]);
 
     const handleStart = useCallback(() => {
         if (!measurementStarted && allowStart) {
@@ -54,7 +70,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             setMeasurementStarted(false);
         }
         setReps(currentReps => [...currentReps, dataPoints]);
-        setDataPoints([]);
+        resetDataPoints();
         resetTimer();
         setAllowStart(true);
     }, [measurementStarted, stopMeasuring, setDataPoints, resetTimer, setReps]);
@@ -64,6 +80,8 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             handleStop();
         }
     }, [seconds, mode, measurementStarted, handleStop]);
+
+    const saveWorkoutToDB = async () => {};
 
     return (
         <View>

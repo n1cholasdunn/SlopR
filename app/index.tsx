@@ -31,7 +31,7 @@ export default function Page() {
         dataPoints,
     } = useBLEStore();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    const [numSets, setNumSets] = useState(1);
+    const [numSets, setNumSets] = useState(2);
     const [workoutSelections, setWorkoutSelections] =
         useState<CreateWorkoutSelections>({rest: 0, reps: 0, duration: 0});
 
@@ -70,6 +70,7 @@ export default function Page() {
                             mode="down"
                             numOfSets={numSets}
                             numOfReps={workoutSelections.reps}
+                            rest={workoutSelections.rest}
                         />
                         {/*
                         <Text>Pulling:</Text>

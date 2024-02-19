@@ -10,7 +10,7 @@ import {
 } from 'react-native-ble-plx';
 import {create} from 'zustand';
 
-import useUnitSystemStore from './useUnitSystemStore'; // Adjust the import path as needed
+import useUnitSystemStore from './useUnitSystemStore';
 import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
 import {ForceDataPoint} from '../types/BLETypes';
 /*
@@ -40,7 +40,6 @@ interface BLEState {
     updateInterval: number;
     serviceUUID: string;
     characteristicUUID: string;
-    // Add other necessary state and methods
     requestAndroid31Permissions: () => Promise<boolean>;
     requestPermissions: () => Promise<boolean>;
     scanForPeripherals: () => void;
@@ -123,7 +122,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 return await get().requestAndroid31Permissions();
             }
         } else {
-            return true; // Assuming permissions are granted on iOS by default
+            return true;
         }
     },
     addDevice: (device: Device) => {
@@ -203,11 +202,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 //TODO when submitting to DB use the average of last 5 or 10 data points
                 setDataPoints(newDataPoint);
 
-                //  setForceWeight(parseFloat(weight.toFixed(2)));
                 set({forceWeight: weight});
-
-                console.log('Weight:', weight);
-                //console.log("Timestamp:", timestamp);
             } else {
                 console.error('Unexpected data length:', length);
             }
@@ -238,7 +233,6 @@ const useBLEStore = create<BLEState>((set, get) => ({
             );
             set({connectedDevice: deviceConnection});
             await deviceConnection.discoverAllServicesAndCharacteristics();
-            // Optionally stop the scan
             bleManager.stopDeviceScan();
             startStreamingData(deviceConnection);
         } catch (error) {

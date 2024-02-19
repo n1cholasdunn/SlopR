@@ -202,7 +202,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 //TODO when submitting to DB use the average of last 5 or 10 data points
                 setDataPoints(newDataPoint);
 
-                set({forceWeight: weight});
+                set({forceWeight: parseFloat(weight.toFixed(2))});
             } else {
                 console.error('Unexpected data length:', length);
             }

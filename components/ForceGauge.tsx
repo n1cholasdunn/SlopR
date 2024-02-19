@@ -12,13 +12,15 @@ import {cleanRepsData} from '../utils/cleanData';
 interface ForceGaugeProps {
     initialSeconds?: number;
     mode?: 'up' | 'down';
-    sets?: number;
+    numOfSets?: number;
+    numOfReps?: number;
 }
 
 const ForceGauge: React.FC<ForceGaugeProps> = ({
     initialSeconds = 0,
     mode = 'up',
-    sets = 1,
+    numOfSets,
+    numOfReps,
 }) => {
     const {seconds, startTimer, stopTimer, resetTimer, isRunning} = useTimer(
         initialSeconds,
@@ -35,20 +37,22 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         resetDataPoints,
     } = useBLEStore();
 
-    const [reps, setReps] = useState<ForceDataPoint[][]>([]);
+    const [repData, setRepData] = useState<ForceDataPoint[][]>([]);
     const [measurementStarted, setMeasurementStarted] = useState(false);
     const [allowStart, setAllowStart] = useState(true);
+    const [currentRep, setCurrentRep] = useState(0);
     const [currentSet, setCurrentSet] = useState(0);
 
     useEffect(() => {
-        console.log('Data Points use effect:', dataPoints);
-    }, [dataPoints]);
+        console.log('current set use effect:', currentSet);
+    }, [currentSet]);
     useEffect(() => {
-        console.log('reps:', reps);
-    }, [reps]);
+        console.log('reps:', repData);
+    }, [repData]);
 
     const handleStart = useCallback(() => {
-        if (!measurementStarted && allowStart) {
+        if (!numOfSets) return;
+        if (!measurementStarted && allowStart && currentSet < numOfSets) {
             startMeasuring();
             setMeasurementStarted(true);
             startTimer();
@@ -69,11 +73,21 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             stopMeasuring();
             setMeasurementStarted(false);
         }
-        setReps(currentReps => [...currentReps, dataPoints]);
+        if (numOfReps && currentRep === numOfReps - 1) {
+            setCurrentSet(prev => prev + 1);
+        }
+        setRepData(currentReps => [...currentReps, dataPoints]);
+        setCurrentRep(prev => prev + 1);
         resetDataPoints();
         resetTimer();
         setAllowStart(true);
-    }, [measurementStarted, stopMeasuring, setDataPoints, resetTimer, setReps]);
+    }, [
+        measurementStarted,
+        stopMeasuring,
+        setDataPoints,
+        resetTimer,
+        setRepData,
+    ]);
 
     useEffect(() => {
         if (mode === 'down' && seconds === 0 && measurementStarted) {
@@ -83,7 +97,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
 
     const saveWorkoutToDB = async () => {
         const user = auth().currentUser;
-        const formattedRepsData = cleanRepsData(reps);
+        const formattedRepsData = cleanRepsData(repData);
         if (!user) {
             console.log('No user signed in');
             return;
@@ -97,7 +111,7 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             await firestore()
                 .collection('users')
                 .doc(user.uid)
-                .collection('sets')
+                .collection('numOfSets')
                 .add(workoutData);
             console.log('Workout data saved to Firestore');
         } catch (e) {
@@ -110,6 +124,8 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             <LiveGraph dataPoints={dataPoints} />
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Timer: {seconds}s</Text>
+            {numOfSets && <Text>Sets remaining: {numOfSets - currentSet}</Text>}
+            {numOfReps && <Text>Reps remaining: {numOfReps - currentRep}</Text>}
             <Button
                 title="Start"
                 onPress={handleStart}

@@ -1,8 +1,11 @@
 import {Picker} from '@react-native-picker/picker';
-import {useState} from 'react';
 
-const SetPicker = () => {
-    const [numSets, setNumSets] = useState(1);
+type SetPickerProps = {
+    numSets: number;
+    setNumSets: (input: number) => void;
+};
+
+const SetPicker = ({numSets, setNumSets}: SetPickerProps) => {
     const generatePickerNumItems = (max: number) => {
         const items = [];
         for (let i = 1; i <= max; i++) {

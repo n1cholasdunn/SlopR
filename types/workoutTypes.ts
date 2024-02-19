@@ -2,6 +2,12 @@ import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 import {ForceDataPoint} from './BLETypes';
 
+export type CreateWorkoutSelections = {
+    rest: number;
+    reps: number;
+    duration: number;
+};
+
 //generic rep for extension for non climbing workouts
 interface Rep {
     restTime: number;

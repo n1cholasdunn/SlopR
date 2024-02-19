@@ -1,27 +1,26 @@
 import {Picker} from '@react-native-picker/picker';
-import {useState} from 'react';
+import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+import {CreateWorkoutSelections} from '../types/workoutTypes';
 
-type WorkoutSelections = {
-    rest: number;
-    reps: number;
-    duration: number;
+type WorkoutPickerProps = {
+    workoutSelections: CreateWorkoutSelections;
+    setWorkoutSelections: React.Dispatch<
+        React.SetStateAction<CreateWorkoutSelections>
+    >;
 };
 
-const WorkoutPicker = () => {
-    const [workoutSelections, setWorkoutSelections] =
-        useState<WorkoutSelections>({rest: 0, reps: 0, duration: 0});
-
-    const generatePickerNumItems = (
-        max: number,
-        pickerName?: keyof WorkoutSelections,
-    ) => {
+const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
+    workoutSelections,
+    setWorkoutSelections,
+}) => {
+    const generatePickerNumItems = (max: number, labelSuffix?: string) => {
         const items = [];
         for (let i = 0; i <= max; i++) {
             items.push(
                 <Picker.Item
                     key={i}
-                    label={pickerName ? `${i} ${pickerName}` : `${i}`}
+                    label={labelSuffix ? `${i}${labelSuffix}` : `${i}`}
                     value={i}
                 />,
             );
@@ -33,40 +32,48 @@ const WorkoutPicker = () => {
         <View style={styles.container}>
             <Text>Rep Picker</Text>
             <View style={styles.pickerContainer}>
-                <Picker
-                    style={styles.picker}
-                    selectedValue={workoutSelections.duration}
-                    onValueChange={input =>
-                        setWorkoutSelections({
-                            ...workoutSelections,
-                            duration: input,
-                        })
-                    }>
-                    {generatePickerNumItems(100)}
-                </Picker>
-                <Picker
-                    style={styles.picker}
-                    selectedValue={workoutSelections.reps}
-                    onValueChange={input =>
-                        setWorkoutSelections({
-                            ...workoutSelections,
-                            reps: input,
-                        })
-                    }>
-                    {generatePickerNumItems(50)}
-                </Picker>
-
-                <Picker
-                    style={styles.picker}
-                    selectedValue={workoutSelections.rest}
-                    onValueChange={input =>
-                        setWorkoutSelections({
-                            ...workoutSelections,
-                            rest: input,
-                        })
-                    }>
-                    {generatePickerNumItems(120)}
-                </Picker>
+                <View style={styles.pickerStyle}>
+                    <Text>Duration</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={workoutSelections.duration}
+                        onValueChange={input =>
+                            setWorkoutSelections({
+                                ...workoutSelections,
+                                duration: input,
+                            })
+                        }>
+                        {generatePickerNumItems(100, 's')}
+                    </Picker>
+                </View>
+                <View style={styles.pickerStyle}>
+                    <Text>Reps</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={workoutSelections.reps}
+                        onValueChange={input =>
+                            setWorkoutSelections({
+                                ...workoutSelections,
+                                reps: input,
+                            })
+                        }>
+                        {generatePickerNumItems(50)}
+                    </Picker>
+                </View>
+                <View style={styles.pickerStyle}>
+                    <Text>Rest</Text>
+                    <Picker
+                        style={styles.picker}
+                        selectedValue={workoutSelections.rest}
+                        onValueChange={input =>
+                            setWorkoutSelections({
+                                ...workoutSelections,
+                                rest: input,
+                            })
+                        }>
+                        {generatePickerNumItems(120, 's')}
+                    </Picker>
+                </View>
             </View>
         </View>
     );
@@ -78,13 +85,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    pickerStyle: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '33%',
+    },
     pickerContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         width: '100%',
     },
     picker: {
-        width: '25%',
+        width: '75%',
         height: 200,
     },
 });

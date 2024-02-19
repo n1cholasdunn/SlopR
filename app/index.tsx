@@ -15,6 +15,7 @@ import WorkoutPicker from '../components/RepPicker';
 import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
 import SetPicker from '../components/SetPicker';
+import type {CreateWorkoutSelections} from '../types/workoutTypes';
 
 export default function Page() {
     const {
@@ -30,6 +31,10 @@ export default function Page() {
         dataPoints,
     } = useBLEStore();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [numSets, setNumSets] = useState(1);
+    const [workoutSelections, setWorkoutSelections] =
+        useState<CreateWorkoutSelections>({rest: 0, reps: 0, duration: 0});
+
     GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
         offlineAccess: true,
@@ -60,8 +65,12 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
-                        <ForceGauge initialSeconds={4} mode="down" />
-                        {/* <ForceGauge/>*/}
+                        <ForceGauge
+                            initialSeconds={workoutSelections.duration}
+                            mode="down"
+                            numOfSets={numSets}
+                            numOfReps={workoutSelections.reps}
+                        />
                         {/*
                         <Text>Pulling:</Text>
                         <Text style={styles.weightDisplay}>
@@ -85,8 +94,11 @@ export default function Page() {
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
-                        {/* <WorkoutPicker />*/}
-                        <SetPicker />
+                        <WorkoutPicker
+                            workoutSelections={workoutSelections}
+                            setWorkoutSelections={setWorkoutSelections}
+                        />
+                        {/* <SetPicker numSets={numSets} setNumSets={setNumSets} />*/}
                     </View>
                 )}
             </View>

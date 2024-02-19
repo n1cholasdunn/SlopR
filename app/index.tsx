@@ -14,6 +14,7 @@ import LiveGraph from '../components/LiveGraph';
 import WorkoutPicker from '../components/RepPicker';
 import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
+import SetPicker from '../components/SetPicker';
 
 export default function Page() {
     const {
@@ -85,6 +86,7 @@ export default function Page() {
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
                         {/* <WorkoutPicker />*/}
+                        <SetPicker />
                     </View>
                 )}
             </View>

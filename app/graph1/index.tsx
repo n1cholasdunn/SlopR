@@ -1,5 +1,6 @@
-import {View} from 'react-native';
 import {Path, Canvas} from '@shopify/react-native-skia';
+import {View} from 'react-native';
+
 import {
     GRAPH_HEIGHT,
     GRAPH_WIDTH,
@@ -18,10 +19,10 @@ export default function Page() {
                     height: GRAPH_HEIGHT,
                 }}>
                 <Path
-                    style={'stroke'}
+                    style="stroke"
                     path={graphData.curve}
                     strokeWidth={4}
-                    color={'#6B4E71'}
+                    color="#6B4E71"
                 />
             </Canvas>
         </View>

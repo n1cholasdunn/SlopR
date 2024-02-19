@@ -1,9 +1,10 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../utils/graph';
-import {GraphData} from '../types/chartData';
+
 import {ForceDataPoint} from '../types/BLETypes';
+import {GraphData} from '../types/chartData';
+import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../utils/graph';
 
 type LiveGraphProps = {
     dataPoints: ForceDataPoint[];
@@ -28,10 +29,10 @@ const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
                     height: GRAPH_HEIGHT,
                 }}>
                 <Path
-                    style={'stroke'}
+                    style="stroke"
                     path={graphData.curve ?? ''}
                     strokeWidth={4}
-                    color={'#6B4E71'}
+                    color="#6B4E71"
                 />
             </Canvas>
         </View>

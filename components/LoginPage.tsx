@@ -1,10 +1,11 @@
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import React, {useEffect, useState} from 'react';
 import {View, Text, Button} from 'react-native';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
-import RegisterPage from './Register';
+
 import Login from './CredentialLogin';
 import GoogleLogin from './GoogleLogin';
 import GoogleSignOutButton from './GoogleSignOut';
+import RegisterPage from './Register';
 
 //interface ExtendedUser extends FirebaseAuthTypes.User {
 //  name?: string;

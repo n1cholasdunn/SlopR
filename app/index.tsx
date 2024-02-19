@@ -1,3 +1,5 @@
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {useState} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -5,32 +7,15 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import useBLE from '../hooks/useBLE';
-import {useState} from 'react';
+
 import DeviceModal from '../components/BTDeviceConnectionModal';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import LiveGraph from '../components/LiveGraph';
-import Timer from '../components/Timer';
 import ForceGauge from '../components/ForceGauge';
-import {useBLEContext} from '../context/BLEContext';
+import LiveGraph from '../components/LiveGraph';
 import WorkoutPicker from '../components/RepPicker';
+import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
-    /*
-    const {
-        requestPermissions,
-        scanForPeripherals,
-        allDevices,
-        connectToDevice,
-        connectedDevice,
-        disconnectFromDevice,
-        forceWeight,
-        tareScale,
-        startMeasuring,
-        dataPoints,
-    } = useBLEContext();
-*/
     const {
         requestPermissions,
         scanForPeripherals,

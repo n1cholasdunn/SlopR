@@ -1,9 +1,10 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
 import {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
+
 import useBLE from '../../hooks/useBLE';
 import {GraphData} from '../../types/chartData';
+import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
 const Page = () => {
     const {startMeasuring, tareScale, dataPoints} = useBLE();
@@ -25,10 +26,10 @@ const Page = () => {
                     height: GRAPH_HEIGHT,
                 }}>
                 <Path
-                    style={'stroke'}
+                    style="stroke"
                     path={graphData.curve ?? ''}
                     strokeWidth={4}
-                    color={'#6B4E71'}
+                    color="#6B4E71"
                 />
             </Canvas>
             <TouchableOpacity onPress={startMeasuring}>

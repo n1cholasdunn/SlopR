@@ -1,3 +1,6 @@
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {router} from 'expo-router';
 import React, {useState} from 'react';
 import {
     View,
@@ -8,10 +11,7 @@ import {
     TouchableOpacity,
     Alert,
 } from 'react-native';
-import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import firestore from '@react-native-firebase/firestore';
-import {router} from 'expo-router';
 
 const RegisterPage = () => {
     const [name, setName] = useState<string | undefined>(undefined);

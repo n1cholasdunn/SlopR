@@ -16,7 +16,7 @@ const WorkoutPicker = () => {
         max: number,
         pickerName?: keyof WorkoutSelections,
     ) => {
-        let items = [];
+        const items = [];
         for (let i = 0; i <= max; i++) {
             items.push(
                 <Picker.Item

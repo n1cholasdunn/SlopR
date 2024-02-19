@@ -1,5 +1,6 @@
-import {ForceDataPoint} from './BLETypes';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
+
+import {ForceDataPoint} from './BLETypes';
 
 //generic rep for extension for non climbing workouts
 interface Rep {

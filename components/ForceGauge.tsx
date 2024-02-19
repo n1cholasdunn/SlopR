@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Button} from 'react-native';
-import useTimer from '../hooks/useTimer';
+
 import LiveGraph from './LiveGraph';
-import {useBLEContext} from '../context/BLEContext';
-import {ForceDataPoint} from '../types/BLETypes';
+import useTimer from '../hooks/useTimer';
 import useBLEStore from '../stores/useBLEStore';
+import {ForceDataPoint} from '../types/BLETypes';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -19,15 +19,6 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         initialSeconds,
         mode,
     );
-    /*const {
-        startMeasuring,
-        stopMeasuring,
-        forceWeight,
-        dataPoints,
-        setDataPoints,
-        tareScale,
-    } = useBLEContext();
-  */
 
     const {
         startMeasuring,

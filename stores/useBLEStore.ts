@@ -1,16 +1,17 @@
-import {create} from 'zustand';
+import {Buffer} from 'buffer';
+import * as ExpoDevice from 'expo-device';
+import {PermissionsAndroid, Platform} from 'react-native';
+import base64 from 'react-native-base64';
 import {
     BleManager,
     Device,
     BleError,
     Characteristic,
 } from 'react-native-ble-plx';
-import base64 from 'react-native-base64';
-import {PermissionsAndroid, Platform} from 'react-native';
-import * as ExpoDevice from 'expo-device';
-import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
-import {Buffer} from 'buffer';
+import {create} from 'zustand';
+
 import useUnitSystemStore from './useUnitSystemStore'; // Adjust the import path as needed
+import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
 import {ForceDataPoint} from '../types/BLETypes';
 /*
  *export interface BluetoothLowEnergyApi {

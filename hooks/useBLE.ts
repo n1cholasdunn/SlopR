@@ -1,19 +1,20 @@
 /* eslint-disable no-bitwise */
 
+import {Buffer} from 'buffer';
+import * as ExpoDevice from 'expo-device';
 import {useEffect, useMemo, useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
+import base64 from 'react-native-base64';
 import {
     BleError,
     BleManager,
     Characteristic,
     Device,
 } from 'react-native-ble-plx';
-import * as ExpoDevice from 'expo-device';
-import base64 from 'react-native-base64';
-import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
-import {Buffer} from 'buffer';
-import {BluetoothLowEnergyApi, ForceDataPoint} from '../types/BLETypes';
+
 import {useUnitConversion} from './useUnitConversion';
+import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
+import {BluetoothLowEnergyApi, ForceDataPoint} from '../types/BLETypes';
 
 const useBLE = (): BluetoothLowEnergyApi => {
     const bleManager = useMemo(() => new BleManager(), []);

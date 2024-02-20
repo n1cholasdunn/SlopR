@@ -5,9 +5,13 @@ import LiveGraph from './LiveGraph';
 import useTimer from '../hooks/useTimer';
 import useBLEStore from '../stores/useBLEStore';
 import {ForceDataPoint} from '../types/BLETypes';
-import firestore from '@react-native-firebase/firestore';
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {cleanRepsData} from '../utils/cleanData';
+import {cleanRepsData, cleanWorkoutData} from '../utils/cleanData';
+import {useMutation} from '@tanstack/react-query';
+import {FullWorkoutData, SetData} from '../types/workoutTypes';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -57,16 +61,19 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         console.log('current set use effect:', currentSet);
     }, [currentSet]);
     useEffect(() => {
-        console.log('reps:', setData);
-    }, [setData]);
-    useEffect(() => {
-        console.log('all sets:', allSetsData);
-    }, [allSetsData]);
-*/
+        console.log('current set use effect:', currentSet);
+        console.log('all sets:', JSON.stringify(allSetsData, null, 2));
+    }, [allSetsData, currentSet]);
     useEffect(() => {
         console.log('restTimer', restSeconds);
     }, [restSeconds]);
 
+
+*/
+    useEffect(() => {
+        console.log('setData:', setData);
+        console.log('___________________');
+    }, [setData]);
     const handleStart = useCallback(() => {
         if (!numOfSets) return;
         if (!measurementStarted && allowStart && currentSet < numOfSets) {
@@ -149,28 +156,52 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
         numOfSets,
     ]);
 
-    const saveWorkoutToDB = async () => {
+    const saveWorkoutToDB = async (workoutData: SetData) => {
         const user = auth().currentUser;
-        const formattedRepsData = cleanRepsData(setData);
         if (!user) {
-            console.log('No user signed in');
-            return;
+            throw new Error('No user signed in');
         }
 
+        return await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('sets')
+            .add(workoutData);
+    };
+    const saveFullWorkoutToDB = async (workoutData: FullWorkoutData) => {
+        const user = auth().currentUser;
+        if (!user) {
+            throw new Error('No user signed in');
+        }
+
+        return await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('workouts')
+            .add(workoutData);
+    };
+    const {
+        mutate: saveWorkout,
+        status,
+        isError,
+        error,
+        isSuccess,
+    } = useMutation({
+        mutationFn: saveFullWorkoutToDB,
+        onSuccess: () => {
+            console.log('Workout data saved to Firestore');
+        },
+        onError: e => {
+            console.error('Error saving workout data:', e);
+        },
+    });
+    const handleSaveWorkout = () => {
+        const formattedRepsData = cleanWorkoutData(allSetsData);
         const workoutData = {
             createdAt: firestore.FieldValue.serverTimestamp(),
-            reps: formattedRepsData,
+            sets: formattedRepsData,
         };
-        try {
-            await firestore()
-                .collection('users')
-                .doc(user.uid)
-                .collection('numOfSets')
-                .add(workoutData);
-            console.log('Workout data saved to Firestore');
-        } catch (e) {
-            console.error('Error saving workout data:', e);
-        }
+        saveWorkout(workoutData);
     };
 
     return (
@@ -194,7 +225,8 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             <Button title="Stop" onPress={handleStop} disabled={!isRunning} />
             <Button title="Reset" onPress={handleReset} />
             <Button title="Tare" onPress={tareScale} />
-            <Button title="Save Workout Data" onPress={saveWorkoutToDB} />
+            <Button title="Save Workout Data" onPress={handleSaveWorkout} />
+            {isSuccess && <Text>Workout data saved to Firestore</Text>}
         </View>
     );
 };

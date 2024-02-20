@@ -8,6 +8,16 @@ export type CreateWorkoutSelections = {
     duration: number;
 };
 
+export type SetData = {
+    createdAt: FirebaseFirestoreTypes.FieldValue;
+    reps: {[x: string]: ForceDataPoint[]}[];
+};
+
+export type FullWorkoutData = {
+    createdAt: FirebaseFirestoreTypes.FieldValue;
+    sets: {[x: string]: {[x: string]: ForceDataPoint[]}[]}[];
+};
+
 //generic rep for extension for non climbing workouts
 interface Rep {
     restTime: number;

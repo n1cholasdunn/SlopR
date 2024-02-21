@@ -12,6 +12,7 @@ import useBLEStore from '../stores/useBLEStore';
 import {ForceDataPoint} from '../types/BLETypes';
 import {FullWorkoutData, SetData} from '../types/workoutTypes';
 import {cleanRepsData, cleanWorkoutData} from '../utils/cleanData';
+import PeakForceGraph from './PeakForceGraph';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -205,7 +206,9 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
 
     return (
         <View>
-            <LiveGraph dataPoints={dataPoints} />
+            {/*      <LiveGraph dataPoints={dataPoints} />
+             */}
+            <PeakForceGraph dataPoints={dataPoints} />
             {isRestTimerRunning && <Text>{restSeconds}</Text>}
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Timer: {seconds}s</Text>

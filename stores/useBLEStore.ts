@@ -24,6 +24,7 @@ interface BLEState {
     updateInterval: number;
     serviceUUID: string;
     characteristicUUID: string;
+    maxForce: number;
     requestAndroid31Permissions: () => Promise<boolean>;
     requestPermissions: () => Promise<boolean>;
     scanForPeripherals: () => void;
@@ -53,6 +54,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
     updateInterval: 12.5,
     serviceUUID: Tindeq.services.uuid,
     characteristicUUID: Tindeq.services.characteristics[0].uuid,
+    maxForce: 0,
     requestAndroid31Permissions: async () => {
         const bluetoothScanPermission = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
@@ -150,7 +152,6 @@ const useBLEStore = create<BLEState>((set, get) => ({
         }
         const {convertWeight} = useUnitSystemStore.getState();
         const setDataPoints = get().setDataPoints;
-
         const currentTime = Date.now();
         const lastUpdateTime = get().lastUpdateTime;
 
@@ -183,6 +184,9 @@ const useBLEStore = create<BLEState>((set, get) => ({
                     weight,
                     timestamp,
                 };
+                if (weight > get().maxForce) {
+                    set({maxForce: weight});
+                }
                 //TODO when submitting to DB use the average of last 5 or 10 data points
                 setDataPoints(newDataPoint);
 

@@ -1,6 +1,7 @@
 import {Path, Canvas} from '@shopify/react-native-skia';
 import {View} from 'react-native';
 
+import SetInstructionsPicker from '../../components/SetInstructionsPicker';
 import {
     GRAPH_HEIGHT,
     GRAPH_WIDTH,
@@ -13,6 +14,7 @@ export default function Page() {
 
     return (
         <View>
+            {/*
             <Canvas
                 style={{
                     width: GRAPH_WIDTH,
@@ -25,6 +27,8 @@ export default function Page() {
                     color="#6B4E71"
                 />
             </Canvas>
+            */}
+            <SetInstructionsPicker />
         </View>
     );
 }

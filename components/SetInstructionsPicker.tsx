@@ -1,5 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
-import {View, Switch, StyleSheet} from 'react-native';
+import {View, Switch} from 'react-native';
 import {GripMap, gripLabels, repTypeLabels, repTypeMap} from '../utils/labels';
 import usePickerGenerator from '../hooks/usePickerGenerator';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';

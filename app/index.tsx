@@ -12,9 +12,9 @@ import DeviceModal from '../components/BTDeviceConnectionModal';
 import ForceGauge from '../components/ForceGauge';
 import LiveGraph from '../components/LiveGraph';
 import WorkoutPicker from '../components/RepPicker';
+import SetPicker from '../components/SetPicker';
 import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
-import SetPicker from '../components/SetPicker';
 import type {CreateWorkoutSelections} from '../types/workoutTypes';
 
 export default function Page() {

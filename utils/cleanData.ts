@@ -1,13 +1,18 @@
 import {ForceDataPoint} from '../types/BLETypes';
+import {CleanRepData, CleanSetData} from '../types/workoutTypes';
 
-export const cleanRepsData = (data: ForceDataPoint[][]) => {
+export const cleanRepsData = (data: ForceDataPoint[][]): CleanRepData[] => {
     return data.map((rep, index) => ({
-        [`rep_${index + 1}`]: rep,
+        data: rep,
+        id: index + 1,
     }));
 };
 
-export const cleanWorkoutData = (data: ForceDataPoint[][][]) => {
+export const cleanWorkoutData = (
+    data: ForceDataPoint[][][],
+): CleanSetData[] => {
     return data.map((set, index) => ({
-        [`set_${index + 1}`]: cleanRepsData(set),
+        reps: cleanRepsData(set),
+        id: index + 1,
     }));
 };

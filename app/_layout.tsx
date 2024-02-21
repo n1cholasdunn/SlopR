@@ -1,10 +1,11 @@
-import {Tabs} from 'expo-router';
-import {AppStateStatus, Platform} from 'react-native';
 import {
     QueryClient,
     QueryClientProvider,
     focusManager,
 } from '@tanstack/react-query';
+import {Tabs} from 'expo-router';
+import {AppStateStatus, Platform} from 'react-native';
+
 import {useAppState} from '../hooks/useAppState';
 import {useOnlineManager} from '../hooks/useOnlineManager';
 

@@ -1,3 +1,8 @@
+import auth from '@react-native-firebase/auth';
+import firestore, {
+    FirebaseFirestoreTypes,
+} from '@react-native-firebase/firestore';
+import {useMutation} from '@tanstack/react-query';
 import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Button} from 'react-native';
 
@@ -5,13 +10,8 @@ import LiveGraph from './LiveGraph';
 import useTimer from '../hooks/useTimer';
 import useBLEStore from '../stores/useBLEStore';
 import {ForceDataPoint} from '../types/BLETypes';
-import firestore, {
-    FirebaseFirestoreTypes,
-} from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import {cleanRepsData, cleanWorkoutData} from '../utils/cleanData';
-import {useMutation} from '@tanstack/react-query';
 import {FullWorkoutData, SetData} from '../types/workoutTypes';
+import {cleanRepsData, cleanWorkoutData} from '../utils/cleanData';
 
 interface ForceGaugeProps {
     initialSeconds?: number;
@@ -71,9 +71,9 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
 
 */
     useEffect(() => {
-        console.log('setData:', setData);
-        console.log('___________________');
-    }, [setData]);
+        console.log('all sets data:', JSON.stringify(allSetsData, null, 2));
+        console.log('_____________');
+    }, [allSetsData]);
     const handleStart = useCallback(() => {
         if (!numOfSets) return;
         if (!measurementStarted && allowStart && currentSet < numOfSets) {
@@ -90,10 +90,13 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             stopTimer();
             setAllowStart(false);
 
+            setCurrentRep(prev => prev + 1);
             if (!numOfReps) return;
             if (currentRep === numOfReps - 1) {
                 console.log('start rest timer');
+                setCurrentSet(prev => prev + 1);
                 startRestTimer();
+                setCurrentRep(0);
             }
         }
     }, [
@@ -110,13 +113,8 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
             stopMeasuring();
             setMeasurementStarted(false);
         }
-        if (numOfReps && currentRep === numOfReps - 1) {
-            setCurrentSet(prev => prev + 1);
-            setAllSetsData(currentSets => [...currentSets, setData]);
-            setSetData([]);
-        }
+
         setSetData(currentReps => [...currentReps, dataPoints]);
-        setCurrentRep(prev => prev + 1);
         resetDataPoints();
         resetTimer();
         if (!numOfSets) return;
@@ -139,12 +137,13 @@ const ForceGauge: React.FC<ForceGaugeProps> = ({
 
     useEffect(() => {
         if (restSeconds === 0 && isRestTimerRunning) {
+            setAllSetsData(currentSets => [...currentSets, setData]);
+            setSetData([]);
             resetRestTimer();
 
             if (!numOfSets) return;
 
             if (currentSet < numOfSets) {
-                setCurrentRep(-1);
                 handleReset();
             }
         }

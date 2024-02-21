@@ -2,6 +2,7 @@ import {Picker} from '@react-native-picker/picker';
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {CreateWorkoutSelections} from '../types/workoutTypes';
+import usePickerGenerator from '../hooks/usePickerGenerator';
 
 type WorkoutPickerProps = {
     workoutSelections: CreateWorkoutSelections;
@@ -14,19 +15,7 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
     workoutSelections,
     setWorkoutSelections,
 }) => {
-    const generatePickerNumItems = (max: number, labelSuffix?: string) => {
-        const items = [];
-        for (let i = 0; i <= max; i++) {
-            items.push(
-                <Picker.Item
-                    key={i}
-                    label={labelSuffix ? `${i}${labelSuffix}` : `${i}`}
-                    value={i}
-                />,
-            );
-        }
-        return items;
-    };
+    const {generateXItems} = usePickerGenerator();
 
     return (
         <View style={styles.container}>
@@ -43,7 +32,7 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                                 duration: input,
                             })
                         }>
-                        {generatePickerNumItems(100, 's')}
+                        {generateXItems(100, 's')}
                     </Picker>
                 </View>
                 <View style={styles.pickerStyle}>
@@ -57,7 +46,7 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                                 reps: input,
                             })
                         }>
-                        {generatePickerNumItems(50)}
+                        {generateXItems(50)}
                     </Picker>
                 </View>
                 <View style={styles.pickerStyle}>
@@ -71,7 +60,7 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                                 rest: input,
                             })
                         }>
-                        {generatePickerNumItems(120, 's')}
+                        {generateXItems(120, 's')}
                     </Picker>
                 </View>
             </View>

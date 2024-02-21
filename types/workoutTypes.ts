@@ -8,43 +8,50 @@ export type CreateWorkoutSelections = {
     duration: number;
 };
 
+export type CleanRepData = {
+    id: number;
+    data: ForceDataPoint[];
+};
+
+export type CleanSetData = {
+    id: number;
+    reps: CleanRepData[];
+};
+
 export type SetData = {
     createdAt: FirebaseFirestoreTypes.FieldValue;
-    reps: {[x: string]: ForceDataPoint[]}[];
+    reps: {data: ForceDataPoint[]}[];
+    id: number;
 };
 
 export type FullWorkoutData = {
     createdAt: FirebaseFirestoreTypes.FieldValue;
-    sets: {[x: string]: {[x: string]: ForceDataPoint[]}[]}[];
+    sets: CleanSetData[];
 };
 
 //generic rep for extension for non climbing workouts
-interface Rep {
-    restTime: number;
+interface RepInstructions {
     repType: string;
     repDuration: number;
-    data: ForceDataPoint[];
 }
 
-export interface ClimbingRep extends Rep {
-    gripPosition: '3FD' | 'HC' | 'FC' | 'open' | 'pinch' | 'sloper' | 'pocket';
+export interface ClimbingRepInstructions extends RepInstructions {
     hand?: 'L' | 'R';
-    repType: 'repeater' | 'maxHang' | 'endurance' | 'RFD' | 'criticalForce';
 }
 
-export type ClimbingReps = ClimbingRep[];
-
-export interface ClimbingSet {
-    reps: ClimbingReps;
+/*export interface ClimbingSetInsructions {
+    restTime: number;
+    gripPosition: '3FD' | 'HC' | 'FC' | 'open' | 'pinch' | 'sloper' | 'pocket';
+    repType: 'repeater' | 'maxHang' | 'endurance' | 'RFD' | 'criticalForce';
     pauseBetweenSets: number;
     pauseBetweenHands?: number;
     amountOfReps: number;
     startingHand?: 'L' | 'R';
     singleHand?: boolean;
 }
-
+*/
 export interface ClimbingWorkout {
-    sets: ClimbingSet[];
+    amountOfSets: number;
 }
 
 export interface SavedClimbingWorkout extends ClimbingWorkout {
@@ -52,3 +59,24 @@ export interface SavedClimbingWorkout extends ClimbingWorkout {
     userId: string;
     createdAt: FirebaseFirestoreTypes.Timestamp;
 }
+
+export interface GripMapType {
+    [key: string]: string;
+}
+
+export type GripPosition =
+    | '3FD'
+    | 'HC'
+    | 'FC'
+    | 'open'
+    | 'pinch'
+    | 'sloper'
+    | 'pocket';
+
+export type RepType =
+    | 'repeater'
+    | 'maxHang'
+    | 'endurance'
+    | 'RFD'
+    | 'criticalForce'
+    | 'peakForce';

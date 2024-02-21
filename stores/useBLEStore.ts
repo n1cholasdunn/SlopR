@@ -13,22 +13,6 @@ import {create} from 'zustand';
 import useUnitSystemStore from './useUnitSystemStore';
 import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
 import {ForceDataPoint} from '../types/BLETypes';
-/*
- *export interface BluetoothLowEnergyApi {
-    requestPermissions(): Promise<boolean>;
-    scanForPeripherals(): void;
-    allDevices: Device[];
-    connectToDevice: (deviceId: Device) => Promise<void>;
-    connectedDevice: Device | null;
-    disconnectFromDevice: () => void;
-    forceWeight: number;
-    tareScale: () => void;
-    startMeasuring: () => void;
-    stopMeasuring: () => void;
-    dataPoints: ForceDataPoint[];
-    setDataPoints: (dataPoints: ForceDataPoint[]) => void;
-}
- * */
 
 interface BLEState {
     bleManager: BleManager;
@@ -202,7 +186,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 //TODO when submitting to DB use the average of last 5 or 10 data points
                 setDataPoints(newDataPoint);
 
-                set({forceWeight: parseFloat(weight.toFixed(2))});
+                set({forceWeight: Math.max(0, parseFloat(weight.toFixed(2)))});
             } else {
                 console.error('Unexpected data length:', length);
             }

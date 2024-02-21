@@ -3,12 +3,24 @@ import {View, Switch, StyleSheet} from 'react-native';
 import {GripMap, gripLabels, repTypeLabels, repTypeMap} from '../utils/labels';
 import usePickerGenerator from '../hooks/usePickerGenerator';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
+import SideToggleButton from './SideToggleButton';
+import {useEffect} from 'react';
 
 const SetInstructionsPicker = () => {
     const {generatePickerLabels} = usePickerGenerator();
-    const {gripPosition, repType, setGripPosition, setRepType} =
-        useWorkoutSettingsStore();
+    const {
+        gripPosition,
+        repType,
+        setGripPosition,
+        setRepType,
+        singleHand,
+        setSingleHand,
+        startingHand,
+    } = useWorkoutSettingsStore();
 
+    useEffect(() => {
+        console.log('startingHand', startingHand);
+    }, [startingHand]);
     return (
         <View>
             <View>
@@ -23,7 +35,11 @@ const SetInstructionsPicker = () => {
                     {generatePickerLabels(repTypeLabels, repTypeMap)}
                 </Picker>
             </View>
-            <Switch />
+            <Switch
+                value={singleHand}
+                onValueChange={input => setSingleHand(input)}
+            />
+            <SideToggleButton />
         </View>
     );
 };

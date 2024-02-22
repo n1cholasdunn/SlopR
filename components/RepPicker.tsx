@@ -1,21 +1,19 @@
 import {Picker} from '@react-native-picker/picker';
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import {CreateWorkoutSelections} from '../types/workoutTypes';
 import usePickerGenerator from '../hooks/usePickerGenerator';
+import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-type WorkoutPickerProps = {
-    workoutSelections: CreateWorkoutSelections;
-    setWorkoutSelections: React.Dispatch<
-        React.SetStateAction<CreateWorkoutSelections>
-    >;
-};
-
-const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
-    workoutSelections,
-    setWorkoutSelections,
-}) => {
+const WorkoutPicker = () => {
     const {generateXItems} = usePickerGenerator();
+    const {
+        repDuration,
+        setRepDuration,
+        amountOfReps,
+        setAmountOfReps,
+        restTime,
+        setRestTime,
+    } = useWorkoutSettingsStore();
 
     return (
         <View style={styles.container}>
@@ -25,13 +23,8 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                     <Text>Duration</Text>
                     <Picker
                         style={styles.picker}
-                        selectedValue={workoutSelections.duration}
-                        onValueChange={input =>
-                            setWorkoutSelections({
-                                ...workoutSelections,
-                                duration: input,
-                            })
-                        }>
+                        selectedValue={repDuration}
+                        onValueChange={input => setRepDuration(input)}>
                         {generateXItems(100, 's')}
                     </Picker>
                 </View>
@@ -39,13 +32,8 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                     <Text>Reps</Text>
                     <Picker
                         style={styles.picker}
-                        selectedValue={workoutSelections.reps}
-                        onValueChange={input =>
-                            setWorkoutSelections({
-                                ...workoutSelections,
-                                reps: input,
-                            })
-                        }>
+                        selectedValue={amountOfReps}
+                        onValueChange={input => setAmountOfReps(input)}>
                         {generateXItems(50)}
                     </Picker>
                 </View>
@@ -53,13 +41,8 @@ const WorkoutPicker: React.FC<WorkoutPickerProps> = ({
                     <Text>Rest</Text>
                     <Picker
                         style={styles.picker}
-                        selectedValue={workoutSelections.rest}
-                        onValueChange={input =>
-                            setWorkoutSelections({
-                                ...workoutSelections,
-                                rest: input,
-                            })
-                        }>
+                        selectedValue={restTime}
+                        onValueChange={input => setRestTime(input)}>
                         {generateXItems(120, 's')}
                     </Picker>
                 </View>

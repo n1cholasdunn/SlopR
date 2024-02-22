@@ -15,7 +15,7 @@ import WorkoutPicker from '../components/RepPicker';
 import SetPicker from '../components/SetPicker';
 import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
-import type {CreateWorkoutSelections} from '../types/workoutTypes';
+import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 export default function Page() {
     const {
@@ -30,10 +30,10 @@ export default function Page() {
         startMeasuring,
         dataPoints,
     } = useBLEStore();
+
+    const {restTime, repDuration, amountOfReps, amountOfSets} =
+        useWorkoutSettingsStore();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-    const [numSets, setNumSets] = useState(2);
-    const [workoutSelections, setWorkoutSelections] =
-        useState<CreateWorkoutSelections>({rest: 0, reps: 0, duration: 0});
 
     GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
@@ -66,11 +66,11 @@ export default function Page() {
                 {connectedDevice ? (
                     <>
                         <ForceGauge
-                            initialSeconds={workoutSelections.duration}
+                            initialSeconds={repDuration}
                             mode="down"
-                            numOfSets={numSets}
-                            numOfReps={workoutSelections.reps}
-                            rest={workoutSelections.rest}
+                            numOfSets={amountOfSets}
+                            numOfReps={amountOfReps}
+                            rest={restTime}
                         />
                         {/*
                         <Text>Pulling:</Text>
@@ -95,10 +95,7 @@ export default function Page() {
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
-                        <WorkoutPicker
-                            workoutSelections={workoutSelections}
-                            setWorkoutSelections={setWorkoutSelections}
-                        />
+                        <WorkoutPicker />
                         {/* <SetPicker numSets={numSets} setNumSets={setNumSets} />*/}
                     </View>
                 )}

@@ -6,7 +6,7 @@ import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 import SideToggleButton from './SideToggleButton';
 import {useEffect} from 'react';
 
-const SetInstructionsPicker = () => {
+const SetInstructions = () => {
     const {generatePickerLabels} = usePickerGenerator();
     const {
         gripPosition,
@@ -44,4 +44,4 @@ const SetInstructionsPicker = () => {
     );
 };
 
-export default SetInstructionsPicker;
+export default SetInstructions;

@@ -1,17 +1,10 @@
 import {Path, Canvas} from '@shopify/react-native-skia';
 import {View} from 'react-native';
 
-import SetInstructionsPicker from '../../components/SetInstructionsPicker';
-import {
-    GRAPH_HEIGHT,
-    GRAPH_WIDTH,
-    makeGraph,
-    proccessedData1,
-} from '../../utils/graph';
+import SetInstructions from '../../components/SetInstructions';
+import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
 export default function Page() {
-    const graphData = makeGraph(proccessedData1);
-
     return (
         <View>
             {/*
@@ -28,7 +21,7 @@ export default function Page() {
                 />
             </Canvas>
             */}
-            <SetInstructionsPicker />
+            <SetInstructions />
         </View>
     );
 }

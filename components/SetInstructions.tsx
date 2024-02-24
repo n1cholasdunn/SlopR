@@ -1,10 +1,11 @@
 import {Picker} from '@react-native-picker/picker';
+import {useEffect} from 'react';
 import {View, Switch} from 'react-native';
-import {GripMap, gripLabels, repTypeLabels, repTypeMap} from '../utils/labels';
+
+import SideToggleButton from './SideToggleButton';
 import usePickerGenerator from '../hooks/usePickerGenerator';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
-import SideToggleButton from './SideToggleButton';
-import {useEffect} from 'react';
+import {GripMap, gripLabels, repTypeLabels, repTypeMap} from '../utils/labels';
 
 const SetInstructions = () => {
     const {generatePickerLabels} = usePickerGenerator();

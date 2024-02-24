@@ -1,9 +1,11 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useMutation, useQuery} from '@tanstack/react-query';
+
+import {ForceDataPoint} from '../types/BLETypes';
+import {FetchedSet, FetchedWorkout} from '../types/fetchedDataTypes';
 import {FullWorkoutData, SetData} from '../types/workoutTypes';
 import {cleanWorkoutData} from '../utils/cleanData';
-import {useMutation} from '@tanstack/react-query';
-import {ForceDataPoint} from '../types/BLETypes';
 
 const useDB = () => {
     const saveWorkoutToDB = async (workoutData: SetData) => {
@@ -32,9 +34,9 @@ const useDB = () => {
     };
     const {
         mutate: saveWorkout,
-        status,
+        status: saveStatus,
         isError,
-        error,
+        error: saveError,
         isSuccess,
     } = useMutation({
         mutationFn: saveFullWorkoutToDB,
@@ -45,6 +47,38 @@ const useDB = () => {
             console.error('Error saving workout data:', e);
         },
     });
+
+    const fetchWorkouts = async () => {
+        const user = auth().currentUser;
+        if (!user) {
+            throw new Error('No user signed in');
+        }
+
+        const snapshot = await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('workouts')
+            .orderBy('createdAt', 'desc') // Assuming you want the latest workouts first
+            .get();
+
+        const finalData: FetchedWorkout[] = snapshot.docs.map(doc => ({
+            id: doc.id,
+            createdAt: doc.data().createdAt,
+            sets: doc.data().sets as FetchedSet[],
+        }));
+        console.log('finalData', JSON.stringify(finalData, null, 2));
+        return finalData;
+    };
+
+    const {
+        data: workouts,
+        status: fetchStatus,
+        error,
+    } = useQuery({
+        queryKey: ['workouts'],
+        queryFn: fetchWorkouts,
+    });
+
     const handleSaveWorkout = (allSetsData: ForceDataPoint[][][]) => {
         const formattedRepsData = cleanWorkoutData(allSetsData);
         const workoutData = {
@@ -53,7 +87,7 @@ const useDB = () => {
         };
         saveWorkout(workoutData);
     };
-    return {handleSaveWorkout, isSuccess};
+    return {handleSaveWorkout, isSuccess, workouts, error};
 };
 
 export default useDB;

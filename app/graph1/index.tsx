@@ -2,6 +2,7 @@ import {Path, Canvas} from '@shopify/react-native-skia';
 import {View} from 'react-native';
 
 import SetInstructions from '../../components/SetInstructions';
+import WorkoutLog from '../../components/WorkoutLog';
 import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
 export default function Page() {
@@ -20,8 +21,9 @@ export default function Page() {
                     color="#6B4E71"
                 />
             </Canvas>
-            */}
             <SetInstructions />
+            */}
+            <WorkoutLog />
         </View>
     );
 }

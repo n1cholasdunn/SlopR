@@ -31,8 +31,6 @@ export default function Page() {
         dataPoints,
     } = useBLEStore();
 
-    const {restTime, repDuration, amountOfReps, amountOfSets} =
-        useWorkoutSettingsStore();
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
     GoogleSignin.configure({
@@ -65,13 +63,7 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
-                        <ForceGauge
-                            initialSeconds={repDuration}
-                            mode="down"
-                            numOfSets={amountOfSets}
-                            numOfReps={amountOfReps}
-                            rest={restTime}
-                        />
+                        <ForceGauge />
                         {/*
                         <Text>Pulling:</Text>
                         <Text style={styles.weightDisplay}>

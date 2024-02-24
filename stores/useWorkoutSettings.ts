@@ -1,4 +1,6 @@
 import {create} from 'zustand';
+
+import {ForceDataPoint} from '../types/BLETypes';
 import {GripPosition, RepType} from '../types/workoutTypes';
 
 type WorkoutSettingsState = {
@@ -15,6 +17,12 @@ type WorkoutSettingsState = {
     countdownTime: number;
     //number to use for optional rest and work level of sets
     maxStrength?: number;
+
+    //TODO reorganize a single store for all workout Data
+    singleSetData: ForceDataPoint[][];
+    addRepToCurrentSet: (singleSetData: ForceDataPoint[]) => void;
+    allSetsData: ForceDataPoint[][][];
+    addSetToAllSets: () => void;
 
     setRestTime: (restTime: number) => void;
     setGripPosition: (gripPosition: GripPosition) => void;
@@ -40,6 +48,22 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     repDuration: 0,
     amountOfSets: 2,
     countdownTime: 3,
+
+    singleSetData: [],
+    addRepToCurrentSet: (rep: ForceDataPoint[]) =>
+        set(state => ({
+            singleSetData: [...state.singleSetData, rep],
+        })),
+
+    allSetsData: [],
+    addSetToAllSets: () =>
+        set(state => {
+            const newSet = [...state.singleSetData];
+            return {
+                allSetsData: [...state.allSetsData, newSet],
+                singleSetData: [],
+            };
+        }),
 
     setRestTime: (restTime: number) => set({restTime}),
     setGripPosition: (gripPosition: GripPosition) => set({gripPosition}),

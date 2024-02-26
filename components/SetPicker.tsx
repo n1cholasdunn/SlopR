@@ -36,7 +36,8 @@ const SetPicker = () => {
             const offset =
                 index * ITEM_HEIGHT -
                 (VISIBLE_ITEMS / 2) * ITEM_HEIGHT +
-                ITEM_HEIGHT / 2;
+                ITEM_HEIGHT / 2 +
+                ITEM_HEIGHT * 2;
             setIsProgrammaticScroll(true);
             flatListRef.current.scrollToOffset({animated: true, offset});
             setTimeout(() => setIsProgrammaticScroll(false), 500);
@@ -45,7 +46,9 @@ const SetPicker = () => {
 
     const renderItem = ({item, index}: {item: string; index: number}) => {
         const centerOffset =
-            (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 - ITEM_HEIGHT / 2;
+            (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
+            ITEM_HEIGHT / 2 -
+            ITEM_HEIGHT * 2;
 
         const itemPositionY = Animated.add(scrollY, centerOffset).interpolate({
             inputRange: [
@@ -74,24 +77,16 @@ const SetPicker = () => {
     const handleViewableItemsChanged = useCallback(
         (info: {viewableItems: ViewToken[]}) => {
             const {viewableItems} = info;
-            if (viewableItems.length > 0 && isProgrammaticScroll) {
-                const visibleCenter = (ITEM_HEIGHT * VISIBLE_ITEMS) / 2;
-                const closestItem = viewableItems.reduce((prev, curr) => {
-                    const prevCenter =
-                        (prev.index ?? 0) * ITEM_HEIGHT + ITEM_HEIGHT / 2;
-                    const currCenter =
-                        (curr.index ?? 0) * ITEM_HEIGHT + ITEM_HEIGHT / 2;
-                    const prevDistance = Math.abs(prevCenter - visibleCenter);
-                    const currDistance = Math.abs(currCenter - visibleCenter);
-                    return currDistance < prevDistance ? curr : prev;
-                });
+            if (viewableItems.length > 0) {
+                const centerIndex = Math.floor(viewableItems.length / 2 - 2);
+                const centralItem = viewableItems[centerIndex]?.item;
 
-                const centralItem = closestItem.item;
                 if (centralItem && centralItem !== lastHapticIndex.current) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     lastHapticIndex.current = centralItem;
-                    setCenterItemIndex(parseInt(centralItem, 10));
-                    setAmountOfSets(parseInt(centralItem, 10));
+                    if (!isProgrammaticScroll) {
+                        setAmountOfSets(parseInt(centralItem, 10));
+                    }
                 }
             }
         },
@@ -106,7 +101,9 @@ const SetPicker = () => {
 
     useEffect(() => {
         const centerPosition =
-            currentScrollPosition + (ITEM_HEIGHT * VISIBLE_ITEMS) / 2;
+            currentScrollPosition +
+            (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
+            ITEM_HEIGHT * 2;
         const centralIndex = Math.floor(centerPosition / ITEM_HEIGHT);
         const centralItem = options[centralIndex];
 
@@ -168,6 +165,7 @@ const SetPicker = () => {
                             contentContainerStyle={{
                                 paddingBottom:
                                     (ITEM_HEIGHT * VISIBLE_ITEMS) / 2,
+                                paddingTop: ITEM_HEIGHT * 2,
                             }}
                         />
                     </View>

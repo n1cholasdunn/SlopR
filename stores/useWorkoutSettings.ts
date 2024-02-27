@@ -8,8 +8,10 @@ type WorkoutSettingsState = {
     gripPosition: GripPosition;
     repType: RepType;
     repDuration: number;
-    pauseBetweenSets: number;
-    pauseBetweenHands?: number;
+    secondsBetweenSets: number;
+    minutesBetweenSets: number;
+    secondsBetweenHands?: number;
+    minutesBetweenHands?: number;
     amountOfReps: number;
     startingHand?: 'L' | 'R';
     singleHand?: boolean;
@@ -28,7 +30,10 @@ type WorkoutSettingsState = {
     setGripPosition: (gripPosition: GripPosition) => void;
     setRepType: (repType: RepType) => void;
     setRepDuration: (repDuration: number) => void;
-    setPauseBetweenSets: (pauseBetweenSets: number) => void;
+    setSecondsBetweenSets: (secondsBetweenSets: number) => void;
+    setMinutesBetweenSets: (minutesBetweenSets: number) => void;
+    setSecondsBetweenHands: (secondsBetweenSets: number) => void;
+    setMinutesBetweenHands: (minutesBetweenSets: number) => void;
     setAmountOfReps: (amountOfReps: number) => void;
     setSingleHand: (singleHand: boolean) => void;
     setStartingHand: (startingHand: 'L' | 'R') => void;
@@ -41,7 +46,10 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     restTime: 0,
     gripPosition: 'HC',
     repType: 'peakForce',
-    pauseBetweenSets: 0,
+    secondsBetweenSets: 1,
+    minutesBetweenSets: 1,
+    secondsBetweenHands: 1,
+    minutesBetweenHands: 1,
     amountOfReps: 0,
     singleHand: false,
     startingHand: undefined,
@@ -69,7 +77,14 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     setGripPosition: (gripPosition: GripPosition) => set({gripPosition}),
     setRepType: (repType: RepType) => set({repType}),
     setRepDuration: (repDuration: number) => set({repDuration}),
-    setPauseBetweenSets: (pauseBetweenSets: number) => set({pauseBetweenSets}),
+    setSecondsBetweenSets: (secondsBetweenSets: number) =>
+        set({secondsBetweenSets}),
+    setMinutesBetweenSets: (minutesBetweenSets: number) =>
+        set({minutesBetweenSets}),
+    setSecondsBetweenHands: (secondsBetweenHands: number) =>
+        set({secondsBetweenHands}),
+    setMinutesBetweenHands: (minutesBetweenHands: number) =>
+        set({minutesBetweenHands}),
     setAmountOfReps: (amountOfReps: number) => set({amountOfReps}),
     setSingleHand: (singleHand: boolean) => set({singleHand}),
     setStartingHand: (startingHand: 'L' | 'R') => set({startingHand}),

@@ -1,93 +1,92 @@
-import {Picker} from '@react-native-picker/picker';
-import React, {useState} from 'react';
-import {
-    Modal,
-    TouchableOpacity,
-    Button,
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Button, View, Text, StyleSheet, Animated} from 'react-native';
+
+import CustomPicker from './CustomPicker';
+import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 const PausePicker = () => {
-    const [minutes, setMinutes] = useState('0');
-    const [seconds, setSeconds] = useState('0');
     const [modalVisible, setModalVisible] = useState(false);
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
-    const minuteItems = Array.from({length: 60}, (_, i) => `${i + 1}`); // Start from 1
-    const secondItems = Array.from({length: 60}, (_, i) => `${i + 1}`); // Start from 1
+    const {
+        secondsBetweenSets,
+        setSecondsBetweenSets,
+        minutesBetweenSets,
+        setMinutesBetweenSets,
+    } = useWorkoutSettingsStore();
 
-    const handleSelectMinute = minute => {
-        setMinutes(minute);
+    const minuteItems = Array.from({length: 60}, (_, i) => `${i + 1}`);
+    const secondItems = Array.from({length: 60}, (_, i) => `${i + 1}`);
+    const ITEM_HEIGHT = 40;
+    const VISIBLE_ITEMS = 5;
+    useEffect(() => {
+        console.log('minrtes', minutesBetweenSets);
+        console.log('seconds', secondsBetweenSets);
+        console.log('modalVisible', modalVisible);
+    }, [minutesBetweenSets, secondsBetweenSets, modalVisible]);
+
+    const fadeIn = () => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
+        setModalVisible(true);
     };
 
-    const handleSelectSecond = second => {
-        setSeconds(second);
+    const fadeOut = () => {
+        Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true,
+        }).start();
     };
 
-    const renderItem = (item, onSelectItem) => (
-        <TouchableOpacity
-            onPress={() => onSelectItem(item)}
-            style={styles.item}>
-            <Text style={styles.itemText}>{item}</Text>
-        </TouchableOpacity>
-    );
-
-    const renderPicker = (type, selectedValue, onValueChange) => (
-        <ScrollView>
-            <Picker
-                selectedValue={selectedValue}
-                onValueChange={(itemValue, itemIndex) =>
-                    onValueChange(itemValue)
-                }
-                style={{width: 100, height: 180}}
-                itemStyle={{height: 180}}>
-                {Array.from({length: 59}, (_, i) => i + 1).map(value => (
-                    <Picker.Item key={value} label={value} value={value} />
-                ))}
-            </Picker>
-        </ScrollView>
-    );
-
-    const showModal = () => (
-        <Modal
-            animationType="slide"
-            transparent
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-    );
+    useEffect(() => {
+        if (modalVisible) {
+            fadeIn();
+        } else {
+            fadeOut();
+        }
+    }, [modalVisible]);
 
     return (
         <View style={styles.container}>
             <Text onPress={() => setModalVisible(true)} style={styles.timeText}>
-                {minutes}:{seconds} Pause
+                {minutesBetweenSets}:{secondsBetweenSets} Pause
             </Text>
-            <Modal
-                animationType="slide"
-                transparent
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(!modalVisible)}>
+            <Animated.View
+                style={[
+                    {
+                        opacity: fadeAnim,
+                        display: modalVisible ? 'flex' : 'none',
+                    },
+                ]}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <ScrollView style={styles.scrollView}>
-                            {minuteItems.map(minute =>
-                                renderItem(minute, handleSelectMinute),
-                            )}
-                        </ScrollView>
-                        <ScrollView style={styles.scrollView}>
-                            {secondItems.map(second =>
-                                renderItem(second, handleSelectSecond),
-                            )}
-                        </ScrollView>
+                        <CustomPicker
+                            state={minutesBetweenSets}
+                            setState={setMinutesBetweenSets}
+                            options={minuteItems}
+                            ITEM_HEIGHT={ITEM_HEIGHT}
+                            VISIBLE_ITEMS={VISIBLE_ITEMS}
+                            label="Min"
+                        />
+                        <CustomPicker
+                            state={secondsBetweenSets}
+                            setState={setSecondsBetweenSets}
+                            options={secondItems}
+                            ITEM_HEIGHT={ITEM_HEIGHT}
+                            VISIBLE_ITEMS={VISIBLE_ITEMS}
+                            label="Sec"
+                        />
                         <Button
-                            onPress={() => setModalVisible(!modalVisible)}
+                            onPress={() => setModalVisible(false)}
                             title="Hide modal"
                         />
                     </View>
                 </View>
-            </Modal>
+            </Animated.View>
         </View>
     );
 };
@@ -136,20 +135,3 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
 });
-/*
- *  <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    {renderPicker('minutes', minutes, itemValue =>
-                        setMinutes(itemValue),
-                    )}
-                    {renderPicker('seconds', seconds, itemValue =>
-                        setSeconds(itemValue),
-                    )}
-                    <Button
-                        onPress={() => setModalVisible(!modalVisible)}
-                        title="Hide modal"
-                    />
-                </View>
-            </View>
-
-*/

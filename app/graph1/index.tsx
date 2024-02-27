@@ -1,5 +1,13 @@
-import {Path, Canvas} from '@shopify/react-native-skia';
-import {View} from 'react-native';
+import {Path, Canvas, center} from '@shopify/react-native-skia';
+import {useEffect, useState} from 'react';
+import {
+    Modal,
+    View,
+    Text,
+    StyleSheet,
+    Button,
+    TouchableOpacity,
+} from 'react-native';
 
 import CustomPicker from '../../components/CustomPicker';
 import PausePicker from '../../components/PausePicker';
@@ -11,33 +19,14 @@ import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
 export default function Page() {
     const options = Array.from({length: 30}, (_, i) => `${i + 1}`);
-    const {amountOfSets, setAmountOfSets} = useWorkoutSettingsStore();
-    //    return <PausePicker />;
-    return (
-        <CustomPicker
-            ITEM_HEIGHT={50}
-            VISIBLE_ITEMS={5}
-            options={options}
-            state={amountOfSets}
-            setState={setAmountOfSets}
-            label="Sets"
-        />
-    );
+    const secondItems = Array.from({length: 60}, (_, i) => `${i + 1}`); // Start from 1
+    const [visible, setVisible] = useState(false);
+
+    const {
+        amountOfSets,
+        setAmountOfSets,
+        setSecondsBetweenSets,
+        secondsBetweenSets,
+    } = useWorkoutSettingsStore();
+    return <PausePicker />;
 }
-/*
-            <Canvas
-                style={{
-                    width: GRAPH_WIDTH,
-                    height: GRAPH_HEIGHT,
-                }}>
-                <Path
-                    style="stroke"
-                    path={graphData.curve}
-                    strokeWidth={4}
-                    color="#6B4E71"
-                />
-            </Canvas>
-            <SetInstructions />
-            <WorkoutLog />
-            <SetPicker />
-            */

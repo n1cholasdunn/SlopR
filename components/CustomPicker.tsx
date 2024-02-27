@@ -19,6 +19,10 @@ type CustomPickerProps = {
     state: number;
     setState: (newState: number) => void;
     label: string;
+    //pickerIsVisible: boolean;
+    //setPickerIsVisible: (newState: boolean) => void;
+
+    //fieldType: 'number' |'string'
 };
 const CustomPicker = ({
     ITEM_HEIGHT,
@@ -27,6 +31,10 @@ const CustomPicker = ({
     state,
     setState,
     label,
+    //pickerIsVisible,
+    //setPickerIsVisible,
+
+    //fieldType
 }: CustomPickerProps) => {
     const [showPicker, setShowPicker] = useState(false);
     const lastHapticIndex = useRef<null | string>(null);
@@ -96,26 +104,31 @@ const CustomPicker = ({
 
         return (
             <Animated.View style={[dynamicStyles.item, animatedStyle]}>
-                <Text style={styles.itemText}>{item} sets</Text>
+                <Text style={styles.itemText}>
+                    {item} {label.toLowerCase()}
+                </Text>
             </Animated.View>
         );
     };
 
-    const handleViewableItemsChanged = (info: {viewableItems: ViewToken[]}) => {
-        const {viewableItems} = info;
-        if (viewableItems.length > 0) {
-            const centerIndex = Math.floor(viewableItems.length / 2 - 2);
-            const centralItem = viewableItems[centerIndex]?.item;
+    const handleViewableItemsChanged = useCallback(
+        (info: {viewableItems: ViewToken[]}) => {
+            const {viewableItems} = info;
+            if (viewableItems.length > 0) {
+                const centerIndex = Math.floor(viewableItems.length / 2 - 2);
+                const centralItem = viewableItems[centerIndex]?.item;
 
-            if (centralItem && centralItem !== lastHapticIndex.current) {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                lastHapticIndex.current = centralItem;
-                if (!isProgrammaticScroll) {
-                    setState(parseInt(centralItem, 10));
+                if (centralItem && centralItem !== lastHapticIndex.current) {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    lastHapticIndex.current = centralItem;
+                    if (!isProgrammaticScroll) {
+                        setState(parseInt(centralItem, 10));
+                    }
                 }
             }
-        }
-    };
+        },
+        [setState],
+    );
 
     const getItemLayout = (_: any, index: number) => ({
         length: ITEM_HEIGHT,

@@ -4,19 +4,19 @@ import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 const ITEM_HEIGHT = 50;
 const VISIBLE_ITEMS = 5;
 
-const SetPicker = () => {
-    const {amountOfSets, setAmountOfSets} = useWorkoutSettingsStore();
-    const options = Array.from({length: 30}, (_, i) => `${i + 1}`);
+const CountdownPicker = () => {
+    const {countdownTime, setCountdownTime} = useWorkoutSettingsStore();
+    const options = Array.from({length: 45}, (_, i) => `${i + 1}`);
 
     return (
         <CustomPicker
             ITEM_HEIGHT={ITEM_HEIGHT}
             VISIBLE_ITEMS={VISIBLE_ITEMS}
             options={options}
-            state={amountOfSets}
-            setState={setAmountOfSets}
-            label="Sets"
+            state={countdownTime}
+            setState={setCountdownTime}
+            label="Secs"
         />
     );
 };
-export default SetPicker;
+export default CountdownPicker;

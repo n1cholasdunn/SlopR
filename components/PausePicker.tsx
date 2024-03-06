@@ -64,22 +64,24 @@ const PausePicker = () => {
                 ]}>
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        <CustomPicker
-                            state={minutesBetweenSets}
-                            setState={setMinutesBetweenSets}
-                            options={minuteItems}
-                            ITEM_HEIGHT={ITEM_HEIGHT}
-                            VISIBLE_ITEMS={VISIBLE_ITEMS}
-                            label="Min"
-                        />
-                        <CustomPicker
-                            state={secondsBetweenSets}
-                            setState={setSecondsBetweenSets}
-                            options={secondItems}
-                            ITEM_HEIGHT={ITEM_HEIGHT}
-                            VISIBLE_ITEMS={VISIBLE_ITEMS}
-                            label="Sec"
-                        />
+                        <View style={styles.pickerView}>
+                            <CustomPicker
+                                state={minutesBetweenSets}
+                                setState={setMinutesBetweenSets}
+                                options={minuteItems}
+                                ITEM_HEIGHT={ITEM_HEIGHT}
+                                VISIBLE_ITEMS={VISIBLE_ITEMS}
+                                label="Min"
+                            />
+                            <CustomPicker
+                                state={secondsBetweenSets}
+                                setState={setSecondsBetweenSets}
+                                options={secondItems}
+                                ITEM_HEIGHT={ITEM_HEIGHT}
+                                VISIBLE_ITEMS={VISIBLE_ITEMS}
+                                label="Sec"
+                            />
+                        </View>
                         <Button
                             onPress={() => setModalVisible(false)}
                             title="Hide modal"
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
+        justifyContent: 'space-between',
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -120,8 +123,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        height: 600,
-        width: 200,
+        height: 500,
+        width: 275,
+    },
+    pickerView: {
+        flex: 1,
+        width: 275,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
     },
     scrollView: {
         maxHeight: 180,

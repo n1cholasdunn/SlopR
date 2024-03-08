@@ -2,10 +2,11 @@ import {Picker} from '@react-native-picker/picker';
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 
+import CustomPicker from './CustomPicker';
 import usePickerGenerator from '../hooks/usePickerGenerator';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-const WorkoutPicker = () => {
+const RepPicker = () => {
     const {generateXItems} = usePickerGenerator();
     const {
         repDuration,
@@ -22,30 +23,45 @@ const WorkoutPicker = () => {
             <View style={styles.pickerContainer}>
                 <View style={styles.pickerStyle}>
                     <Text>Duration</Text>
-                    <Picker
-                        style={styles.picker}
-                        selectedValue={repDuration}
-                        onValueChange={input => setRepDuration(input)}>
-                        {generateXItems(100, 's')}
-                    </Picker>
+                    <CustomPicker
+                        ITEM_HEIGHT={50}
+                        VISIBLE_ITEMS={5}
+                        options={Array.from(
+                            {length: 100},
+                            (_, i) => `${i + 1}s`,
+                        )}
+                        state={repDuration}
+                        setState={setRepDuration}
+                        label="Duration"
+                    />
                 </View>
                 <View style={styles.pickerStyle}>
                     <Text>Reps</Text>
-                    <Picker
-                        style={styles.picker}
-                        selectedValue={amountOfReps}
-                        onValueChange={input => setAmountOfReps(input)}>
-                        {generateXItems(50)}
-                    </Picker>
+                    <CustomPicker
+                        ITEM_HEIGHT={50}
+                        VISIBLE_ITEMS={5}
+                        options={Array.from(
+                            {length: 50},
+                            (_, i) => `${i + 1}s`,
+                        )}
+                        state={amountOfReps}
+                        setState={setAmountOfReps}
+                        label="Reps"
+                    />
                 </View>
                 <View style={styles.pickerStyle}>
                     <Text>Rest</Text>
-                    <Picker
-                        style={styles.picker}
-                        selectedValue={restTime}
-                        onValueChange={input => setRestTime(input)}>
-                        {generateXItems(120, 's')}
-                    </Picker>
+                    <CustomPicker
+                        ITEM_HEIGHT={50}
+                        VISIBLE_ITEMS={5}
+                        options={Array.from(
+                            {length: 120},
+                            (_, i) => `${i + 1}s`,
+                        )}
+                        state={restTime}
+                        setState={setRestTime}
+                        label="Rest"
+                    />
                 </View>
             </View>
         </View>
@@ -74,4 +90,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default WorkoutPicker;
+export default RepPicker;

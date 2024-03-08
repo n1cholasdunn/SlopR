@@ -15,6 +15,7 @@ import SetInstructions from '../../components/SetInstructions';
 import SetPicker from '../../components/SetPicker';
 import WorkoutLog from '../../components/WorkoutLog';
 import TestPicker from '../../components/testcomponent';
+import RepeatersSetup from '../../screens/RepeaterSetup';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
@@ -29,6 +30,6 @@ export default function Page() {
         setSecondsBetweenSets,
         secondsBetweenSets,
     } = useWorkoutSettingsStore();
-    return <PausePicker />;
+    return <RepeatersSetup />;
     //   return <SetPicker />;
 }

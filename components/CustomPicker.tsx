@@ -22,6 +22,8 @@ type CustomPickerProps = {
     state: number;
     setState: (newState: number) => void;
     label: string;
+    showPicker: boolean;
+    setShowPicker: (newState: boolean) => void;
     //pickerIsVisible: boolean;
     //setPickerIsVisible: (newState: boolean) => void;
 
@@ -37,12 +39,12 @@ const CustomPicker = ({
     state,
     setState,
     label,
+    showPicker,
     //pickerIsVisible,
     //setPickerIsVisible,
 
     //fieldType
 }: CustomPickerProps) => {
-    const [showPicker, setShowPicker] = useState(false);
     const lastHapticIndex = useRef<null | string>(null);
     const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
 
@@ -168,77 +170,48 @@ const CustomPicker = ({
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={() => setShowPicker(prev => !prev)}
-                style={styles.toggleButton}>
-                <Text style={styles.toggleButtonText}>{state}</Text>
-            </TouchableOpacity>
-
-            <Modal
-                visible={showPicker}
-                animationType="slide"
-                transparent
-                onRequestClose={() => setShowPicker(false)}>
-                <TouchableWithoutFeedback onPress={() => setShowPicker(false)}>
-                    <View style={styles.modalOverlay} />
-                </TouchableWithoutFeedback>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <View style={dynamicStyles.pickerContainer}>
-                            <FlatList
-                                ref={flatListRef}
-                                data={options}
-                                renderItem={renderItem}
-                                keyExtractor={item => item ?? 'default'}
-                                snapToAlignment="center"
-                                snapToInterval={ITEM_HEIGHT}
-                                decelerationRate="fast"
-                                showsVerticalScrollIndicator={false}
-                                getItemLayout={getItemLayout}
-                                onViewableItemsChanged={
-                                    handleViewableItemsChanged
-                                }
-                                viewabilityConfig={{
-                                    itemVisiblePercentThreshold: 50,
-                                    minimumViewTime: 100,
-                                }}
-                                onScroll={Animated.event(
-                                    [
-                                        {
-                                            nativeEvent: {
-                                                contentOffset: {y: scrollY},
-                                            },
-                                        },
-                                    ],
-                                    {
-                                        listener: (
-                                            event: NativeSyntheticEvent<NativeScrollEvent>,
-                                        ) => {
-                                            setCurrentScrollPosition(
-                                                event.nativeEvent.contentOffset
-                                                    .y,
-                                            );
-                                        },
-                                        useNativeDriver: false,
-                                    },
-                                )}
-                                scrollEventThrottle={16}
-                                contentContainerStyle={{
-                                    paddingBottom:
-                                        (ITEM_HEIGHT * VISIBLE_ITEMS) / 2,
-                                    paddingTop: ITEM_HEIGHT * 2,
-                                }}
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            style={styles.doneButton}
-                            onPress={() => setShowPicker(false)}>
-                            <Text style={styles.doneButtonText}>Done</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
+            <View style={dynamicStyles.pickerContainer}>
+                <FlatList
+                    ref={flatListRef}
+                    data={options}
+                    renderItem={renderItem}
+                    keyExtractor={item => item ?? 'default'}
+                    snapToAlignment="center"
+                    snapToInterval={ITEM_HEIGHT}
+                    decelerationRate="fast"
+                    showsVerticalScrollIndicator={false}
+                    getItemLayout={getItemLayout}
+                    onViewableItemsChanged={handleViewableItemsChanged}
+                    viewabilityConfig={{
+                        itemVisiblePercentThreshold: 50,
+                        minimumViewTime: 100,
+                    }}
+                    onScroll={Animated.event(
+                        [
+                            {
+                                nativeEvent: {
+                                    contentOffset: {y: scrollY},
+                                },
+                            },
+                        ],
+                        {
+                            listener: (
+                                event: NativeSyntheticEvent<NativeScrollEvent>,
+                            ) => {
+                                setCurrentScrollPosition(
+                                    event.nativeEvent.contentOffset.y,
+                                );
+                            },
+                            useNativeDriver: false,
+                        },
+                    )}
+                    scrollEventThrottle={16}
+                    contentContainerStyle={{
+                        paddingBottom: (ITEM_HEIGHT * VISIBLE_ITEMS) / 2,
+                        paddingTop: ITEM_HEIGHT * 2,
+                    }}
+                />
+            </View>
         </View>
     );
 };
@@ -272,28 +245,6 @@ const styles = StyleSheet.create({
     },
     doneButtonText: {
         fontSize: 16,
-    },
-
-    modalOverlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        paddingHorizontal: 20,
-        paddingTop: 20,
-        width: width - 40,
-        maxHeight: height - 40,
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });
 

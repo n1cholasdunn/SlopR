@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -11,7 +11,6 @@ import CountdownPicker from '../../components/Countdown';
 import DurationPicker from '../../components/DurationPicker';
 import PausePicker from '../../components/PausePicker';
 import PickerModal from '../../components/PickerModal';
-import RepPicker from '../../components/RepPicker';
 import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
 import SetPicker from '../../components/SetPicker';
@@ -19,9 +18,10 @@ import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 
 const {width, height} = Dimensions.get('window');
 
-export default function Page() {
+const Page = () => {
     //TODO: Start session button
-    const {amountOfSets, amountOfReps} = useWorkoutSettingsStore();
+    const {amountOfSets, amountOfReps, repDuration, restTime} =
+        useWorkoutSettingsStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
 
     const openRepModal = () => {
@@ -30,12 +30,30 @@ export default function Page() {
     const closeRepModal = () => {
         setRepModalOpen(false);
     };
+    /*
+    useEffect(() => {
+        console.log('reps', amountOfReps);
+    }, [amountOfReps]);
+    useEffect(() => {
+        console.log('duration', repDuration);
+    }, [repDuration]);
+    useEffect(() => {
+        console.log('rest', restTime);
+    }, [restTime]);
+    */
+    useEffect(() => {
+        console.log('modal status', repModalOpen);
+        console.log('rest', restTime);
+    }, [repModalOpen]);
+    //  console.log('page rendered');
 
     return (
         <View style={styles.container}>
             <Text>SETS STATE:{amountOfSets}</Text>
             <TouchableOpacity onPress={openRepModal}>
-                <Text>Open Rep Modal: {amountOfReps}</Text>
+                <Text>Reps: {amountOfReps}</Text>
+                <Text>Rest: {restTime}</Text>
+                <Text>Duration: {repDuration}</Text>
             </TouchableOpacity>
             <PickerModal
                 visible={repModalOpen}
@@ -47,6 +65,32 @@ export default function Page() {
                     />
                 }
                 picker2={
+                    <DurationPicker
+                        setShowPicker={setRepModalOpen}
+                        showPicker={repModalOpen}
+                    />
+                }
+                picker3={
+                    <RepsPicker
+                        setShowPicker={setRepModalOpen}
+                        showPicker={repModalOpen}
+                    />
+                }
+            />
+        </View>
+    );
+};
+export default Page;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width,
+        height,
+    },
+});
+
+/*   picker2={
                     <RepsPicker
                         setShowPicker={setRepModalOpen}
                         showPicker={repModalOpen}
@@ -58,18 +102,4 @@ export default function Page() {
                         showPicker={repModalOpen}
                     />
                 }
-            />
-            <SetPicker />
-            <PausePicker />
-            <CountdownPicker />
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width,
-        height,
-    },
-});
+        */

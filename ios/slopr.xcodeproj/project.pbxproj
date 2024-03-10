@@ -42,11 +42,12 @@
 		D232F89E2B74516D00200E7D /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D232F89D2B74516D00200E7D /* FirebaseRemoteConfigSwift */; };
 		D232F8A02B74516D00200E7D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = D232F89F2B74516D00200E7D /* FirebaseStorage */; };
 		D232F8A22B74516D00200E7D /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = D232F8A12B74516D00200E7D /* FirebaseStorageCombine-Community */; };
-		F810A336AABBB3750E5E0CBC /* Pods_slopr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F92DC93870EBA944F154249 /* Pods_slopr.framework */; };
 		E3F1AC64F12F4F92B41D882B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */; };
+		F810A336AABBB3750E5E0CBC /* Pods_slopr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F92DC93870EBA944F154249 /* Pods_slopr.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "slopr/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		12E0B13FC4CB25FFA3A7ACCC /* Pods-slopr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-slopr.debug.xcconfig"; path = "Target Support Files/Pods-slopr/Pods-slopr.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* slopr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = slopr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = slopr/AppDelegate.h; sourceTree = "<group>"; };
@@ -63,7 +64,6 @@
 		E428AA557F674598AC899AFF /* slopr-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "slopr-Bridging-Header.h"; path = "slopr/slopr-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-slopr/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		022291AA9D314CE1AB8962AA /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "slopr/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -319,7 +319,6 @@
 		};
 		28B6FA38E2DCD290DEAED7E7 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -341,18 +340,22 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXUpdates/EXUpdates.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/GTMSessionFetcher/GTMSessionFetcher_Core_Privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/GoogleSignIn/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/RCTI18nStrings.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/expo-dev-launcher/EXDevLauncher.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/expo-dev-menu/EXDevMenu.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXUpdates.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GTMSessionFetcher_Core_Privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCTI18nStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXDevLauncher.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXDevMenu.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -398,7 +401,6 @@
 		};
 		87CF490E13CA0F3B11EEBEDD /* [CP-User] [RNFB] Crashlytics Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -480,7 +482,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ndunn.slopr;
-				PRODUCT_NAME = "slopr";
+				PRODUCT_NAME = slopr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "slopr/slopr-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -515,7 +517,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ndunn.slopr;
-				PRODUCT_NAME = "slopr";
+				PRODUCT_NAME = slopr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "slopr/slopr-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

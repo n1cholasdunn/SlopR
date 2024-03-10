@@ -11,7 +11,7 @@ const RepsPicker = ({showPicker, setShowPicker}: RepsPickerProps) => {
         <CustomPicker
             ITEM_HEIGHT={50}
             VISIBLE_ITEMS={5}
-            options={Array.from({length: 120}, (_, i) => `${i + 1}s`)}
+            options={Array.from({length: 40}, (_, i) => `${i + 1}`)}
             state={amountOfReps}
             setState={setAmountOfReps}
             label="Reps"

@@ -1,18 +1,22 @@
+import {FlashList} from '@shopify/flash-list';
 import * as Haptics from 'expo-haptics';
-import React, {useState, useRef, useEffect, useCallback, useMemo} from 'react';
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+    useMemo,
+    memo,
+} from 'react';
 import {
-    TouchableOpacity,
     View,
     Text,
-    FlatList,
     StyleSheet,
     Animated,
     ViewToken,
     NativeSyntheticEvent,
     NativeScrollEvent,
-    Dimensions,
-    Modal,
-    TouchableWithoutFeedback,
+    ViewStyle,
 } from 'react-native';
 
 type CustomPickerProps = {
@@ -24,13 +28,7 @@ type CustomPickerProps = {
     label: string;
     showPicker: boolean;
     setShowPicker: (newState: boolean) => void;
-    //pickerIsVisible: boolean;
-    //setPickerIsVisible: (newState: boolean) => void;
-
-    //fieldType: 'number' |'string'
 };
-
-const {width, height} = Dimensions.get('window');
 
 const CustomPicker = ({
     ITEM_HEIGHT,
@@ -40,15 +38,10 @@ const CustomPicker = ({
     setState,
     label,
     showPicker,
-    //pickerIsVisible,
-    //setPickerIsVisible,
-
-    //fieldType
 }: CustomPickerProps) => {
     const lastHapticIndex = useRef<null | string>(null);
-    const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
 
-    const flatListRef = useRef<FlatList<string>>(null);
+    const flatListRef = useRef<FlashList<string>>(null);
 
     const dynamicStyles = useMemo(
         () =>
@@ -56,6 +49,7 @@ const CustomPicker = ({
                 pickerContainer: {
                     marginTop: 10,
                     height: ITEM_HEIGHT * 5,
+                    width: 50,
                     borderRadius: 10,
                     borderWidth: 1,
                     borderColor: '#ccc',
@@ -73,149 +67,136 @@ const CustomPicker = ({
     const [currentScrollPosition, setCurrentScrollPosition] = useState(0);
     const scrollY = useRef(new Animated.Value(0)).current;
 
-    const scrollToSelectedAmount = useCallback(() => {
-        const index = state - 1;
-        if (index >= 0 && flatListRef.current) {
-            const offset =
-                index * ITEM_HEIGHT -
-                (VISIBLE_ITEMS / 2) * ITEM_HEIGHT +
-                ITEM_HEIGHT / 2 +
-                ITEM_HEIGHT * 2;
-            setIsProgrammaticScroll(true);
-            flatListRef.current.scrollToOffset({animated: true, offset});
-            setTimeout(() => setIsProgrammaticScroll(false), 500);
-        }
-    }, [state]);
+    type ItemComponentProps = {
+        item: string;
+        itemPositionY: Animated.AnimatedInterpolation<number>;
+    };
 
-    const renderItem = ({item, index}: {item: string; index: number}) => {
-        const centerOffset =
-            (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
-            ITEM_HEIGHT / 2 -
-            ITEM_HEIGHT * 2;
-
-        const itemPositionY = Animated.add(scrollY, centerOffset).interpolate({
-            inputRange: [
-                ITEM_HEIGHT * (index - 1),
-                ITEM_HEIGHT * index,
-                ITEM_HEIGHT * (index + 1),
-            ],
-            outputRange: [0, 1, 0],
-            extrapolate: 'clamp',
-        });
-
-        const animatedStyle = {
+    const ItemComponent = memo(({item, itemPositionY}: ItemComponentProps) => {
+        const animatedStyle: Animated.AnimatedProps<ViewStyle> = {
             backgroundColor: itemPositionY.interpolate({
                 inputRange: [0, 1],
                 outputRange: ['rgba(255,255,255,1)', 'rgba(211,211,211,1)'],
             }),
         };
-
         return (
             <Animated.View style={[dynamicStyles.item, animatedStyle]}>
-                <Text style={styles.itemText}>
-                    {item} {label.toLowerCase()}
-                </Text>
+                <Text style={styles.itemText}>{item}</Text>
             </Animated.View>
         );
-    };
+    });
 
+    const renderItem = useCallback(
+        ({item, index}: {item: string; index: number}) => {
+            const centerOffset =
+                (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
+                ITEM_HEIGHT / 2 -
+                ITEM_HEIGHT * 2;
+
+            const itemPositionY = Animated.add(
+                scrollY,
+                centerOffset,
+            ).interpolate({
+                inputRange: [
+                    ITEM_HEIGHT * (index - 1),
+                    ITEM_HEIGHT * index,
+                    ITEM_HEIGHT * (index + 1),
+                ],
+                outputRange: [0, 1, 0],
+                extrapolate: 'clamp',
+            });
+
+            return <ItemComponent item={item} itemPositionY={itemPositionY} />;
+        },
+        [],
+    );
+    const handleScroll = Animated.event(
+        [
+            {
+                nativeEvent: {
+                    contentOffset: {y: scrollY},
+                },
+            },
+        ],
+        {
+            listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+                setCurrentScrollPosition(event.nativeEvent.contentOffset.y);
+            },
+            useNativeDriver: false,
+        },
+    );
     const handleViewableItemsChanged = useCallback(
         (info: {viewableItems: ViewToken[]}) => {
             const {viewableItems} = info;
-            if (viewableItems.length > 0) {
+            if (viewableItems.length > 0 && currentScrollPosition > 0) {
                 const centerIndex = Math.floor(viewableItems.length / 2 - 2);
                 const centralItem = viewableItems[centerIndex]?.item;
 
                 if (centralItem && centralItem !== lastHapticIndex.current) {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     lastHapticIndex.current = centralItem;
-                    if (!isProgrammaticScroll) {
-                        setState(parseInt(centralItem, 10));
-                    }
+                    setState(parseInt(centralItem, 10));
                 }
             }
         },
-        [setState],
+        [setState, currentScrollPosition],
     );
 
-    const getItemLayout = (_: any, index: number) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index,
-    });
-
     useEffect(() => {
-        const centerPosition =
-            currentScrollPosition +
-            (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
-            ITEM_HEIGHT * 2;
-        const centralIndex = Math.floor(centerPosition / ITEM_HEIGHT);
-        const centralItem = options[centralIndex];
+        if (currentScrollPosition > 0) {
+            const centerPosition =
+                currentScrollPosition +
+                (ITEM_HEIGHT * VISIBLE_ITEMS) / 2 -
+                ITEM_HEIGHT * 2;
+            const centralIndex = Math.floor(centerPosition / ITEM_HEIGHT);
+            const centralItem = options[centralIndex];
 
-        if (centralItem && centralItem !== lastHapticIndex.current) {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            lastHapticIndex.current = centralItem;
-            setState(parseInt(centralItem, 10));
+            if (centralItem && centralItem !== lastHapticIndex.current) {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                lastHapticIndex.current = centralItem;
+                setState(parseInt(centralItem, 10));
+            }
         }
-    }, [currentScrollPosition]);
+    }, [currentScrollPosition, state]);
 
-    useEffect(() => {
-        if (showPicker) {
-            setTimeout(() => {
-                scrollToSelectedAmount();
-            }, 0);
-            //    scrollToSelectedAmount();
-        }
-    }, [showPicker]);
+    const keyExtractor = useCallback((_: string, index: number) => {
+        return `${label}-${index}`;
+    }, []);
+    const initialScrollIndex = useCallback(() => {
+        return state - 1;
+    }, [state]);
 
     return (
         <View style={styles.container}>
             <View style={dynamicStyles.pickerContainer}>
-                <FlatList
+                <FlashList
                     ref={flatListRef}
                     data={options}
                     renderItem={renderItem}
-                    keyExtractor={item => item ?? 'default'}
+                    keyExtractor={keyExtractor}
                     snapToAlignment="center"
                     snapToInterval={ITEM_HEIGHT}
                     decelerationRate="fast"
+                    estimatedItemSize={ITEM_HEIGHT}
                     showsVerticalScrollIndicator={false}
-                    getItemLayout={getItemLayout}
                     onViewableItemsChanged={handleViewableItemsChanged}
                     viewabilityConfig={{
                         itemVisiblePercentThreshold: 50,
                         minimumViewTime: 100,
                     }}
-                    onScroll={Animated.event(
-                        [
-                            {
-                                nativeEvent: {
-                                    contentOffset: {y: scrollY},
-                                },
-                            },
-                        ],
-                        {
-                            listener: (
-                                event: NativeSyntheticEvent<NativeScrollEvent>,
-                            ) => {
-                                setCurrentScrollPosition(
-                                    event.nativeEvent.contentOffset.y,
-                                );
-                            },
-                            useNativeDriver: false,
-                        },
-                    )}
+                    onScroll={handleScroll}
                     scrollEventThrottle={16}
                     contentContainerStyle={{
                         paddingBottom: (ITEM_HEIGHT * VISIBLE_ITEMS) / 2,
                         paddingTop: ITEM_HEIGHT * 2,
                     }}
+                    scrollToOverflowEnabled
+                    initialScrollIndex={initialScrollIndex()}
                 />
             </View>
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',

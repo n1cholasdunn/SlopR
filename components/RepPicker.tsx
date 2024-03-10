@@ -1,4 +1,4 @@
-import {Picker} from '@react-native-picker/picker';
+/*import {Picker} from '@react-native-picker/picker';
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 
@@ -91,3 +91,4 @@ const styles = StyleSheet.create({
 });
 
 export default RepPicker;
+*/

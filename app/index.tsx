@@ -11,7 +11,7 @@ import {
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import ForceGauge from '../components/ForceGauge';
 import LiveGraph from '../components/LiveGraph';
-import WorkoutPicker from '../components/RepPicker';
+//import WorkoutPicker from '../components/RepPicker';
 import SetPicker from '../components/SetPicker';
 import Timer from '../components/Timer';
 import useBLEStore from '../stores/useBLEStore';
@@ -87,7 +87,6 @@ export default function Page() {
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
-                        <WorkoutPicker />
                         {/* <SetPicker numSets={numSets} setNumSets={setNumSets} />*/}
                     </View>
                 )}

@@ -6,11 +6,12 @@ type RestPickerProps = {
 };
 const RestPicker = ({showPicker, setShowPicker}: RestPickerProps) => {
     const {restTime, setRestTime} = useWorkoutSettingsStore();
+    const options = Array.from({length: 60}, (_, i) => `${i + 1}s`);
     return (
         <CustomPicker
             ITEM_HEIGHT={50}
             VISIBLE_ITEMS={5}
-            options={Array.from({length: 120}, (_, i) => `${i + 1}s`)}
+            options={options}
             state={restTime}
             setState={setRestTime}
             label="Rest"

@@ -11,7 +11,7 @@ const DurationPicker = ({showPicker, setShowPicker}: DurationPickerProps) => {
         <CustomPicker
             ITEM_HEIGHT={50}
             VISIBLE_ITEMS={5}
-            options={Array.from({length: 120}, (_, i) => `${i + 1}s`)}
+            options={Array.from({length: 60}, (_, i) => `${i + 1}s`)}
             state={repDuration}
             setState={setRepDuration}
             label="Duration"

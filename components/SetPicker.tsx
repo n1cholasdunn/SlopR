@@ -4,7 +4,11 @@ import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 const ITEM_HEIGHT = 50;
 const VISIBLE_ITEMS = 5;
 
-const SetPicker = () => {
+type SetPickerProps = {
+    showPicker: boolean;
+    setShowPicker: (newState: boolean) => void;
+};
+const SetPicker = ({showPicker, setShowPicker}: SetPickerProps) => {
     const {amountOfSets, setAmountOfSets} = useWorkoutSettingsStore();
     const options = Array.from({length: 30}, (_, i) => `${i + 1}`);
 
@@ -16,6 +20,8 @@ const SetPicker = () => {
             state={amountOfSets}
             setState={setAmountOfSets}
             label="Sets"
+            showPicker={showPicker}
+            setShowPicker={setShowPicker}
         />
     );
 };

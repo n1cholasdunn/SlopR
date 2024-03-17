@@ -5,6 +5,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Button,
 } from 'react-native';
 
 import CountdownPicker from '../../components/Countdown';
@@ -14,6 +15,7 @@ import PickerModal from '../../components/PickerModal';
 import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
 import SetPicker from '../../components/SetPicker';
+import useDB from '../../hooks/useDB';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 
 const {width, height} = Dimensions.get('window');
@@ -47,6 +49,7 @@ const Page = () => {
     }, [repModalOpen]);
     //  console.log('page rendered');
 
+    const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
             <Text>SETS STATE:{amountOfSets}</Text>
@@ -76,6 +79,17 @@ const Page = () => {
                         showPicker={repModalOpen}
                     />
                 }
+            />
+            <Button
+                onPress={() =>
+                    handleSaveWorkoutInstructions({
+                        amountOfReps,
+                        amountOfSets,
+                        repDuration,
+                        restTime,
+                    })
+                }
+                title="Save workout instructions"
             />
         </View>
     );

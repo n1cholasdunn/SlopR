@@ -29,6 +29,16 @@ export type FullWorkoutData = {
     sets: CleanSetData[];
 };
 
+export interface WorkoutInstructions {
+    amountOfSets: number;
+    amountOfReps: number;
+    restTime: number;
+    repDuration: number;
+}
+
+export interface DBWorkoutInstructions extends WorkoutInstructions {
+    createdAt: FirebaseFirestoreTypes.FieldValue;
+}
 //generic rep for extension for non climbing workouts
 interface RepInstructions {
     repType: string;

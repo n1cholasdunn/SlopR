@@ -4,7 +4,12 @@ import {useMutation, useQuery} from '@tanstack/react-query';
 
 import {ForceDataPoint} from '../types/BLETypes';
 import {FetchedSet, FetchedWorkout} from '../types/fetchedDataTypes';
-import {FullWorkoutData, SetData} from '../types/workoutTypes';
+import {
+    FullWorkoutData,
+    SetData,
+    DBWorkoutInstructions,
+    WorkoutInstructions,
+} from '../types/workoutTypes';
 import {cleanWorkoutData} from '../utils/cleanData';
 
 const useDB = () => {
@@ -88,7 +93,9 @@ const useDB = () => {
         saveWorkout(workoutData);
     };
 
-    const saveWorkoutInstructionsToDB = async workoutInfo => {
+    const saveWorkoutInstructionsToDB = async (
+        workoutInfo: DBWorkoutInstructions,
+    ) => {
         const user = auth().currentUser;
         if (!user) {
             throw new Error('No user signed in');
@@ -118,9 +125,12 @@ const useDB = () => {
     });
 
     //TODO: add types for workoutInfo and save on repeater screen
-    const handleSaveWorkoutInstructions = workoutInfo => {
+    const handleSaveWorkoutInstructions = (
+        workoutInfo: WorkoutInstructions,
+    ) => {
         const workoutInstructions = {
             createdAt: firestore.FieldValue.serverTimestamp(),
+            ...workoutInfo,
         };
         saveWorkoutInstructions(workoutInstructions);
     };

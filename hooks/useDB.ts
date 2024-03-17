@@ -87,7 +87,55 @@ const useDB = () => {
         };
         saveWorkout(workoutData);
     };
-    return {handleSaveWorkout, isSuccess, workouts, error};
+
+    const saveWorkoutInstructionsToDB = async workoutInfo => {
+        const user = auth().currentUser;
+        if (!user) {
+            throw new Error('No user signed in');
+        }
+
+        return await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('workout-instructions')
+            .add(workoutInfo);
+    };
+
+    const {
+        mutate: saveWorkoutInstructions,
+        status: saveWorkoutInstructionsStatus,
+        isError: saveWorkoutInstructionsError,
+        error: errorWorkoutInstructionsError,
+        isSuccess: saveWorkoutInstructionsSuccess,
+    } = useMutation({
+        mutationFn: saveWorkoutInstructionsToDB,
+        onSuccess: () => {
+            console.log('Workout data saved to Firestore');
+        },
+        onError: e => {
+            console.error('Error saving workout data:', e);
+        },
+    });
+
+    //TODO: add types for workoutInfo and save on repeater screen
+    const handleSaveWorkoutInstructions = workoutInfo => {
+        const workoutInstructions = {
+            createdAt: firestore.FieldValue.serverTimestamp(),
+        };
+        saveWorkoutInstructions(workoutInstructions);
+    };
+
+    return {
+        handleSaveWorkout,
+        isSuccess,
+        workouts,
+        error,
+        handleSaveWorkoutInstructions,
+        saveWorkoutInstructionsSuccess,
+        saveWorkoutInstructionsStatus,
+        saveWorkoutInstructionsError,
+        errorWorkoutInstructionsError,
+    };
 };
 
 export default useDB;

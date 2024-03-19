@@ -5,7 +5,7 @@ type DurationPickerProps = {
     showPicker: boolean;
     setShowPicker: (newState: boolean) => void;
 };
-const DurationPicker = ({showPicker, setShowPicker}: DurationPickerProps) => {
+const DurationPicker = () => {
     const {repDuration, setRepDuration} = useWorkoutSettingsStore();
     return (
         <CustomPicker
@@ -15,8 +15,6 @@ const DurationPicker = ({showPicker, setShowPicker}: DurationPickerProps) => {
             state={repDuration}
             setState={setRepDuration}
             label="Duration"
-            showPicker={showPicker}
-            setShowPicker={setShowPicker}
         />
     );
 };

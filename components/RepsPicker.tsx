@@ -5,7 +5,7 @@ type RepsPickerProps = {
     showPicker: boolean;
     setShowPicker: (newState: boolean) => void;
 };
-const RepsPicker = ({showPicker, setShowPicker}: RepsPickerProps) => {
+const RepsPicker = () => {
     const {amountOfReps, setAmountOfReps} = useWorkoutSettingsStore();
     return (
         <CustomPicker
@@ -15,8 +15,6 @@ const RepsPicker = ({showPicker, setShowPicker}: RepsPickerProps) => {
             state={amountOfReps}
             setState={setAmountOfReps}
             label="Reps"
-            showPicker={showPicker}
-            setShowPicker={setShowPicker}
         />
     );
 };

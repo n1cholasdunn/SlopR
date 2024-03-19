@@ -26,8 +26,6 @@ type CustomPickerProps = {
     state: number;
     setState: (newState: number) => void;
     label: string;
-    showPicker: boolean;
-    setShowPicker: (newState: boolean) => void;
 };
 
 const CustomPicker = ({
@@ -37,7 +35,6 @@ const CustomPicker = ({
     state,
     setState,
     label,
-    showPicker,
 }: CustomPickerProps) => {
     const lastHapticIndex = useRef<null | string>(null);
 

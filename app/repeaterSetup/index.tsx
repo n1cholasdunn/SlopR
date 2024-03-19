@@ -21,8 +21,15 @@ import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 const {width, height} = Dimensions.get('window');
 
 const Page = () => {
-    const {amountOfSets, amountOfReps, repDuration, restTime} =
-        useWorkoutSettingsStore();
+    const {
+        amountOfSets,
+        amountOfReps,
+        repDuration,
+        restTime,
+        countdownTime,
+        secondsBetweenSets,
+        minutesBetweenSets,
+    } = useWorkoutSettingsStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
     const [countdownModalOpen, setCountdownModalOpen] = useState(false);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
@@ -38,33 +45,32 @@ const Page = () => {
     const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
-            <Text>SETS STATE:{amountOfSets}</Text>
-            <TouchableOpacity onPress={openRepModal}>
-                <Text>Reps: {amountOfReps}</Text>
-                <Text>Rest: {restTime}</Text>
-                <Text>Duration: {repDuration}</Text>
-            </TouchableOpacity>
+            <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TouchableOpacity onPress={() => setSetModalOpen(true)}>
+                    <Text>SETS STATE:{amountOfSets}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={openRepModal}>
+                    <Text>Reps: {amountOfReps}</Text>
+                    <Text>Rest: {restTime}</Text>
+                    <Text>Duration: {repDuration}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setCountdownModalOpen(true)}>
+                    <Text>Countdown: {countdownTime}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setPauseModalOpen(true)}>
+                    <Text>
+                        Pause
+                        {`${minutesBetweenSets}min ${secondsBetweenSets}sec`}
+                    </Text>
+                </TouchableOpacity>
+            </View>
             <PickerModal
                 visible={repModalOpen}
                 onClose={closeRepModal}
-                picker1={
-                    <RestPicker
-                        setShowPicker={setRepModalOpen}
-                        showPicker={repModalOpen}
-                    />
-                }
-                picker2={
-                    <DurationPicker
-                        setShowPicker={setRepModalOpen}
-                        showPicker={repModalOpen}
-                    />
-                }
-                picker3={
-                    <RepsPicker
-                        setShowPicker={setRepModalOpen}
-                        showPicker={repModalOpen}
-                    />
-                }
+                picker1={<RestPicker />}
+                picker2={<DurationPicker />}
+                picker3={<RepsPicker />}
             />
             <PickerModal
                 visible={pauseModalOpen}
@@ -80,12 +86,7 @@ const Page = () => {
             <PickerModal
                 visible={setModalOpen}
                 onClose={() => setSetModalOpen(false)}
-                picker1={
-                    <SetPicker
-                        setShowPicker={setSetModalOpen}
-                        showPicker={setModalOpen}
-                    />
-                }
+                picker1={<SetPicker />}
             />
 
             <Button
@@ -116,17 +117,3 @@ const styles = StyleSheet.create({
         height,
     },
 });
-
-/*   picker2={
-                    <RepsPicker
-                        setShowPicker={setRepModalOpen}
-                        showPicker={repModalOpen}
-                    />
-                }
-                picker3={
-                    <DurationPicker
-                        setShowPicker={setRepModalOpen}
-                        showPicker={repModalOpen}
-                    />
-                }
-        */

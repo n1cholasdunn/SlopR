@@ -21,10 +21,12 @@ import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 const {width, height} = Dimensions.get('window');
 
 const Page = () => {
-    //TODO: Start session button
     const {amountOfSets, amountOfReps, repDuration, restTime} =
         useWorkoutSettingsStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
+    const [countdownModalOpen, setCountdownModalOpen] = useState(false);
+    const [pauseModalOpen, setPauseModalOpen] = useState(false);
+    const [setModalOpen, setSetModalOpen] = useState(false);
 
     const openRepModal = () => {
         setRepModalOpen(true);
@@ -32,22 +34,6 @@ const Page = () => {
     const closeRepModal = () => {
         setRepModalOpen(false);
     };
-    /*
-    useEffect(() => {
-        console.log('reps', amountOfReps);
-    }, [amountOfReps]);
-    useEffect(() => {
-        console.log('duration', repDuration);
-    }, [repDuration]);
-    useEffect(() => {
-        console.log('rest', restTime);
-    }, [restTime]);
-    */
-    useEffect(() => {
-        console.log('modal status', repModalOpen);
-        console.log('rest', restTime);
-    }, [repModalOpen]);
-    //  console.log('page rendered');
 
     const {handleSaveWorkoutInstructions} = useDB();
     return (
@@ -80,6 +66,28 @@ const Page = () => {
                     />
                 }
             />
+            <PickerModal
+                visible={pauseModalOpen}
+                onClose={() => setPauseModalOpen(false)}
+                picker1={<PausePicker />}
+            />
+            <PickerModal
+                visible={countdownModalOpen}
+                onClose={() => setCountdownModalOpen(false)}
+                picker1={<CountdownPicker />}
+            />
+            {/*TODO: check if it is necessary to pass down the props of modal visibility after creating custom modal. maybe needed for scrolling*/}
+            <PickerModal
+                visible={setModalOpen}
+                onClose={() => setSetModalOpen(false)}
+                picker1={
+                    <SetPicker
+                        setShowPicker={setSetModalOpen}
+                        showPicker={setModalOpen}
+                    />
+                }
+            />
+
             <Button
                 onPress={() =>
                     handleSaveWorkoutInstructions({
@@ -90,6 +98,11 @@ const Page = () => {
                     })
                 }
                 title="Save workout instructions"
+            />
+            {/* TODO: pop up scan Modal scan and connect to device and then route to repeater page*/}
+            <Button
+                onPress={() => console.log('start session')}
+                title="Start Session"
             />
         </View>
     );

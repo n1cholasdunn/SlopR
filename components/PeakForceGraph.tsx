@@ -5,14 +5,14 @@ import {
     LinearGradient,
     Rect,
 } from '@shopify/react-native-skia';
+import {scaleLinear} from 'd3';
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 
+import useBLEStore from '../stores/useBLEStore';
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
 import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../utils/graph';
-import {scaleLinear} from 'd3';
-import useBLEStore from '../stores/useBLEStore';
 
 type PeakForceGraphProps = {
     dataPoints: ForceDataPoint[];
@@ -45,8 +45,8 @@ const PeakForceGraph: React.FC<PeakForceGraphProps> = ({dataPoints}) => {
                     <Line
                         p1={vec(0, maxYPosition)}
                         p2={vec(GRAPH_WIDTH, maxYPosition)}
-                        color={'red'}
-                        style={'stroke'}
+                        color="red"
+                        style="stroke"
                         strokeWidth={2}
                     />
                     <Rect

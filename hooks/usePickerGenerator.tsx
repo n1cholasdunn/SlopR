@@ -1,4 +1,5 @@
 import {Picker} from '@react-native-picker/picker';
+
 import {GripMapType} from '../types/workoutTypes';
 
 const usePickerGenerator = () => {

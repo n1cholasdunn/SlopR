@@ -1,4 +1,5 @@
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 const SideToggleButton = () => {

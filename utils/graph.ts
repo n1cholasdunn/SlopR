@@ -1,5 +1,6 @@
 import {Skia} from '@shopify/react-native-skia';
 import {curveBasis, line, scaleLinear, scaleTime} from 'd3';
+
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
 

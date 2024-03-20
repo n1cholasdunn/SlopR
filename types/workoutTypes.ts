@@ -34,6 +34,8 @@ export interface WorkoutInstructions {
     amountOfReps: number;
     restTime: number;
     repDuration: number;
+    minutesBetweenSets: number;
+    secondsBetweenSets: number;
 }
 
 export interface DBWorkoutInstructions extends WorkoutInstructions {

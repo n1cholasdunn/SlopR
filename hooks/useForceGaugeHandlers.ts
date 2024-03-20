@@ -96,10 +96,6 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         dataPoints,
     ]);
 
-    useEffect(() => {
-        console.log('addSetTOallSets', allSetsData);
-    }, [addSetToAllSets]);
-
     const handleReset = useCallback(() => {
         if (measurementStarted) {
             stopMeasuring();
@@ -141,9 +137,6 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         resetRestTimer,
     ]);
 
-    useEffect(() => {
-        console.log('allSetsData', JSON.stringify(allSetsData, null, 2));
-    }, [allSetsData]);
     return {
         seconds,
         handleStart,

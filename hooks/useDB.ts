@@ -71,7 +71,6 @@ const useDB = () => {
             createdAt: doc.data().createdAt,
             sets: doc.data().sets as FetchedSet[],
         }));
-        console.log('finalData', JSON.stringify(finalData, null, 2));
         return finalData;
     };
 
@@ -104,7 +103,7 @@ const useDB = () => {
         return await firestore()
             .collection('users')
             .doc(user.uid)
-            .collection('workout-instructions')
+            .collection('workout-setup')
             .add(workoutInfo);
     };
 

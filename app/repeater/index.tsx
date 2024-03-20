@@ -1,4 +1,5 @@
-import {useEffect, useState} from 'react';
+import {router} from 'expo-router';
+import {useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -14,8 +15,10 @@ import PausePicker from '../../components/PausePicker';
 import PickerModal from '../../components/PickerModal';
 import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
+import ScanModal from '../../components/ScanModal';
 import SetPicker from '../../components/SetPicker';
 import useDB from '../../hooks/useDB';
+import useBLEStore from '../../stores/useBLEStore';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
 
 const {width, height} = Dimensions.get('window');
@@ -30,16 +33,33 @@ const Page = () => {
         secondsBetweenSets,
         minutesBetweenSets,
     } = useWorkoutSettingsStore();
+    const {scanForPeripherals, requestPermissions} = useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
     const [countdownModalOpen, setCountdownModalOpen] = useState(false);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [setModalOpen, setSetModalOpen] = useState(false);
+    const [scanModalOpen, setScanModalOpen] = useState(false);
 
     const openRepModal = () => {
         setRepModalOpen(true);
     };
     const closeRepModal = () => {
         setRepModalOpen(false);
+    };
+
+    const handleOpenScanModal = async () => {
+        const isPermissionsEnabled = await requestPermissions();
+        if (isPermissionsEnabled) {
+            scanForPeripherals();
+
+            setScanModalOpen(true);
+        } else {
+            console.log('permissions not enabled');
+        }
+    };
+    const handleCloseScanModal = () => {
+        setScanModalOpen(false);
+        router.navigate('/repeater/workout');
     };
 
     const {handleSaveWorkoutInstructions} = useDB();
@@ -82,29 +102,29 @@ const Page = () => {
                 onClose={() => setCountdownModalOpen(false)}
                 picker1={<CountdownPicker />}
             />
-            {/*TODO: check if it is necessary to pass down the props of modal visibility after creating custom modal. maybe needed for scrolling*/}
             <PickerModal
                 visible={setModalOpen}
                 onClose={() => setSetModalOpen(false)}
                 picker1={<SetPicker />}
             />
+            <ScanModal visible={scanModalOpen} onClose={handleCloseScanModal} />
 
             <Button
                 onPress={() =>
                     handleSaveWorkoutInstructions({
-                        amountOfReps,
                         amountOfSets,
-                        repDuration,
+                        amountOfReps,
                         restTime,
+                        repDuration,
+                        minutesBetweenSets,
+                        secondsBetweenSets,
                     })
                 }
                 title="Save workout instructions"
             />
             {/* TODO: pop up scan Modal scan and connect to device and then route to repeater page*/}
-            <Button
-                onPress={() => console.log('start session')}
-                title="Start Session"
-            />
+
+            <Button onPress={handleOpenScanModal} title="Start Session" />
         </View>
     );
 };

@@ -17,6 +17,8 @@ import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
 import ScanModal from '../../components/ScanModal';
 import SetPicker from '../../components/SetPicker';
+import SideToggleButton from '../../components/SideToggleButton';
+import SingleHandSwitch from '../../components/SingleHandSwitch';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
@@ -32,6 +34,8 @@ const Page = () => {
         countdownTime,
         secondsBetweenSets,
         minutesBetweenSets,
+        singleHand,
+        startingHand,
     } = useWorkoutSettingsStore();
     const {scanForPeripherals, requestPermissions} = useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
@@ -85,12 +89,17 @@ const Page = () => {
                     </Text>
                 </TouchableOpacity>
             </View>
+            <View>
+                <SingleHandSwitch />
+                {singleHand && <SideToggleButton />}
+            </View>
+
             <PickerModal
                 visible={repModalOpen}
                 onClose={closeRepModal}
-                picker1={<RestPicker />}
-                picker2={<DurationPicker />}
-                picker3={<RepsPicker />}
+                picker1={<RepsPicker />}
+                picker2={<RestPicker />}
+                picker3={<DurationPicker />}
             />
             <PickerModal
                 visible={pauseModalOpen}
@@ -118,6 +127,8 @@ const Page = () => {
                         repDuration,
                         minutesBetweenSets,
                         secondsBetweenSets,
+                        singleHand,
+                        startingHand,
                     })
                 }
                 title="Save workout instructions"

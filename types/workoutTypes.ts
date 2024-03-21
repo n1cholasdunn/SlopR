@@ -36,6 +36,8 @@ export interface WorkoutInstructions {
     repDuration: number;
     minutesBetweenSets: number;
     secondsBetweenSets: number;
+    singleHand?: boolean;
+    startingHand?: 'L' | 'R';
 }
 
 export interface DBWorkoutInstructions extends WorkoutInstructions {

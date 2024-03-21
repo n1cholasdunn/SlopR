@@ -10,12 +10,8 @@ import {
 
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import ForceGauge from '../components/ForceGauge';
-import LiveGraph from '../components/LiveGraph';
-//import WorkoutPicker from '../components/RepPicker';
-import SetPicker from '../components/SetPicker';
-import Timer from '../components/Timer';
+import PeakForceGraph from '../components/PeakForceGraph';
 import useBLEStore from '../stores/useBLEStore';
-import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 export default function Page() {
     const {
@@ -25,10 +21,6 @@ export default function Page() {
         connectToDevice,
         connectedDevice,
         disconnectFromDevice,
-        forceWeight,
-        tareScale,
-        startMeasuring,
-        dataPoints,
     } = useBLEStore();
 
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -63,31 +55,11 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
-                        <ForceGauge />
-                        {/*
-                        <Text>Pulling:</Text>
-                        <Text style={styles.weightDisplay}>
-                            {forceWeight}lbs or kgs
-                        </Text>
-                        <LiveGraph dataPoints={dataPoints} />
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={startMeasuring}>
-                            <Text style={styles.buttonText}>
-                                Start Measuring
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={tareScale}>
-                            <Text style={styles.buttonText}>Tare</Text>
-                        </TouchableOpacity>
-            */}
+                        <ForceGauge graphComponent={PeakForceGraph} />
                     </>
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
-                        {/* <SetPicker numSets={numSets} setNumSets={setNumSets} />*/}
                     </View>
                 )}
             </View>
@@ -97,7 +69,6 @@ export default function Page() {
                     {connectedDevice ? 'Disconnect' : 'Connect'}
                 </Text>
             </TouchableOpacity>
-            {/* <Timer mode="down" startSeconds={2} />*/}
             <DeviceModal
                 closeModal={hideModal}
                 visible={isModalVisible}

@@ -1,18 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, Button} from 'react-native';
 
-import LiveGraph from './LiveGraph';
-import PeakForceGraph from './PeakForceGraph';
 import useDB from '../hooks/useDB';
 import useForceGaugeHandlers from '../hooks/useForceGaugeHandlers';
-import useTimer from '../hooks/useTimer';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 import {ForceDataPoint} from '../types/BLETypes';
-import {FullWorkoutData, SetData} from '../types/workoutTypes';
-import {cleanRepsData, cleanWorkoutData} from '../utils/cleanData';
 
-const ForceGauge = () => {
+type GraphComponentProps = {
+    dataPoints: ForceDataPoint[];
+};
+
+type ForceGaugeProps = {
+    graphComponent: React.ComponentType<GraphComponentProps>;
+};
+
+const ForceGauge = ({graphComponent: GraphComponent}: ForceGaugeProps) => {
     const {forceWeight, dataPoints, tareScale} = useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
@@ -33,9 +36,7 @@ const ForceGauge = () => {
 
     return (
         <View>
-            {/*      <LiveGraph dataPoints={dataPoints} />
-             */}
-            <PeakForceGraph dataPoints={dataPoints} />
+            {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
             {isRestTimerRunning && <Text>{restSeconds}</Text>}
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Timer: {seconds}s</Text>

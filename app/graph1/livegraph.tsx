@@ -2,13 +2,11 @@ import {Canvas, Path} from '@shopify/react-native-skia';
 import {useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 
-//import useBLE from '../../hooks/useBLE';
 import useBLEStore from '../../stores/useBLEStore';
 import {GraphData} from '../../types/chartData';
 import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../../utils/graph';
 
 const Page = () => {
-    //   const {startMeasuring, tareScale, dataPoints} = useBLE();
     const {startMeasuring, tareScale, dataPoints} = useBLEStore();
     const [graphData, setGraphData] = useState<GraphData | undefined>(
         undefined,

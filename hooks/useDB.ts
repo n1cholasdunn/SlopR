@@ -123,7 +123,6 @@ const useDB = () => {
         },
     });
 
-    //TODO: add types for workoutInfo and save on repeater screen
     const handleSaveWorkoutInstructions = (
         workoutInfo: WorkoutInstructions,
     ) => {

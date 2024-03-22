@@ -10,8 +10,8 @@ type WorkoutSettingsState = {
     repDuration: number;
     secondsBetweenSets: number;
     minutesBetweenSets: number;
-    secondsBetweenHands?: number;
-    minutesBetweenHands?: number;
+    secondsBetweenHands: number;
+    minutesBetweenHands: number;
     amountOfReps: number;
     startingHand?: 'L' | 'R';
     singleHand?: boolean;
@@ -47,9 +47,9 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     gripPosition: 'HC',
     repType: 'peakForce',
     secondsBetweenSets: 1,
-    minutesBetweenSets: 1,
+    minutesBetweenSets: 0,
     secondsBetweenHands: 1,
-    minutesBetweenHands: 1,
+    minutesBetweenHands: 0,
     amountOfReps: 1,
     singleHand: false,
     startingHand: undefined,

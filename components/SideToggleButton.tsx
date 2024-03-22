@@ -4,6 +4,7 @@ import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 const SideToggleButton = () => {
     const {startingHand, setStartingHand} = useWorkoutSettingsStore();
+
     //TODO: add transition slide animation for the switch
     return (
         <View style={styles.container}>

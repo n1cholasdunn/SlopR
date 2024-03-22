@@ -1,5 +1,5 @@
 import {router} from 'expo-router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -17,8 +17,10 @@ import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
 import ScanModal from '../../components/ScanModal';
 import SetPicker from '../../components/SetPicker';
+import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
+import TareModal from '../../components/TareModal';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
@@ -36,6 +38,8 @@ const Page = () => {
         minutesBetweenSets,
         singleHand,
         startingHand,
+        secondsBetweenHands,
+        minutesBetweenHands,
     } = useWorkoutSettingsStore();
     const {scanForPeripherals, requestPermissions} = useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
@@ -43,6 +47,7 @@ const Page = () => {
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
     const [setModalOpen, setSetModalOpen] = useState(false);
     const [scanModalOpen, setScanModalOpen] = useState(false);
+    const [singleHandModalOpen, setSingleHandModalOpen] = useState(false);
 
     const openRepModal = () => {
         setRepModalOpen(true);
@@ -91,7 +96,31 @@ const Page = () => {
             </View>
             <View>
                 <SingleHandSwitch />
-                {singleHand && <SideToggleButton />}
+                {singleHand && (
+                    <View style={styles.singleHandContainer}>
+                        <SideToggleButton />
+                        <Text>Pause Between Sides</Text>
+                        <TouchableOpacity
+                            onPress={() => setSingleHandModalOpen(true)}>
+                            <Text>
+                                Pause
+                                {minutesBetweenHands !== 0
+                                    ? `${minutesBetweenHands}:`
+                                    : ''}
+                                {` ${secondsBetweenHands}`}
+                            </Text>
+                        </TouchableOpacity>
+                        <PickerModal
+                            visible={singleHandModalOpen}
+                            onClose={() => setSingleHandModalOpen(false)}
+                            picker1={<SidePausePicker />}
+                        />
+                        <TareModal
+                            visible={isTareModalOpen}
+                            onClose={() => setIsTareModalOpen(false)}
+                        />
+                    </View>
+                )}
             </View>
 
             <PickerModal
@@ -133,7 +162,6 @@ const Page = () => {
                 }
                 title="Save workout instructions"
             />
-            {/* TODO: pop up scan Modal scan and connect to device and then route to repeater page*/}
 
             <Button onPress={handleOpenScanModal} title="Start Session" />
         </View>
@@ -146,5 +174,9 @@ const styles = StyleSheet.create({
         flex: 1,
         width,
         height,
+    },
+    singleHandContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
     },
 });

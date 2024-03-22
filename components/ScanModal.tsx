@@ -26,15 +26,19 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
         connectToDevice,
         disconnectFromDevice,
         connectedDevice,
+        forceWeight,
+        startMeasuring,
     } = useBLEStore();
 
     useEffect(() => {
         console.log('devices:', devices);
     }, [devices, visible]);
-
+    //TODO: add loading or searching indicator while scanning and no devices found yet. maybe after 5 second say no devices found
+    //TODO: prompt user to tare scale after connecting to device. Modal with weight reading and button to tare. Reset weight data after tare
     const connectAndCloseModal = useCallback(
         (item: ListRenderItemInfo<Device>) => {
             connectToDevice(item.item);
+            startMeasuring();
             onClose();
         },
         [onClose, connectToDevice, devices],
@@ -43,7 +47,10 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
     const renderDevices = useCallback(
         (item: ListRenderItemInfo<Device>) => (
             <TouchableOpacity
-                onPress={() => connectAndCloseModal(item)}
+                onPress={() => {
+                    connectAndCloseModal(item);
+                    startMeasuring();
+                }}
                 style={styles.deviceItem}
                 key={item.item.id}>
                 <Text style={styles.ctaButtonText}>{item.item.name}</Text>
@@ -67,15 +74,6 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
                             estimatedItemSize={77}
                         />
                     </View>
-                    {connectedDevice ? (
-                        <TouchableOpacity onPress={disconnectFromDevice}>
-                            <Text>Disconnect</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity onPress={scanForPeripherals}>
-                            <Text>Scan</Text>
-                        </TouchableOpacity>
-                    )}
                     <TouchableOpacity
                         style={styles.closeButton}
                         onPress={onClose}>
@@ -86,7 +84,17 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
         </Modal>
     );
 };
-
+/*
+ * {connectedDevice ? (
+                        <TouchableOpacity onPress={disconnectFromDevice}>
+                            <Text>Disconnect</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={scanForPeripherals}>
+                            <Text>Scan</Text>
+                        </TouchableOpacity>
+                    )}
+*/
 const styles = StyleSheet.create({
     modalOverlay: {
         position: 'absolute',

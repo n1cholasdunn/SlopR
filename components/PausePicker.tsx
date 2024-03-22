@@ -11,7 +11,7 @@ const PausePicker = () => {
         setMinutesBetweenSets,
     } = useWorkoutSettingsStore();
 
-    const minuteItems = Array.from({length: 60}, (_, i) => `${i + 1}`);
+    const minuteItems = Array.from({length: 61}, (_, i) => `${i}`);
     const secondItems = Array.from({length: 60}, (_, i) => `${i + 1}`);
     const ITEM_HEIGHT = 40;
     const VISIBLE_ITEMS = 5;
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     centeredView: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        justifyContent: 'center',
+        gap: 40,
         alignItems: 'center',
         marginTop: 22,
     },

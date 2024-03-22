@@ -128,8 +128,12 @@ const useDB = () => {
     ) => {
         const workoutInstructions = {
             createdAt: firestore.FieldValue.serverTimestamp(),
-            ...workoutInfo,
-        };
+            ...Object.fromEntries(
+                Object.entries(workoutInfo).filter(
+                    ([_, value]) => value !== undefined,
+                ),
+            ),
+        } as DBWorkoutInstructions;
         saveWorkoutInstructions(workoutInstructions);
     };
 

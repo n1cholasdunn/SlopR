@@ -82,7 +82,9 @@ const styles = StyleSheet.create({
     },
     pickerContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        gap: 40,
+        alignItems: 'center',
         width: '100%',
     },
 });

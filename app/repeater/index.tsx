@@ -1,12 +1,11 @@
 import {router} from 'expo-router';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
     View,
     Text,
     TouchableOpacity,
-    Button,
 } from 'react-native';
 
 import CountdownPicker from '../../components/Countdown';
@@ -20,7 +19,6 @@ import SetPicker from '../../components/SetPicker';
 import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
-import TareModal from '../../components/TareModal';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
@@ -48,6 +46,7 @@ const Page = () => {
     const [setModalOpen, setSetModalOpen] = useState(false);
     const [scanModalOpen, setScanModalOpen] = useState(false);
     const [singleHandModalOpen, setSingleHandModalOpen] = useState(false);
+    const [savedSetupModalOpen, setSavedSetupModalOpen] = useState(false);
 
     const openRepModal = () => {
         setRepModalOpen(true);
@@ -74,24 +73,61 @@ const Page = () => {
     const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
+            <View style={styles.saveOrLoadSetupContainer}>
+                <TouchableOpacity
+                    onPress={() => setSavedSetupModalOpen(true)}
+                    style={styles.setupButtons}>
+                    <Text>Load Saved Setup</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() =>
+                        handleSaveWorkoutInstructions({
+                            amountOfSets,
+                            amountOfReps,
+                            restTime,
+                            repDuration,
+                            minutesBetweenSets,
+                            secondsBetweenSets,
+                            singleHand,
+                            startingHand,
+                        })
+                    }
+                    style={styles.button}>
+                    <Text>Save Workout Setup</Text>
+                </TouchableOpacity>
+            </View>
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TouchableOpacity onPress={() => setSetModalOpen(true)}>
-                    <Text>SETS STATE:{amountOfSets}</Text>
+                style={{
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 10,
+                }}>
+                <TouchableOpacity
+                    onPress={() => setSetModalOpen(true)}
+                    style={styles.setupButtons}>
+                    <Text>Sets:{amountOfSets}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={openRepModal}>
+                <TouchableOpacity
+                    onPress={openRepModal}
+                    style={styles.setupButtons}>
+                    <Text>Set</Text>
                     <Text>Reps: {amountOfReps}</Text>
+                    <Text>Rep Duration: {repDuration}</Text>
                     <Text>Rest: {restTime}</Text>
-                    <Text>Duration: {repDuration}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setCountdownModalOpen(true)}>
-                    <Text>Countdown: {countdownTime}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setPauseModalOpen(true)}>
+                <TouchableOpacity
+                    onPress={() => setPauseModalOpen(true)}
+                    style={styles.setupButtons}>
                     <Text>
                         Pause
-                        {`${minutesBetweenSets}min ${secondsBetweenSets}sec`}
+                        {` ${minutesBetweenSets}min ${secondsBetweenSets}sec`}
                     </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => setCountdownModalOpen(true)}
+                    style={styles.setupButtons}>
+                    <Text>Countdown: {countdownTime}</Text>
                 </TouchableOpacity>
             </View>
             <View>
@@ -101,23 +137,22 @@ const Page = () => {
                         <SideToggleButton />
                         <Text>Pause Between Sides</Text>
                         <TouchableOpacity
-                            onPress={() => setSingleHandModalOpen(true)}>
+                            onPress={() => setSingleHandModalOpen(true)}
+                            style={styles.setupButtons}>
                             <Text>
                                 Pause
                                 {minutesBetweenHands !== 0
-                                    ? `${minutesBetweenHands}:`
-                                    : ''}
-                                {` ${secondsBetweenHands}`}
+                                    ? ` ${minutesBetweenHands}:`
+                                    : ' '}
+                                {secondsBetweenHands < 10
+                                    ? `0${secondsBetweenHands}`
+                                    : `${secondsBetweenHands}`}
                             </Text>
                         </TouchableOpacity>
                         <PickerModal
                             visible={singleHandModalOpen}
                             onClose={() => setSingleHandModalOpen(false)}
                             picker1={<SidePausePicker />}
-                        />
-                        <TareModal
-                            visible={isTareModalOpen}
-                            onClose={() => setIsTareModalOpen(false)}
                         />
                     </View>
                 )}
@@ -147,23 +182,11 @@ const Page = () => {
             />
             <ScanModal visible={scanModalOpen} onClose={handleCloseScanModal} />
 
-            <Button
-                onPress={() =>
-                    handleSaveWorkoutInstructions({
-                        amountOfSets,
-                        amountOfReps,
-                        restTime,
-                        repDuration,
-                        minutesBetweenSets,
-                        secondsBetweenSets,
-                        singleHand,
-                        startingHand,
-                    })
-                }
-                title="Save workout instructions"
-            />
-
-            <Button onPress={handleOpenScanModal} title="Start Session" />
+            <TouchableOpacity
+                onPress={handleOpenScanModal}
+                style={styles.button}>
+                <Text>Start Session</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -178,5 +201,25 @@ const styles = StyleSheet.create({
     singleHandContainer: {
         flexDirection: 'column',
         alignItems: 'center',
+    },
+    saveOrLoadSetupContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+    },
+    setupButtons: {
+        borderColor: 'red',
+        borderWidth: 2,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
+    button: {
+        borderColor: 'blue',
+        borderWidth: 2,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
     },
 });

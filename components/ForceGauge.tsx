@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
 
 import useDB from '../hooks/useDB';
 import useForceGaugeHandlers from '../hooks/useForceGaugeHandlers';
@@ -36,10 +36,15 @@ const ForceGauge = ({graphComponent: GraphComponent}: ForceGaugeProps) => {
 
     return (
         <View>
+            <View style={styles.timerContainer}>
+                <View style={styles.timerCircle}>
+                    <Text style={styles.timerText}>
+                        {isRestTimerRunning ? restSeconds : seconds}
+                    </Text>
+                </View>
+            </View>
             {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
-            {isRestTimerRunning && <Text>{restSeconds}</Text>}
             <Text>Force: {forceWeight}lbs</Text>
-            <Text>Timer: {seconds}s</Text>
             <Text>Sets remaining: {amountOfSets - currentSet}</Text>
             <Text>
                 Reps remaining:
@@ -62,4 +67,27 @@ const ForceGauge = ({graphComponent: GraphComponent}: ForceGaugeProps) => {
     );
 };
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    timerContainer: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+    },
+    timerCircle: {
+        width: 40,
+        height: 40,
+        borderRadius: 30,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    timerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+});
 export default ForceGauge;

@@ -162,8 +162,8 @@ const Page = () => {
                 visible={repModalOpen}
                 onClose={closeRepModal}
                 picker1={<RepsPicker />}
-                picker2={<RestPicker />}
-                picker3={<DurationPicker />}
+                picker2={<DurationPicker />}
+                picker3={<RestPicker />}
             />
             <PickerModal
                 visible={pauseModalOpen}

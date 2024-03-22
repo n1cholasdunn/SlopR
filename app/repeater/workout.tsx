@@ -7,16 +7,14 @@ import useBLEStore from '../../stores/useBLEStore';
 
 const Page = () => {
     const [isTareModalOpen, setIsTareModalOpen] = useState(true);
-    const {tareScale} = useBLEStore();
+    const {stopMeasuring, resetDataPoints} = useBLEStore();
     const handleClose = () => {
-        tareScale();
         setIsTareModalOpen(false);
+        stopMeasuring();
+        resetDataPoints();
     };
     return isTareModalOpen ? (
-        <TareModal
-            visible={isTareModalOpen}
-            onClose={() => setIsTareModalOpen(false)}
-        />
+        <TareModal visible={isTareModalOpen} onClose={handleClose} />
     ) : (
         <ForceGauge graphComponent={LiveGraph} />
     );

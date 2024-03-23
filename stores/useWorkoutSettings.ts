@@ -65,6 +65,12 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
 
     allSetsData: [],
     addSetToAllSets: () =>
+        set(state => ({
+            ...state,
+            allSetsData: [...state.allSetsData, [...state.singleSetData]],
+            singleSetData: [],
+        })),
+    /*
         set(state => {
             const newSet = [...state.singleSetData];
             return {
@@ -72,7 +78,7 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
                 singleSetData: [],
             };
         }),
-
+*/
     setRestTime: (restTime: number) => set({restTime}),
     setGripPosition: (gripPosition: GripPosition) => set({gripPosition}),
     setRepType: (repType: RepType) => set({repType}),

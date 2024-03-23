@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import ForceGauge from '../../components/ForceGauge';
 import LiveGraph from '../../components/LiveGraph';
@@ -8,15 +8,19 @@ import useBLEStore from '../../stores/useBLEStore';
 const Page = () => {
     const [isTareModalOpen, setIsTareModalOpen] = useState(true);
     const {stopMeasuring, resetDataPoints} = useBLEStore();
+
+    const [isTared, setIsTared] = useState(false);
+
     const handleClose = () => {
-        setIsTareModalOpen(false);
         stopMeasuring();
         resetDataPoints();
+        setIsTared(true);
+        setIsTareModalOpen(false);
     };
     return isTareModalOpen ? (
         <TareModal visible={isTareModalOpen} onClose={handleClose} />
     ) : (
-        <ForceGauge graphComponent={LiveGraph} />
+        <ForceGauge graphComponent={LiveGraph} isTared={isTared} />
     );
 };
 

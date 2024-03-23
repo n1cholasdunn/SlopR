@@ -24,15 +24,11 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
         scanForPeripherals,
         devices,
         connectToDevice,
-        disconnectFromDevice,
         connectedDevice,
         forceWeight,
         startMeasuring,
     } = useBLEStore();
 
-    useEffect(() => {
-        console.log('devices:', devices);
-    }, [devices, visible]);
     //TODO: add loading or searching indicator while scanning and no devices found yet. maybe after 5 second say no devices found
     //TODO: prompt user to tare scale after connecting to device. Modal with weight reading and button to tare. Reset weight data after tare
     const connectAndCloseModal = useCallback(

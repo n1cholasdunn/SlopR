@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
+import {useTimer} from 'react-timer-hook';
 
-import useTimer from './useTimer';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
@@ -14,10 +14,12 @@ type UseForceGaugeHandlersReturn = {
     currentSet: number;
     isRunning: boolean;
     restSeconds: number;
-    isRestTimerRunning: boolean;
+    isRunningRest: boolean;
 };
 
-const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
+const useForceGaugeHandlers = (
+    isTared: boolean,
+): UseForceGaugeHandlersReturn => {
     const {
         restTime,
         repDuration,
@@ -28,16 +30,29 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         addRepToCurrentSet,
     } = useWorkoutSettingsStore();
 
-    const {seconds, startTimer, stopTimer, resetTimer, isRunning} = useTimer(
-        repDuration,
-        'down',
-    );
+    const {seconds, start, pause, resume, restart, isRunning} = useTimer({
+        autoStart: false,
+        expiryTimestamp: new Date(Date.now() + repDuration * 1000),
+        onExpire: () => {
+            console.log('repExpire');
+            handleStop();
+        },
+    });
     const {
         seconds: restSeconds,
-        startTimer: startRestTimer,
-        resetTimer: resetRestTimer,
-        isRunning: isRestTimerRunning,
-    } = useTimer(restTime, 'down');
+        start: startRest,
+        pause: pauseRest,
+        resume: resumeRest,
+        restart: restartRest,
+        isRunning: isRunningRest,
+    } = useTimer({
+        autoStart: false,
+        expiryTimestamp: new Date(Date.now() + restTime * 1000),
+        onExpire: () => {
+            console.log('restExpire');
+            handleReset();
+        },
+    });
     const {
         startMeasuring,
         stopMeasuring,
@@ -47,7 +62,7 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
     } = useBLEStore();
 
     const [measurementStarted, setMeasurementStarted] = useState(false);
-    const [allowStart, setAllowStart] = useState(true);
+    const [allowStart, setAllowStart] = useState(isTared);
     const [currentRep, setCurrentRep] = useState(0);
     const [currentSet, setCurrentSet] = useState(0);
 
@@ -55,45 +70,49 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         if (!measurementStarted && allowStart && currentSet < amountOfSets) {
             startMeasuring();
             setMeasurementStarted(true);
-            startTimer();
+            console.log('start');
+            restart(new Date(Date.now() + repDuration * 1000));
         }
     }, [
         measurementStarted,
         startMeasuring,
-        startTimer,
+        start,
+        restart,
         allowStart,
         amountOfSets,
+        repDuration,
     ]);
     const handleStop = useCallback(() => {
         if (measurementStarted) {
             stopMeasuring();
             setMeasurementStarted(false);
-            stopTimer();
             setAllowStart(false);
 
             addRepToCurrentSet(dataPoints);
             setCurrentRep(prev => {
                 const nextRep = prev + 1;
-
+                restartRest(new Date(Date.now() + restTime * 1000));
+                console.log('startRest');
+                startRest();
                 if (nextRep >= amountOfReps) {
                     addSetToAllSets();
-
                     setCurrentSet(prevSet => prevSet + 1);
-                    startRestTimer();
                     return 0;
+                } else {
+                    return nextRep;
                 }
-
-                return nextRep;
             });
         }
     }, [
         measurementStarted,
         stopMeasuring,
-        stopTimer,
-        startRestTimer,
+        startRest,
         amountOfReps,
         addRepToCurrentSet,
         dataPoints,
+        restartRest,
+        restTime,
+        addSetToAllSets,
     ]);
 
     const handleReset = useCallback(() => {
@@ -102,7 +121,14 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
             setMeasurementStarted(false);
         }
         resetDataPoints();
-        resetTimer();
+
+        if (amountOfSets >= currentSet) {
+            setAllowStart(true);
+        }
+        // restart(new Date(Date.now() + repDuration * 1000), false);
+        // console.log('start');
+        // start();
+        //resetTimer();
         if (amountOfSets > currentSet) {
             setAllowStart(true);
         }
@@ -110,11 +136,18 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         measurementStarted,
         stopMeasuring,
         setDataPoints,
-        resetTimer,
+        // resetTimer,
         amountOfSets,
         currentSet,
         setAllowStart,
     ]);
+    useEffect(() => {
+        console.log('restSeconds', restSeconds);
+    }, [restSeconds]);
+    useEffect(() => {
+        console.log('seconds', seconds);
+    }, [seconds]);
+    /*
     useEffect(() => {
         if (seconds === 0 && measurementStarted) {
             handleStop();
@@ -122,8 +155,8 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
     }, [seconds, measurementStarted, handleStop]);
 
     useEffect(() => {
-        if (restSeconds === 0 && isRestTimerRunning) {
-            resetRestTimer();
+        if (restSeconds === 0 && isRunningRest) {
+            //resetRestTimer();
 
             if (currentSet < amountOfSets) {
                 handleReset();
@@ -131,11 +164,20 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         }
     }, [
         restSeconds,
-        isRestTimerRunning,
+        isRunningRest,
         currentSet,
         amountOfSets,
-        resetRestTimer,
+        // resetRestTimer,
     ]);
+*/
+    useEffect(() => {
+        if (allowStart && !isRunning) {
+            //restart(new Date(Date.now() + repDuration * 1000), false);
+            //
+            console.log('handleStart USEFEFECT ');
+            handleStart();
+        }
+    }, [allowStart, isRunning]);
 
     return {
         seconds,
@@ -147,7 +189,7 @@ const useForceGaugeHandlers = (): UseForceGaugeHandlersReturn => {
         currentSet,
         isRunning,
         restSeconds,
-        isRestTimerRunning,
+        isRunningRest,
     };
 };
 

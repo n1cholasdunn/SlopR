@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 
 import useDB from '../hooks/useDB';
@@ -13,9 +13,13 @@ type GraphComponentProps = {
 
 type ForceGaugeProps = {
     graphComponent: React.ComponentType<GraphComponentProps>;
+    isTared: boolean;
 };
 
-const ForceGauge = ({graphComponent: GraphComponent}: ForceGaugeProps) => {
+const ForceGauge = ({
+    graphComponent: GraphComponent,
+    isTared,
+}: ForceGaugeProps) => {
     const {forceWeight, dataPoints, tareScale} = useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
@@ -29,17 +33,22 @@ const ForceGauge = ({graphComponent: GraphComponent}: ForceGaugeProps) => {
         isRunning,
         seconds,
         restSeconds,
-        isRestTimerRunning,
-    } = useForceGaugeHandlers();
+        isRunningRest,
+    } = useForceGaugeHandlers(isTared);
 
     const {handleSaveWorkout, isSuccess} = useDB();
-
+    const timerCircleStyle = {
+        ...styles.timerCircle,
+        backgroundColor: isRunningRest ? 'red' : 'green',
+    };
     return (
         <View>
             <View style={styles.timerContainer}>
-                <View style={styles.timerCircle}>
+                <View style={timerCircleStyle}>
                     <Text style={styles.timerText}>
-                        {isRestTimerRunning ? restSeconds : seconds}
+                        {isRunningRest
+                            ? Math.ceil(restSeconds)
+                            : Math.ceil(seconds)}
                     </Text>
                 </View>
             </View>

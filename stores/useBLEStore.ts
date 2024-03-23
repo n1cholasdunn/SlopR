@@ -178,6 +178,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                     dataView.getFloat32(2, true).toFixed(2),
                 );
                 weight = convertWeight(weight);
+                weight = weight < 0 ? 0 : weight;
                 const timestamp = dataView.getUint32(6, true);
 
                 const newDataPoint: ForceDataPoint = {

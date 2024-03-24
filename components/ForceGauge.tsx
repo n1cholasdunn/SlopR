@@ -34,6 +34,8 @@ const ForceGauge = ({
         seconds,
         restSeconds,
         isRunningRest,
+        countdownSeconds,
+        isRunningCountdown,
     } = useForceGaugeHandlers(isTared);
 
     const {handleSaveWorkout, isSuccess} = useDB();
@@ -41,16 +43,26 @@ const ForceGauge = ({
         ...styles.timerCircle,
         backgroundColor: isRunningRest ? 'red' : 'green',
     };
+    const countdownCircleStyle = {
+        ...styles.timerCircle,
+        backgroundColor: 'yellow',
+    };
     return (
         <View>
             <View style={styles.timerContainer}>
-                <View style={timerCircleStyle}>
-                    <Text style={styles.timerText}>
-                        {isRunningRest
-                            ? Math.ceil(restSeconds)
-                            : Math.ceil(seconds)}
-                    </Text>
-                </View>
+                {isRunningCountdown ? (
+                    <View style={countdownCircleStyle}>
+                        <Text>{Math.ceil(countdownSeconds)}</Text>
+                    </View>
+                ) : (
+                    <View style={timerCircleStyle}>
+                        <Text style={styles.timerText}>
+                            {isRunningRest
+                                ? Math.ceil(restSeconds)
+                                : Math.ceil(seconds)}
+                        </Text>
+                    </View>
+                )}
             </View>
             {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
             <Text>Force: {forceWeight}lbs</Text>

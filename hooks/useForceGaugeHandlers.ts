@@ -15,6 +15,8 @@ type UseForceGaugeHandlersReturn = {
     isRunning: boolean;
     restSeconds: number;
     isRunningRest: boolean;
+    countdownSeconds: number;
+    isRunningCountdown: boolean;
 };
 
 const useForceGaugeHandlers = (
@@ -28,6 +30,7 @@ const useForceGaugeHandlers = (
         allSetsData,
         addSetToAllSets,
         addRepToCurrentSet,
+        countdownTime,
     } = useWorkoutSettingsStore();
 
     const {seconds, start, pause, resume, restart, isRunning} = useTimer({
@@ -53,6 +56,21 @@ const useForceGaugeHandlers = (
             handleReset();
         },
     });
+
+    const {
+        seconds: countdownSeconds,
+        start: startCountdown,
+        restart: restartCountdown,
+        isRunning: isRunningCountdown,
+    } = useTimer({
+        autoStart: false,
+        expiryTimestamp: new Date(Date.now() + countdownTime * 1000),
+        onExpire: () => {
+            console.log('countdownExpire');
+            setAllowStart(true);
+        },
+    });
+
     const {
         startMeasuring,
         stopMeasuring,
@@ -62,7 +80,7 @@ const useForceGaugeHandlers = (
     } = useBLEStore();
 
     const [measurementStarted, setMeasurementStarted] = useState(false);
-    const [allowStart, setAllowStart] = useState(isTared);
+    const [allowStart, setAllowStart] = useState(false);
     const [currentRep, setCurrentRep] = useState(0);
     const [currentSet, setCurrentSet] = useState(0);
 
@@ -171,10 +189,14 @@ const useForceGaugeHandlers = (
     ]);
 */
     useEffect(() => {
+        if (isTared) {
+            startCountdown();
+        }
+    }, [isTared]);
+
+    useEffect(() => {
         if (allowStart && !isRunning) {
-            //restart(new Date(Date.now() + repDuration * 1000), false);
-            //
-            console.log('handleStart USEFEFECT ');
+            console.log('handleStart countdownExpire ');
             handleStart();
         }
     }, [allowStart, isRunning]);
@@ -190,6 +212,8 @@ const useForceGaugeHandlers = (
         isRunning,
         restSeconds,
         isRunningRest,
+        countdownSeconds,
+        isRunningCountdown,
     };
 };
 

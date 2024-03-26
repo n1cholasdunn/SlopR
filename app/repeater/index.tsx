@@ -1,3 +1,4 @@
+import {AntDesign} from '@expo/vector-icons';
 import {router} from 'expo-router';
 import {useState} from 'react';
 import {
@@ -78,6 +79,7 @@ const Page = () => {
                     onPress={() => setSavedSetupModalOpen(true)}
                     style={styles.setupButtons}>
                     <Text>Load Saved Setup</Text>
+                    <AntDesign name="rightcircle" size={24} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() =>
@@ -214,6 +216,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center',
     },
     button: {
         borderColor: 'blue',

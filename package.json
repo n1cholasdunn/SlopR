@@ -12,6 +12,7 @@
         "lint:fix": "eslint . --ext .ts,.tsx --fix"
     },
     "dependencies": {
+        "@expo/vector-icons": "^14.0.0",
         "@react-native-community/netinfo": "11.1.0",
         "@react-native-firebase/app": "^18.8.0",
         "@react-native-firebase/auth": "^18.8.0",

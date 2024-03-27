@@ -3,7 +3,11 @@ import firestore from '@react-native-firebase/firestore';
 import {useMutation, useQuery} from '@tanstack/react-query';
 
 import {ForceDataPoint} from '../types/BLETypes';
-import {FetchedSet, FetchedWorkout} from '../types/fetchedDataTypes';
+import {
+    FetchedSet,
+    FetchedWorkout,
+    FetchedWorkoutInstructions,
+} from '../types/fetchedDataTypes';
 import {
     FullWorkoutData,
     SetData,
@@ -76,7 +80,7 @@ const useDB = () => {
 
     const {
         data: workouts,
-        status: fetchStatus,
+        status: fetchWorkoutStatus,
         error,
     } = useQuery({
         queryKey: ['workouts'],
@@ -136,11 +140,50 @@ const useDB = () => {
         } as DBWorkoutInstructions;
         saveWorkoutInstructions(workoutInstructions);
     };
+    const fetchSavedWorkoutInstructions = async () => {
+        const user = auth().currentUser;
+        if (!user) {
+            throw new Error('No user signed in');
+        }
+
+        const snapshot = await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('workout-setup')
+            .orderBy('createdAt', 'desc') // Assuming you want the latest workouts first
+            .get();
+
+        const finalData: FetchedWorkoutInstructions[] = snapshot.docs.map(
+            doc => ({
+                id: doc.id,
+                createdAt: doc.data().createdAt,
+                amountOfReps: doc.data().amountOfReps,
+                amountOfSets: doc.data().amountOfSets,
+                minutesBetweenSets: doc.data().minutesBetweenSets,
+                repDuration: doc.data().repDuration,
+                restTime: doc.data().restTime,
+                secondsBetweenSets: doc.data().secondsBetweenSets,
+                singleHand: doc.data().singleHand,
+                startingHand: doc.data().startingHand,
+            }),
+        );
+        return finalData;
+    };
+
+    const {
+        data: workoutInstructions,
+        status: fetchWorkoutInstructionsStatus,
+        error: errorFetchingWorkoutInstructions,
+    } = useQuery({
+        queryKey: ['workoutInstructions'],
+        queryFn: fetchSavedWorkoutInstructions,
+    });
 
     return {
         handleSaveWorkout,
         isSuccess,
         workouts,
+        workoutInstructions,
         error,
         handleSaveWorkoutInstructions,
         saveWorkoutInstructionsSuccess,

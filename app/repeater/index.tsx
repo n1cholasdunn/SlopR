@@ -22,6 +22,7 @@ import SetupButton from '../../components/SetupButton';
 import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
+import WorkoutSetupModal from '../../components/WorkoutSetupModal';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
 import useWorkoutSettingsStore from '../../stores/useWorkoutSettings';
@@ -76,13 +77,14 @@ const Page = () => {
     const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
-            <BackButton onPress={() => router.back()} />
+            <BackButton />
             <View style={styles.saveOrLoadSetupContainer}>
                 <SetupButton
-                    onPress={() => setSavedSetupModalOpen(true)}
+                    onPress={() => setSavedSetupModalOpen(prev => !prev)}
                     text="Load Saved Setup"
                     style={{width: '66%', height: '100%'}}
                 />
+                {savedSetupModalOpen && <WorkoutSetupModal />}
                 <TouchableOpacity
                     onPress={() =>
                         handleSaveWorkoutInstructions({

@@ -1,11 +1,13 @@
+import {Ionicons} from '@expo/vector-icons';
 import {
     QueryClient,
     QueryClientProvider,
     focusManager,
 } from '@tanstack/react-query';
-import {Tabs} from 'expo-router';
+import {Stack, router} from 'expo-router';
 import {AppStateStatus, Platform} from 'react-native';
 
+import BackButton from '../components/BackButton';
 import {useAppState} from '../hooks/useAppState';
 import {useOnlineManager} from '../hooks/useOnlineManager';
 
@@ -25,36 +27,44 @@ export default function Layout() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Tabs>
-                <Tabs.Screen
+            <Stack>
+                <Stack.Screen
                     name="Home"
                     options={{
-                        href: '/',
                         title: 'Home',
                     }}
                 />
-                <Tabs.Screen
+                <Stack.Screen
                     name="Settings"
                     options={{
-                        href: '/settings',
                         title: 'Settings',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
                     }}
                 />
-                <Tabs.Screen
+                <Stack.Screen
+                    name="repeater/index"
+                    options={{
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
+                    }}
+                />
+
+                <Stack.Screen
                     name="Graph1"
                     options={{
-                        href: '/graph1',
                         title: 'Graph1',
+                        headerLeft: () => <BackButton />,
                     }}
                 />
-                <Tabs.Screen
+                <Stack.Screen
                     name="LiveGraph"
                     options={{
-                        href: '/graph1/livegraph',
                         title: 'Live Graph',
+                        headerLeft: () => <BackButton />,
                     }}
                 />
-            </Tabs>
+            </Stack>
         </QueryClientProvider>
     );
 }

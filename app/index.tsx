@@ -1,4 +1,5 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {router} from 'expo-router';
 import {useState} from 'react';
 import {
     SafeAreaView,
@@ -11,6 +12,7 @@ import {
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import ForceGauge from '../components/ForceGauge';
 import PeakForceGraph from '../components/PeakForceGraph';
+import SelectModeButton from '../components/SelectModeButton';
 import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
@@ -60,6 +62,10 @@ export default function Page() {
                 ) : (
                     <View>
                         <Text>Please Connect to a Tindeq Progressor</Text>
+                        <SelectModeButton
+                            text="Repeaters"
+                            onPress={() => router.navigate('/repeater')}
+                        />
                     </View>
                 )}
             </View>

@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
+import BackButton from '../../components/BackButton';
 import CountdownPicker from '../../components/Countdown';
 import DurationPicker from '../../components/DurationPicker';
 import PausePicker from '../../components/PausePicker';
@@ -17,6 +18,7 @@ import RepsPicker from '../../components/RepsPicker';
 import RestPicker from '../../components/RestPicker';
 import ScanModal from '../../components/ScanModal';
 import SetPicker from '../../components/SetPicker';
+import SetupButton from '../../components/SetupButton';
 import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
@@ -74,13 +76,13 @@ const Page = () => {
     const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
+            <BackButton onPress={() => router.back()} />
             <View style={styles.saveOrLoadSetupContainer}>
-                <TouchableOpacity
+                <SetupButton
                     onPress={() => setSavedSetupModalOpen(true)}
-                    style={styles.setupButtons}>
-                    <Text>Load Saved Setup</Text>
-                    <AntDesign name="rightcircle" size={24} color="black" />
-                </TouchableOpacity>
+                    text="Load Saved Setup"
+                    style={{width: '66%', height: '100%'}}
+                />
                 <TouchableOpacity
                     onPress={() =>
                         handleSaveWorkoutInstructions({
@@ -95,7 +97,7 @@ const Page = () => {
                         })
                     }
                     style={styles.button}>
-                    <Text>Save Workout Setup</Text>
+                    <Text style={styles.saveSetupText}>Save Current Setup</Text>
                 </TouchableOpacity>
             </View>
             <View
@@ -104,33 +106,34 @@ const Page = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     gap: 10,
+                    marginVertical: 10,
                 }}>
-                <TouchableOpacity
+                <SetupButton
                     onPress={() => setSetModalOpen(true)}
-                    style={styles.setupButtons}>
-                    <Text>Sets:{amountOfSets}</Text>
-                </TouchableOpacity>
+                    text={`Sets: ${amountOfSets}`}
+                />
+
                 <TouchableOpacity
                     onPress={openRepModal}
                     style={styles.setupButtons}>
-                    <Text>Set</Text>
-                    <Text>Reps: {amountOfReps}</Text>
-                    <Text>Rep Duration: {repDuration}</Text>
-                    <Text>Rest: {restTime}</Text>
+                    <View style={styles.setTextContainer}>
+                        <Text style={styles.setContainerHeaderText}>Set</Text>
+                        <Text>Reps: {amountOfReps}</Text>
+                        <Text>Rep Duration: {repDuration}s</Text>
+                        <Text>Rest: {restTime}s</Text>
+                    </View>
+                    <AntDesign name="rightcircle" size={20} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity
+                <SetupButton
                     onPress={() => setPauseModalOpen(true)}
-                    style={styles.setupButtons}>
-                    <Text>
-                        Pause
-                        {` ${minutesBetweenSets}min ${secondsBetweenSets}sec`}
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                    headerText="Pause"
+                    text={`${minutesBetweenSets}m ${secondsBetweenSets}s`}
+                />
+                <SetupButton
                     onPress={() => setCountdownModalOpen(true)}
-                    style={styles.setupButtons}>
-                    <Text>Countdown: {countdownTime}</Text>
-                </TouchableOpacity>
+                    headerText="Countdown"
+                    text={`${countdownTime}s`}
+                />
             </View>
             <View>
                 <SingleHandSwitch />
@@ -209,6 +212,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 10,
+        height: height * (1 / 18),
+        width: width - 20,
     },
     setupButtons: {
         borderColor: 'red',
@@ -217,8 +222,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         flexDirection: 'row',
-        gap: 10,
+        justifyContent: 'space-between',
+        gap: 15,
         alignItems: 'center',
+        width: width * (2 / 3),
     },
     button: {
         borderColor: 'blue',
@@ -226,5 +233,20 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 5,
+        height: '100%',
+        width: '33%',
+    },
+    setTextContainer: {
+        flexDirection: 'column',
+        gap: 3,
+    },
+    setContainerHeaderText: {
+        alignSelf: 'center',
+        fontSize: 15,
+        fontWeight: '600',
+    },
+    saveSetupText: {
+        alignSelf: 'center',
+        justifyContent: 'center',
     },
 });

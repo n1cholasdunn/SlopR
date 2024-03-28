@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 import ForceGauge from '../../components/ForceGauge';
 import LiveGraph from '../../components/LiveGraph';

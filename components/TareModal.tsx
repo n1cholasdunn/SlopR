@@ -22,15 +22,11 @@ const TareModal = ({visible, onClose}: TareModalProps) => {
         useBLEStore();
 
     useEffect(() => {
-        const timeoutId = setTimeout(() => {
+        if (connectedDevice) {
             tareScale();
             startMeasuring();
             console.log('first mount start measuring');
-        }, 1000); // Adjust the timeout duration as needed
-
-        return () => {
-            clearTimeout(timeoutId);
-        };
+        }
     }, [connectedDevice]);
     const handleTare = () => {
         tareScale();

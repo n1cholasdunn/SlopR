@@ -180,7 +180,6 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 weight = convertWeight(weight);
                 weight = weight < 0 ? 0 : weight;
                 const timestamp = dataView.getUint32(6, true);
-
                 const newDataPoint: ForceDataPoint = {
                     weight,
                     timestamp,
@@ -188,7 +187,6 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 if (weight > get().maxForce) {
                     set({maxForce: weight});
                 }
-                //TODO when submitting to DB use the average of last 5 or 10 data points
                 setDataPoints(newDataPoint);
 
                 set({forceWeight: Math.max(0, parseFloat(weight.toFixed(2)))});

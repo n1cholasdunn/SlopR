@@ -37,7 +37,6 @@ const useForceGaugeHandlers = (
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + repDuration * 1000),
         onExpire: () => {
-            console.log('repExpire');
             handleStop();
         },
     });
@@ -52,7 +51,6 @@ const useForceGaugeHandlers = (
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + restTime * 1000),
         onExpire: () => {
-            console.log('restExpire');
             handleReset();
         },
     });
@@ -66,7 +64,6 @@ const useForceGaugeHandlers = (
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + countdownTime * 1000),
         onExpire: () => {
-            console.log('countdownExpire');
             setAllowStart(true);
         },
     });
@@ -88,7 +85,6 @@ const useForceGaugeHandlers = (
         if (!measurementStarted && allowStart && currentSet < amountOfSets) {
             startMeasuring();
             setMeasurementStarted(true);
-            console.log('start');
             restart(new Date(Date.now() + repDuration * 1000));
         }
     }, [
@@ -110,7 +106,6 @@ const useForceGaugeHandlers = (
             setCurrentRep(prev => {
                 const nextRep = prev + 1;
                 restartRest(new Date(Date.now() + restTime * 1000));
-                console.log('startRest');
                 startRest();
                 if (nextRep >= amountOfReps) {
                     addSetToAllSets();
@@ -159,12 +154,6 @@ const useForceGaugeHandlers = (
         currentSet,
         setAllowStart,
     ]);
-    useEffect(() => {
-        console.log('restSeconds', restSeconds);
-    }, [restSeconds]);
-    useEffect(() => {
-        console.log('seconds', seconds);
-    }, [seconds]);
     /*
     useEffect(() => {
         if (seconds === 0 && measurementStarted) {
@@ -196,7 +185,6 @@ const useForceGaugeHandlers = (
 
     useEffect(() => {
         if (allowStart && !isRunning) {
-            console.log('handleStart countdownExpire ');
             handleStart();
         }
     }, [allowStart, isRunning]);

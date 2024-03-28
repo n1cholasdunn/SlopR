@@ -22,6 +22,7 @@ import SetupButton from '../../components/SetupButton';
 import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
+import WorkoutLog from '../../components/WorkoutLog';
 import WorkoutSetupModal from '../../components/WorkoutSetupModal';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
@@ -84,7 +85,8 @@ const Page = () => {
                     text="Load Saved Setup"
                     style={{width: '66%', height: '100%'}}
                 />
-                {savedSetupModalOpen && <WorkoutSetupModal />}
+                {savedSetupModalOpen && <WorkoutLog />}
+                {/*savedSetupModalOpen && <WorkoutSetupModal />*/}
                 <TouchableOpacity
                     onPress={() =>
                         handleSaveWorkoutInstructions({

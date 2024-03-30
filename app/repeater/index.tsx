@@ -1,6 +1,6 @@
 import {AntDesign} from '@expo/vector-icons';
 import {router} from 'expo-router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -44,7 +44,8 @@ const Page = () => {
         secondsBetweenHands,
         minutesBetweenHands,
     } = useWorkoutSettingsStore();
-    const {scanForPeripherals, requestPermissions} = useBLEStore();
+    const {scanForPeripherals, requestPermissions, connectedDevice} =
+        useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
     const [countdownModalOpen, setCountdownModalOpen] = useState(false);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
@@ -78,7 +79,6 @@ const Page = () => {
     const {handleSaveWorkoutInstructions} = useDB();
     return (
         <View style={styles.container}>
-            <BackButton />
             <View style={styles.saveOrLoadSetupContainer}>
                 <SetupButton
                     onPress={() => setSavedSetupModalOpen(prev => !prev)}

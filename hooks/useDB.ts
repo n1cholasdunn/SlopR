@@ -2,20 +2,23 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {useMutation, useQuery} from '@tanstack/react-query';
 
-import {ForceDataPoint} from '../types/BLETypes';
-import {
+import type {ForceDataPoint} from '../types/BLETypes';
+import type {
     FetchedSet,
     FetchedWorkout,
     FetchedWorkoutInstructions,
 } from '../types/fetchedDataTypes';
-import {
+import type {
     FullWorkoutData,
     SetData,
     DBWorkoutInstructions,
     WorkoutInstructions,
 } from '../types/workoutTypes';
 import {cleanWorkoutData} from '../utils/cleanData';
-
+function hi() {
+    console.log('hi');
+}
+hi();
 const useDB = () => {
     const saveWorkoutToDB = async (workoutData: SetData) => {
         const user = auth().currentUser;

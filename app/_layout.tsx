@@ -4,7 +4,7 @@ import {
     QueryClientProvider,
     focusManager,
 } from '@tanstack/react-query';
-import {Stack, router} from 'expo-router';
+import {Slot, Stack, router} from 'expo-router';
 import {AppStateStatus, Platform} from 'react-native';
 
 import BackButton from '../components/BackButton';
@@ -29,39 +29,34 @@ export default function Layout() {
         <QueryClientProvider client={queryClient}>
             <Stack>
                 <Stack.Screen
-                    name="Home"
+                    name="index"
                     options={{
-                        title: 'Home',
-                    }}
-                />
-                <Stack.Screen
-                    name="Settings"
-                    options={{
-                        title: 'Settings',
-                        headerLeft: () => <BackButton />,
-                        headerBackTitleVisible: false,
+                        headerShown: false,
                     }}
                 />
                 <Stack.Screen
                     name="repeater/index"
                     options={{
+                        headerTitle: '',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="settings"
+                    options={{
+                        headerTitle: '',
+
                         headerLeft: () => <BackButton />,
                         headerBackTitleVisible: false,
                     }}
                 />
 
                 <Stack.Screen
-                    name="Graph1"
+                    name="repeater/workout"
                     options={{
-                        title: 'Graph1',
                         headerLeft: () => <BackButton />,
-                    }}
-                />
-                <Stack.Screen
-                    name="LiveGraph"
-                    options={{
-                        title: 'Live Graph',
-                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
                     }}
                 />
             </Stack>

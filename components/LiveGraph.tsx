@@ -27,6 +27,8 @@ const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
                 style={{
                     width: GRAPH_WIDTH,
                     height: GRAPH_HEIGHT,
+                    borderWidth: 2,
+                    borderColor: 'green',
                 }}>
                 <Path
                     style="stroke"

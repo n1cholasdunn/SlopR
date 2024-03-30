@@ -57,7 +57,12 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
+                        <Text>Device was not disconnected in time</Text>
+                        {/*
+
                         <ForceGauge graphComponent={PeakForceGraph} />
+
+           */}
                     </>
                 ) : (
                     <View>

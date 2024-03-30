@@ -24,13 +24,8 @@ const ForceGauge = ({
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
     const {
-        handleStart,
-        handleStop,
-        handleReset,
-        allowStart,
         currentRep,
         currentSet,
-        isRunning,
         seconds,
         restSeconds,
         isRunningRest,
@@ -64,21 +59,16 @@ const ForceGauge = ({
                     </View>
                 )}
             </View>
-            {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
+            <View style={styles.graphContainer}>
+                {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
+            </View>
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Sets remaining: {amountOfSets - currentSet}</Text>
             <Text>
                 Reps remaining:
                 {amountOfSets > currentSet ? amountOfReps - currentRep : 0}
             </Text>
-            <Button
-                title="Start"
-                onPress={handleStart}
-                disabled={!allowStart || isRunning}
-            />
-            <Button title="Stop" onPress={handleStop} disabled={!isRunning} />
-            <Button title="Reset" onPress={handleReset} />
-            <Button title="Tare" onPress={tareScale} />
+            {/* TODO: change button to touchable opacity with same styling*/}
             <Button
                 title="Save Workout Data"
                 onPress={() => handleSaveWorkout(allSetsData)}
@@ -94,8 +84,8 @@ const styles = StyleSheet.create({
     },
     timerContainer: {
         position: 'absolute',
-        top: 20,
-        right: 20,
+        top: 10,
+        right: 10,
     },
     timerCircle: {
         width: 40,
@@ -109,6 +99,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: 'white',
+    },
+    graphContainer: {
+        width: '100%',
+        height: 550,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 20,
     },
 });
 export default ForceGauge;

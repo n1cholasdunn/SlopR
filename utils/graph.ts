@@ -4,8 +4,8 @@ import {curveBasis, line, scaleLinear, scaleTime} from 'd3';
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
 
-export const GRAPH_HEIGHT = 400;
-export const GRAPH_WIDTH = 370;
+export const GRAPH_HEIGHT = 550;
+export const GRAPH_WIDTH = 400;
 //TODO: test dynamic height and width as percentage of screen dimensions
 const timestampStart = (data: ForceDataPoint[]) =>
     Math.min(...data.map(val => val.timestamp));

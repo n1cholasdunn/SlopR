@@ -154,29 +154,7 @@ const useForceGaugeHandlers = (
         currentSet,
         setAllowStart,
     ]);
-    /*
-    useEffect(() => {
-        if (seconds === 0 && measurementStarted) {
-            handleStop();
-        }
-    }, [seconds, measurementStarted, handleStop]);
-
-    useEffect(() => {
-        if (restSeconds === 0 && isRunningRest) {
-            //resetRestTimer();
-
-            if (currentSet < amountOfSets) {
-                handleReset();
-            }
-        }
-    }, [
-        restSeconds,
-        isRunningRest,
-        currentSet,
-        amountOfSets,
-        // resetRestTimer,
-    ]);
-*/
+    //TODO: consirder moving the countdown somewhere else to not use tared or have it handle the start on expire or something
     useEffect(() => {
         if (isTared) {
             startCountdown();

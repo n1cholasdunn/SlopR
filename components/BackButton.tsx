@@ -1,47 +1,31 @@
 import {Ionicons} from '@expo/vector-icons';
-import {useRouter} from 'expo-router';
+import {useRouter, usePathname} from 'expo-router';
 import React from 'react';
-import {
-    TouchableOpacity,
-    Text,
-    Dimensions,
-    StyleSheet,
-    TouchableOpacityProps,
-    View,
-} from 'react-native';
 
-const {width, height} = Dimensions.get('window');
-/*
-const BackButton: React.FC<TouchableOpacityProps> = ({onPress, ...rest}) => {
-    return (
-        <TouchableOpacity
-            onPress={onPress}
-            style={[styles.backButtons]}
-            {...rest}>
-            <Ionicons name="arrow-back-circle" size={24} color="black" />
-        </TouchableOpacity>
-    );
-};
-*/
+import useBLEStore from '../stores/useBLEStore';
+
 const BackButton = () => {
     const router = useRouter();
+    const pathname = usePathname();
+    const {disconnectFromDevice} = useBLEStore();
 
+    const handleBack = () => {
+        //TODO: undo since it is not necessary to disconnect from device there was just an old conditional render on index
+        if (pathname === 'repeater/workout') {
+            //TODO: maybe have it check when leaving any graph route the pathname and set the tare value to false
+            disconnectFromDevice();
+            router.back();
+        } else {
+            router.back();
+        }
+    };
     return (
         <Ionicons
             name="arrow-back"
             size={24}
             color="black"
-            onPress={() => router.back()}
+            onPress={handleBack}
         />
     );
 };
 export default BackButton;
-
-const styles = StyleSheet.create({
-    backButtons: {
-        borderColor: 'green',
-        borderWidth: 2,
-        borderRadius: 5,
-        width: width * 0.8,
-    },
-});

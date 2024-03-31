@@ -1,33 +1,35 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
 import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 
+import {useMakeGraph} from '../hooks/useMakeScrollableGraph';
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
-import {GRAPH_HEIGHT, GRAPH_WIDTH, makeGraph} from '../utils/graph';
+import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../utils/graph';
 
-type LiveGraphProps = {
+type ScrollableLiveGraphProps = {
     dataPoints: ForceDataPoint[];
 };
 
-const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
+const ScrollableLiveGraph: React.FC<ScrollableLiveGraphProps> = ({
+    dataPoints,
+}) => {
     const [graphData, setGraphData] = useState<GraphData | undefined>(
         undefined,
     );
-
-    console.log('constant render causing flashing?');
+    const {makeGraph} = useMakeGraph();
     useEffect(() => {
         if (dataPoints.length > 0) {
-            console.log('dataPoints', dataPoints.length);
+            console.log('graphdata should be set issue with makegraph?');
             setGraphData(makeGraph(dataPoints));
         }
     }, [dataPoints]);
 
     return graphData ? (
-        <View>
+        <ScrollView horizontal>
             <Canvas
                 style={{
-                    width: GRAPH_WIDTH,
+                    width: GRAPH_WIDTH, // Increase the width for horizontal scrolling
                     height: GRAPH_HEIGHT,
                     borderWidth: 2,
                     borderColor: 'green',
@@ -39,7 +41,7 @@ const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
                     color="#6B4E71"
                 />
             </Canvas>
-        </View>
+        </ScrollView>
     ) : (
         <View>
             <Text>Error loading Graph</Text>
@@ -47,4 +49,4 @@ const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
     );
 };
 
-export default LiveGraph;
+export default ScrollableLiveGraph;

@@ -54,7 +54,7 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     singleHand: false,
     startingHand: undefined,
     repDuration: 1,
-    amountOfSets: 2,
+    amountOfSets: 1,
     countdownTime: 3,
 
     singleSetData: [],

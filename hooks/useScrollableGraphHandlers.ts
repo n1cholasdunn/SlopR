@@ -4,7 +4,7 @@ import {useTimer} from 'react-timer-hook';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-type UseForceGaugeHandlersReturn = {
+type UseScrollableGraphHandlersReturn = {
     handleStart: () => void;
     handleStop: () => void;
     handleReset: () => void;
@@ -19,14 +19,15 @@ type UseForceGaugeHandlersReturn = {
     isRunningCountdown: boolean;
 };
 
-const useForceGaugeHandlers = (
+const useScrollableGraphHandlers = (
     isTared: boolean,
-): UseForceGaugeHandlersReturn => {
+): UseScrollableGraphHandlersReturn => {
     const {
         restTime,
         repDuration,
         amountOfReps,
         amountOfSets,
+        allSetsData,
         addSetToAllSets,
         addRepToCurrentSet,
         countdownTime,
@@ -72,6 +73,9 @@ const useForceGaugeHandlers = (
         stopMeasuring,
         setDataPoints,
         resetDataPoints,
+        setRawSetDataPoints,
+        resetRawSetDataPoints,
+        rawSetDataPoints,
         dataPoints,
     } = useBLEStore();
 
@@ -108,6 +112,7 @@ const useForceGaugeHandlers = (
                 startRest();
                 if (nextRep >= amountOfReps) {
                     addSetToAllSets();
+                    resetRawSetDataPoints();
                     setCurrentSet(prevSet => prevSet + 1);
                     return 0;
                 } else {
@@ -116,6 +121,8 @@ const useForceGaugeHandlers = (
             });
         }
     }, [
+        resetRawSetDataPoints,
+        rawSetDataPoints,
         measurementStarted,
         stopMeasuring,
         startRest,
@@ -182,4 +189,4 @@ const useForceGaugeHandlers = (
     };
 };
 
-export default useForceGaugeHandlers;
+export default useScrollableGraphHandlers;

@@ -1,5 +1,5 @@
 import {AntDesign} from '@expo/vector-icons';
-import {router} from 'expo-router';
+import {router, Link} from 'expo-router';
 import {useEffect, useState} from 'react';
 import {
     Dimensions,
@@ -73,7 +73,8 @@ const Page = () => {
     };
     const handleCloseScanModal = () => {
         setScanModalOpen(false);
-        router.navigate('/repeater/workout');
+        router.navigate('/repeater/horizontal');
+        //router.navigate('/repeater/workout');
     };
 
     const {handleSaveWorkoutInstructions} = useDB();

@@ -20,6 +20,7 @@ interface BLEState {
     connectedDevice: Device | null;
     forceWeight: number;
     dataPoints: ForceDataPoint[];
+    rawSetDataPoints: ForceDataPoint[];
     lastUpdateTime: number;
     updateInterval: number;
     serviceUUID: string;
@@ -41,7 +42,10 @@ interface BLEState {
     stopMeasuring: () => void;
     tareScale: () => void;
     setDataPoints: (dataPoint: ForceDataPoint) => void;
+    setRawSetDataPoints: (dataPoint: ForceDataPoint) => void;
+
     resetDataPoints: () => void;
+    resetRawSetDataPoints: () => void;
 }
 
 const useBLEStore = create<BLEState>((set, get) => ({
@@ -50,6 +54,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
     connectedDevice: null,
     forceWeight: 0,
     dataPoints: [],
+    rawSetDataPoints: [],
     lastUpdateTime: 0,
     updateInterval: 12.5,
     serviceUUID: Tindeq.services.uuid,
@@ -139,6 +144,14 @@ const useBLEStore = create<BLEState>((set, get) => ({
     resetDataPoints: () => {
         set({dataPoints: []});
     },
+    setRawSetDataPoints: (dataPoint: ForceDataPoint) => {
+        const dataPoints = get().rawSetDataPoints;
+        set({rawSetDataPoints: [...dataPoints, dataPoint]});
+    },
+    resetRawSetDataPoints: () => {
+        set({rawSetDataPoints: []});
+    },
+
     onDataRecieved: (
         error: BleError | null,
         characteristic: Characteristic | null,
@@ -152,6 +165,8 @@ const useBLEStore = create<BLEState>((set, get) => ({
         }
         const {convertWeight} = useUnitSystemStore.getState();
         const setDataPoints = get().setDataPoints;
+        const setRawSetDataPoints = get().setRawSetDataPoints;
+
         const currentTime = Date.now();
         const lastUpdateTime = get().lastUpdateTime;
 
@@ -188,6 +203,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                     set({maxForce: weight});
                 }
                 setDataPoints(newDataPoint);
+                setRawSetDataPoints(newDataPoint);
 
                 set({forceWeight: Math.max(0, parseFloat(weight.toFixed(2)))});
             } else {

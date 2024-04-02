@@ -20,7 +20,7 @@ const ScrollableLiveGraph: React.FC<ScrollableLiveGraphProps> = ({
     const {makeGraph} = useMakeGraph();
     useEffect(() => {
         if (dataPoints.length > 0) {
-            console.log('graphdata should be set issue with makegraph?');
+            console.log('dataPoints', dataPoints);
             setGraphData(makeGraph(dataPoints));
         }
     }, [dataPoints]);

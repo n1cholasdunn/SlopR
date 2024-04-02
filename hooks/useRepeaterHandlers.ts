@@ -4,7 +4,7 @@ import {useTimer} from 'react-timer-hook';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-type UseForceGaugeHandlersReturn = {
+type UseRepeaterHandlersReturn = {
     handleStart: () => void;
     handleStop: () => void;
     handleReset: () => void;
@@ -19,9 +19,7 @@ type UseForceGaugeHandlersReturn = {
     isRunningCountdown: boolean;
 };
 
-const useForceGaugeHandlers = (
-    isTared: boolean,
-): UseForceGaugeHandlersReturn => {
+const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
     const {
         restTime,
         repDuration,
@@ -32,7 +30,33 @@ const useForceGaugeHandlers = (
         countdownTime,
     } = useWorkoutSettingsStore();
 
-    const {seconds, start, pause, resume, restart, isRunning} = useTimer({
+    const {
+        startMeasuring,
+        stopMeasuring,
+        setDataPoints,
+        resetDataPoints,
+        dataPoints,
+    } = useBLEStore();
+
+    //TODO: handle function for countdown expire to start rep timer and set timer at the same time
+    //TODO: handle function to reset set timer onExpire and change state to increase reps count etc
+    //TODO: set setData state for after each set at first
+    //TODO: handle saving data after all sets complete in new format of just sets
+    //TODO: try breaking up into reps from each set by dividing by timestamps into equal parts based on amount of reps
+    //TODO: try using timestamp created manually for each data point instead of device timestamp since it seems to loop
+    const [measurementStarted, setMeasurementStarted] = useState(false);
+    const [allowStart, setAllowStart] = useState(false);
+    const [currentRep, setCurrentRep] = useState(0);
+    const [currentSet, setCurrentSet] = useState(0);
+    const [totalSetTime, setTotalSetTime] = useState(0);
+
+    useEffect(() => {
+        setTotalSetTime(
+            repDuration * amountOfReps + restTime * (amountOfReps - 1),
+        );
+    }, [repDuration, restTime, amountOfReps]);
+
+    const {seconds, start, restart, isRunning} = useTimer({
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + repDuration * 1000),
         onExpire: () => {
@@ -42,8 +66,6 @@ const useForceGaugeHandlers = (
     const {
         seconds: restSeconds,
         start: startRest,
-        pause: pauseRest,
-        resume: resumeRest,
         restart: restartRest,
         isRunning: isRunningRest,
     } = useTimer({
@@ -57,7 +79,6 @@ const useForceGaugeHandlers = (
     const {
         seconds: countdownSeconds,
         start: startCountdown,
-        restart: restartCountdown,
         isRunning: isRunningCountdown,
     } = useTimer({
         autoStart: false,
@@ -66,59 +87,55 @@ const useForceGaugeHandlers = (
             setAllowStart(true);
         },
     });
-
+    /*
     const {
-        startMeasuring,
-        stopMeasuring,
-        setDataPoints,
-        resetDataPoints,
-        dataPoints,
-        resetFirstTimestamp,
-    } = useBLEStore();
-
-    const [measurementStarted, setMeasurementStarted] = useState(false);
-    const [allowStart, setAllowStart] = useState(false);
-    const [currentRep, setCurrentRep] = useState(0);
-    const [currentSet, setCurrentSet] = useState(0);
+        seconds: setSeconds,
+        start: setStart,
+        restart: setRestart,
+        isRunning: setRunning,
+    } = useTimer({
+        autoStart: false,
+        expiryTimestamp: new Date(Date.now() + totalSetTime * 1000),
+        onExpire: () => {
+            console.log('set expired');
+        },
+    });
+  */
 
     const handleStart = useCallback(() => {
-        if (!measurementStarted && allowStart && currentSet < amountOfSets) {
+        if (allowStart && currentSet < amountOfSets && !measurementStarted) {
+            resetDataPoints();
             startMeasuring();
-            setMeasurementStarted(true);
+            restart(new Date(Date.now() + repDuration * 1000));
+        } else if (allowStart && currentSet < amountOfSets) {
             restart(new Date(Date.now() + repDuration * 1000));
         }
     }, [
-        measurementStarted,
-        startMeasuring,
-        start,
         restart,
         allowStart,
         amountOfSets,
         repDuration,
-    ]);
-    const handleStop = useCallback(() => {
-        if (measurementStarted) {
-            stopMeasuring();
-            setMeasurementStarted(false);
-            setAllowStart(false);
-
-            addRepToCurrentSet(dataPoints);
-            setCurrentRep(prev => {
-                const nextRep = prev + 1;
-                restartRest(new Date(Date.now() + restTime * 1000));
-                startRest();
-                if (nextRep >= amountOfReps) {
-                    addSetToAllSets();
-                    setCurrentSet(prevSet => prevSet + 1);
-                    return 0;
-                } else {
-                    return nextRep;
-                }
-            });
-        }
-    }, [
         measurementStarted,
-        stopMeasuring,
+        startMeasuring,
+    ]);
+
+    const handleStop = useCallback(() => {
+        setAllowStart(false);
+
+        setCurrentRep(prev => {
+            const nextRep = prev + 1;
+            restartRest(new Date(Date.now() + restTime * 1000));
+            startRest();
+            if (nextRep >= amountOfReps) {
+                //TODO: add set data to all sets
+                // addSetToAllSets();
+                setCurrentSet(prevSet => prevSet + 1);
+                return 0;
+            } else {
+                return nextRep;
+            }
+        });
+    }, [
         startRest,
         amountOfReps,
         addRepToCurrentSet,
@@ -129,19 +146,9 @@ const useForceGaugeHandlers = (
     ]);
 
     const handleReset = useCallback(() => {
-        if (measurementStarted) {
-            stopMeasuring();
-            setMeasurementStarted(false);
-        }
-        resetDataPoints();
-
         if (amountOfSets >= currentSet) {
             setAllowStart(true);
         }
-        // restart(new Date(Date.now() + repDuration * 1000), false);
-        // console.log('start');
-        // start();
-        //resetTimer();
         if (amountOfSets > currentSet) {
             setAllowStart(true);
         }
@@ -149,7 +156,6 @@ const useForceGaugeHandlers = (
         measurementStarted,
         stopMeasuring,
         setDataPoints,
-        // resetTimer,
         amountOfSets,
         currentSet,
         setAllowStart,
@@ -157,16 +163,24 @@ const useForceGaugeHandlers = (
     //TODO: consirder moving the countdown somewhere else to not use tared or have it handle the start on expire or something
     useEffect(() => {
         if (isTared) {
-            resetFirstTimestamp();
             startCountdown();
         }
     }, [isTared]);
 
     useEffect(() => {
         if (allowStart && !isRunning) {
+            console.log('start use effect');
             handleStart();
         }
     }, [allowStart, isRunning]);
+
+    useEffect(() => {
+        if (currentSet >= amountOfSets) {
+            stopMeasuring();
+            console.log('stop measuring use effect');
+            //TODO: add set data to all sets
+        }
+    }, [currentSet, amountOfSets]);
 
     return {
         seconds,
@@ -184,4 +198,4 @@ const useForceGaugeHandlers = (
     };
 };
 
-export default useForceGaugeHandlers;
+export default useRepeaterHandlers;

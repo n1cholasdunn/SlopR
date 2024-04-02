@@ -3,6 +3,7 @@ import {View, Text, Button, StyleSheet} from 'react-native';
 
 import useDB from '../hooks/useDB';
 import useForceGaugeHandlers from '../hooks/useForceGaugeHandlers';
+import useRepeaterHandlers from '../hooks/useRepeaterHandlers';
 import useScrollableGraphHandlers from '../hooks/useScrollableGraphHandlers';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
@@ -21,12 +22,17 @@ const ScrollableForceGauge = ({
     graphComponent: GraphComponent,
     isTared,
 }: ForceGaugeProps) => {
-    const {forceWeight, rawSetDataPoints} = useBLEStore();
+    const {forceWeight, rawSetDataPoints, dataPoints, connectedDevice} =
+        useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
     useEffect(() => {
-        console.log('rawSetDataPoints', rawSetDataPoints);
-    }, [rawSetDataPoints]);
+        console.log('dataPoints', dataPoints);
+        //      console.log('rawSetDataPoints', rawSetDataPoints);
+    }, [dataPoints]);
+    useEffect(() => {
+        console.log('connectedDevice', connectedDevice);
+    }, [connectedDevice]);
     const {
         currentRep,
         currentSet,
@@ -35,7 +41,7 @@ const ScrollableForceGauge = ({
         isRunningRest,
         countdownSeconds,
         isRunningCountdown,
-    } = useScrollableGraphHandlers(isTared);
+    } = useRepeaterHandlers(isTared);
 
     const {handleSaveWorkout, isSuccess} = useDB();
     const timerCircleStyle = {
@@ -64,9 +70,7 @@ const ScrollableForceGauge = ({
                 )}
             </View>
             <View style={styles.graphContainer}>
-                {GraphComponent && (
-                    <GraphComponent dataPoints={rawSetDataPoints} />
-                )}
+                {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
             </View>
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Sets remaining: {amountOfSets - currentSet}</Text>

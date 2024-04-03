@@ -1,13 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 
 import useDB from '../hooks/useDB';
-import useForceGaugeHandlers from '../hooks/useForceGaugeHandlers';
 import useRepeaterHandlers from '../hooks/useRepeaterHandlers';
-import useScrollableGraphHandlers from '../hooks/useScrollableGraphHandlers';
 import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
-import {ForceDataPoint} from '../types/BLETypes';
 
 type ForceGaugeProps = {
     graphComponent: React.FC;
@@ -18,8 +15,7 @@ const ScrollableForceGauge = ({
     graphComponent: GraphComponent,
     isTared,
 }: ForceGaugeProps) => {
-    const {forceWeight, rawSetDataPoints, dataPoints, connectedDevice} =
-        useBLEStore();
+    const {forceWeight} = useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
     const {

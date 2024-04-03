@@ -1,6 +1,6 @@
 import {AntDesign} from '@expo/vector-icons';
-import {router, Link} from 'expo-router';
-import {useEffect, useState} from 'react';
+import {router} from 'expo-router';
+import {useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import BackButton from '../../components/BackButton';
 import CountdownPicker from '../../components/Countdown';
 import DurationPicker from '../../components/DurationPicker';
 import PausePicker from '../../components/PausePicker';
@@ -22,7 +21,6 @@ import SetupButton from '../../components/SetupButton';
 import SidePausePicker from '../../components/SidePausePicker';
 import SideToggleButton from '../../components/SideToggleButton';
 import SingleHandSwitch from '../../components/SingleHandSwitch';
-import WorkoutLog from '../../components/WorkoutLog';
 import WorkoutSetupModal from '../../components/WorkoutSetupModal';
 import useDB from '../../hooks/useDB';
 import useBLEStore from '../../stores/useBLEStore';
@@ -44,8 +42,7 @@ const Page = () => {
         secondsBetweenHands,
         minutesBetweenHands,
     } = useWorkoutSettingsStore();
-    const {scanForPeripherals, requestPermissions, connectedDevice} =
-        useBLEStore();
+    const {scanForPeripherals, requestPermissions} = useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
     const [countdownModalOpen, setCountdownModalOpen] = useState(false);
     const [pauseModalOpen, setPauseModalOpen] = useState(false);
@@ -86,8 +83,7 @@ const Page = () => {
                     text="Load Saved Setup"
                     style={{width: '66%', height: '100%'}}
                 />
-                {savedSetupModalOpen && <WorkoutLog />}
-                {/*savedSetupModalOpen && <WorkoutSetupModal />*/}
+                {savedSetupModalOpen && <WorkoutSetupModal />}
                 <TouchableOpacity
                     onPress={() =>
                         handleSaveWorkoutInstructions({

@@ -1,10 +1,6 @@
 import CustomPicker from './CustomPicker';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-type RepsPickerProps = {
-    showPicker: boolean;
-    setShowPicker: (newState: boolean) => void;
-};
 const RepsPicker = () => {
     const {amountOfReps, setAmountOfReps} = useWorkoutSettingsStore();
     return (

@@ -32,7 +32,7 @@ const useForceGaugeHandlers = (
         countdownTime,
     } = useWorkoutSettingsStore();
 
-    const {seconds, start, pause, resume, restart, isRunning} = useTimer({
+    const {seconds, start, restart, isRunning} = useTimer({
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + repDuration * 1000),
         onExpire: () => {
@@ -42,8 +42,6 @@ const useForceGaugeHandlers = (
     const {
         seconds: restSeconds,
         start: startRest,
-        pause: pauseRest,
-        resume: resumeRest,
         restart: restartRest,
         isRunning: isRunningRest,
     } = useTimer({
@@ -57,7 +55,6 @@ const useForceGaugeHandlers = (
     const {
         seconds: countdownSeconds,
         start: startCountdown,
-        restart: restartCountdown,
         isRunning: isRunningCountdown,
     } = useTimer({
         autoStart: false,

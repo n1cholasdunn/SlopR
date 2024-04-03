@@ -47,6 +47,7 @@ const RegisterPage = () => {
                 }
             } catch (err) {
                 Alert.alert('Woops', 'Please check the form and try again');
+                console.error(err);
             }
         }
     };

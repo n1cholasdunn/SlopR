@@ -1,9 +1,6 @@
 import CustomPicker from './CustomPicker';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
-type RestPickerProps = {
-    showPicker: boolean;
-    setShowPicker: (newState: boolean) => void;
-};
+
 const RestPicker = () => {
     const {restTime, setRestTime} = useWorkoutSettingsStore();
     const options = Array.from({length: 60}, (_, i) => `${i + 1}s`);

@@ -5,10 +5,9 @@ import {
     Dimensions,
     StyleSheet,
     TouchableOpacityProps,
-    View,
 } from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 interface SelectModeButtonProps extends TouchableOpacityProps {
     text: string;

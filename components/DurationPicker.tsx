@@ -1,10 +1,6 @@
 import CustomPicker from './CustomPicker';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
-type DurationPickerProps = {
-    showPicker: boolean;
-    setShowPicker: (newState: boolean) => void;
-};
 const DurationPicker = () => {
     const {repDuration, setRepDuration} = useWorkoutSettingsStore();
     return (

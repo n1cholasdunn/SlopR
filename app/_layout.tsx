@@ -1,10 +1,9 @@
-import {Ionicons} from '@expo/vector-icons';
 import {
     QueryClient,
     QueryClientProvider,
     focusManager,
 } from '@tanstack/react-query';
-import {Slot, Stack, router} from 'expo-router';
+import {Stack} from 'expo-router';
 import {AppStateStatus, Platform} from 'react-native';
 
 import BackButton from '../components/BackButton';

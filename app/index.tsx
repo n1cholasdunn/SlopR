@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 
 import DeviceModal from '../components/BTDeviceConnectionModal';
-import ForceGauge from '../components/ForceGauge';
-import PeakForceGraph from '../components/PeakForceGraph';
 import SelectModeButton from '../components/SelectModeButton';
 import useBLEStore from '../stores/useBLEStore';
 

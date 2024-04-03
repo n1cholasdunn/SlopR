@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 
 import useDB from '../hooks/useDB';
@@ -20,7 +20,7 @@ const ForceGauge = ({
     graphComponent: GraphComponent,
     isTared,
 }: ForceGaugeProps) => {
-    const {forceWeight, dataPoints, tareScale} = useBLEStore();
+    const {forceWeight, dataPoints} = useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
     const {

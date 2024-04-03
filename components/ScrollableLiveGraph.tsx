@@ -1,19 +1,12 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
 import {throttle} from 'lodash';
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, ScrollView, Dimensions} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 
 import {useMakeGraph} from '../hooks/useMakeScrollableGraph';
 import useBLEStore from '../stores/useBLEStore';
-import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
-import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../utils/graph';
-
-type ScrollableLiveGraphProps = {
-    dataPoints: ForceDataPoint[];
-};
-
-const {width: SCREEN_WIDTH} = Dimensions.get('window');
+import {GRAPH_HEIGHT} from '../utils/graph';
 
 const ScrollableLiveGraph = () => {
     const {dataPoints} = useBLEStore();

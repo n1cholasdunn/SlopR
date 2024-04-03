@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 import ForceGauge from '../../components/ForceGauge';
 import LiveGraph from '../../components/LiveGraph';
@@ -7,7 +7,7 @@ import useBLEStore from '../../stores/useBLEStore';
 
 const Page = () => {
     const [isTareModalOpen, setIsTareModalOpen] = useState(true);
-    const {stopMeasuring, resetDataPoints, connectedDevice} = useBLEStore();
+    const {stopMeasuring, resetDataPoints} = useBLEStore();
 
     const [isTared, setIsTared] = useState(false);
 

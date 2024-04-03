@@ -50,7 +50,7 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
     const [currentRep, setCurrentRep] = useState(0);
     const [currentSet, setCurrentSet] = useState(0);
 
-    const {seconds, start, restart, isRunning} = useTimer({
+    const {seconds, restart, isRunning} = useTimer({
         autoStart: false,
         expiryTimestamp: new Date(Date.now() + repDuration * 1000),
         onExpire: () => {

@@ -1,5 +1,5 @@
 import {FlashList, ListRenderItemInfo} from '@shopify/flash-list';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback} from 'react';
 import {
     View,
     Text,
@@ -20,14 +20,7 @@ type ScanModalProps = {
 const {width, height} = Dimensions.get('window');
 
 const ScanModal = ({visible, onClose}: ScanModalProps) => {
-    const {
-        scanForPeripherals,
-        devices,
-        connectToDevice,
-        connectedDevice,
-        forceWeight,
-        startMeasuring,
-    } = useBLEStore();
+    const {devices, connectToDevice, startMeasuring} = useBLEStore();
 
     //TODO: add loading or searching indicator while scanning and no devices found yet. maybe after 5 second say no devices found
     //TODO: prompt user to tare scale after connecting to device. Modal with weight reading and button to tare. Reset weight data after tare
@@ -80,17 +73,6 @@ const ScanModal = ({visible, onClose}: ScanModalProps) => {
         </Modal>
     );
 };
-/*
- * {connectedDevice ? (
-                        <TouchableOpacity onPress={disconnectFromDevice}>
-                            <Text>Disconnect</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity onPress={scanForPeripherals}>
-                            <Text>Scan</Text>
-                        </TouchableOpacity>
-                    )}
-*/
 const styles = StyleSheet.create({
     modalOverlay: {
         position: 'absolute',
@@ -147,22 +129,4 @@ const styles = StyleSheet.create({
         width: '85%',
     },
 });
-/*
-                {devices.map(device => (
-                        <TouchableOpacity
-                            onPress={() => connectToDevice(device)}>
-                            <Text>{device.name}</Text>
-                        </TouchableOpacity>
-                    ))}
-    deviceItem: {
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 50,
-        marginHorizontal: 20,
-        marginBottom: 5,
-        borderRadius: 8,
-    },
-
- */
 export default ScanModal;

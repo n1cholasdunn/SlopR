@@ -4,47 +4,41 @@ import {useEffect, useState} from 'react';
 
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 import {ForceDataPoint} from '../types/BLETypes';
-import {GraphData} from '../types/chartData';
+import {GraphData, GraphHookReturn} from '../types/chartData';
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../utils/graph';
 
 export const useMakeGraph = () => {
-    const {amountOfReps, repDuration, restTime} = useWorkoutSettingsStore();
-    /* .
-
-    const [totalRepTime, setTotalRepTime] = useState<number>(0);
-    useEffect(() => {
-        console.log('graph hook use effect');
-        setTotalRepTime(
-            amountOfReps * repDuration + (amountOfReps - 1) * restTime,
-        );
-    }, [amountOfReps, repDuration, restTime]);
-
-  .. */
     const timestampStart = (data: ForceDataPoint[]) =>
         Math.min(...data.map(val => val.timestamp));
     const timestampEnd = (data: ForceDataPoint[]) =>
         Math.max(...data.map(val => val.timestamp));
 
-    const makeGraph = (data: ForceDataPoint[]): GraphData => {
+    const makeGraph = (data: ForceDataPoint[]): GraphHookReturn => {
         const max = Math.max(...data.map(val => val.weight));
         const min = Math.min(...data.map(val => val.weight));
 
+        const spacing = 5;
+        const gWidth = data.length * spacing;
+
         const yAxis = scaleLinear().domain([0, 150]).range([GRAPH_HEIGHT, 35]);
-        const xAxis = scaleTime()
+        const xAxis = scaleLinear()
             .domain([timestampStart(data), timestampEnd(data)])
-            .range([10, amountOfReps * (GRAPH_WIDTH - 10)]); // Increase the range for horizontal scrolling
+            .range([0, gWidth]); // Increase the range for horizontal scrolling
 
         const curvedLine = line<ForceDataPoint>()
-            .x(d => xAxis(d.timestamp)) // Add spacing between data points
+            .x((d, i) => xAxis(d.timestamp)) // Add spacing between data points
             .y(d => yAxis(d.weight))
             .curve(curveBasis)(data);
 
         const skPath = Skia.Path.MakeFromSVGString(curvedLine!);
 
         return {
-            max,
-            min,
-            curve: skPath!,
+            data: {
+                max,
+                min,
+                curve: skPath!,
+            },
+            width: gWidth,
         };
     };
     return {makeGraph};

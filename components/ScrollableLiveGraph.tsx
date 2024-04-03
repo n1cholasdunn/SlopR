@@ -1,8 +1,10 @@
 import {Canvas, Path} from '@shopify/react-native-skia';
-import React, {useEffect, useState} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {throttle} from 'lodash';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, Text, ScrollView, Dimensions} from 'react-native';
 
 import {useMakeGraph} from '../hooks/useMakeScrollableGraph';
+import useBLEStore from '../stores/useBLEStore';
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphData} from '../types/chartData';
 import {GRAPH_HEIGHT, GRAPH_WIDTH} from '../utils/graph';
@@ -11,25 +13,47 @@ type ScrollableLiveGraphProps = {
     dataPoints: ForceDataPoint[];
 };
 
-const ScrollableLiveGraph: React.FC<ScrollableLiveGraphProps> = ({
-    dataPoints,
-}) => {
+const {width: SCREEN_WIDTH} = Dimensions.get('window');
+
+const ScrollableLiveGraph = () => {
+    const {dataPoints} = useBLEStore();
     const [graphData, setGraphData] = useState<GraphData | undefined>(
         undefined,
     );
+    const [graphWidth, setGraphWidth] = useState<number>(0);
+    const scrollViewRef = useRef<ScrollView>(null);
+
     const {makeGraph} = useMakeGraph();
+
     useEffect(() => {
-        if (dataPoints.length > 0) {
-            console.log('dataPoints', dataPoints);
-            setGraphData(makeGraph(dataPoints));
-        }
-    }, [dataPoints]);
+        const updateGraph = () => {
+            if (dataPoints.length > 0) {
+                const {data, width} = makeGraph(dataPoints);
+                setGraphData(data);
+                setGraphWidth(width);
+            }
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollToEnd({animated: false});
+            }
+        };
+        const throttledUpdateGraph = throttle(updateGraph, 50);
+        throttledUpdateGraph();
+        return () => {
+            throttledUpdateGraph.cancel();
+        };
+    }, [dataPoints, scrollViewRef]);
 
     return graphData ? (
-        <ScrollView horizontal>
+        <ScrollView
+            ref={scrollViewRef}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+                width: graphWidth,
+            }}
+            horizontal>
             <Canvas
                 style={{
-                    width: GRAPH_WIDTH, // Increase the width for horizontal scrolling
+                    width: graphWidth,
                     height: GRAPH_HEIGHT,
                     borderWidth: 2,
                     borderColor: 'green',

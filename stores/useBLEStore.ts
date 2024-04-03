@@ -169,7 +169,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
         }
         const {convertWeight} = useUnitSystemStore.getState();
         const setDataPoints = get().setDataPoints;
-        const setRawSetDataPoints = get().setRawSetDataPoints;
+        //   const setRawSetDataPoints = get().setRawSetDataPoints;
         const firstTimestamp = get().firstTimestamp;
         const setFirstTimestamp = get().setFirstTimestamp;
 
@@ -213,7 +213,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
                     set({maxForce: weight});
                 }
                 setDataPoints(newDataPoint);
-                setRawSetDataPoints(newDataPoint);
+                //            setRawSetDataPoints(newDataPoint);
 
                 set({forceWeight: Math.max(0, parseFloat(weight.toFixed(2)))});
             } else {

@@ -5,3 +5,7 @@ export type GraphData = {
     max: number;
     curve: SkPath;
 };
+export type GraphHookReturn = {
+    data: GraphData;
+    width: number;
+};

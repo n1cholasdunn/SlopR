@@ -9,12 +9,8 @@ import useBLEStore from '../stores/useBLEStore';
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 import {ForceDataPoint} from '../types/BLETypes';
 
-type GraphComponentProps = {
-    dataPoints: ForceDataPoint[];
-};
-
 type ForceGaugeProps = {
-    graphComponent: React.ComponentType<GraphComponentProps>;
+    graphComponent: React.FC;
     isTared: boolean;
 };
 
@@ -26,13 +22,6 @@ const ScrollableForceGauge = ({
         useBLEStore();
     const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
 
-    useEffect(() => {
-        console.log('dataPoints', dataPoints);
-        //      console.log('rawSetDataPoints', rawSetDataPoints);
-    }, [dataPoints]);
-    useEffect(() => {
-        console.log('connectedDevice', connectedDevice);
-    }, [connectedDevice]);
     const {
         currentRep,
         currentSet,
@@ -70,7 +59,7 @@ const ScrollableForceGauge = ({
                 )}
             </View>
             <View style={styles.graphContainer}>
-                {GraphComponent && <GraphComponent dataPoints={dataPoints} />}
+                {GraphComponent && <GraphComponent />}
             </View>
             <Text>Force: {forceWeight}lbs</Text>
             <Text>Sets remaining: {amountOfSets - currentSet}</Text>

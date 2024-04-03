@@ -36,6 +36,7 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
         setDataPoints,
         resetDataPoints,
         dataPoints,
+        resetFirstTimestamp,
     } = useBLEStore();
 
     //TODO: handle function for countdown expire to start rep timer and set timer at the same time
@@ -48,13 +49,6 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
     const [allowStart, setAllowStart] = useState(false);
     const [currentRep, setCurrentRep] = useState(0);
     const [currentSet, setCurrentSet] = useState(0);
-    const [totalSetTime, setTotalSetTime] = useState(0);
-
-    useEffect(() => {
-        setTotalSetTime(
-            repDuration * amountOfReps + restTime * (amountOfReps - 1),
-        );
-    }, [repDuration, restTime, amountOfReps]);
 
     const {seconds, start, restart, isRunning} = useTimer({
         autoStart: false,
@@ -73,6 +67,10 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
         expiryTimestamp: new Date(Date.now() + restTime * 1000),
         onExpire: () => {
             handleReset();
+            if (currentSet >= amountOfSets) {
+                stopMeasuring();
+                console.log('stop measuring onexpire last rest');
+            }
         },
     });
 
@@ -87,24 +85,12 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
             setAllowStart(true);
         },
     });
-    /*
-    const {
-        seconds: setSeconds,
-        start: setStart,
-        restart: setRestart,
-        isRunning: setRunning,
-    } = useTimer({
-        autoStart: false,
-        expiryTimestamp: new Date(Date.now() + totalSetTime * 1000),
-        onExpire: () => {
-            console.log('set expired');
-        },
-    });
-  */
 
     const handleStart = useCallback(() => {
         if (allowStart && currentSet < amountOfSets && !measurementStarted) {
+            console.log('start measuring/reset');
             resetDataPoints();
+            setMeasurementStarted(true);
             startMeasuring();
             restart(new Date(Date.now() + repDuration * 1000));
         } else if (allowStart && currentSet < amountOfSets) {
@@ -130,8 +116,10 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
                 //TODO: add set data to all sets
                 // addSetToAllSets();
                 setCurrentSet(prevSet => prevSet + 1);
+                console.log('set increased');
                 return 0;
             } else {
+                console.log('rep increased');
                 return nextRep;
             }
         });
@@ -163,24 +151,16 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
     //TODO: consirder moving the countdown somewhere else to not use tared or have it handle the start on expire or something
     useEffect(() => {
         if (isTared) {
+            resetFirstTimestamp();
             startCountdown();
         }
     }, [isTared]);
 
     useEffect(() => {
         if (allowStart && !isRunning) {
-            console.log('start use effect');
             handleStart();
         }
     }, [allowStart, isRunning]);
-
-    useEffect(() => {
-        if (currentSet >= amountOfSets) {
-            stopMeasuring();
-            console.log('stop measuring use effect');
-            //TODO: add set data to all sets
-        }
-    }, [currentSet, amountOfSets]);
 
     return {
         seconds,

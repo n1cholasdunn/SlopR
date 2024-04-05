@@ -11,18 +11,18 @@ import {GRAPH_HEIGHT} from '../utils/graph';
 
 const ScrollableLiveGraph = () => {
     const {dataPoints} = useBLEStore();
-    const [graphData, setGraphData] = useState<GraphData | undefined>(
-        undefined,
-    );
+    // const [graphData, setGraphData] = useState<GraphData | undefined>(
+    //      undefined,
+    // );
     const [graphWidth, setGraphWidth] = useState<number>(0);
     const scrollViewRef = useRef<ScrollView>(null);
+    const graphData = useMakeGraph();
 
-    const {makeGraph} = useMakeGraph();
-
+    /*
     useEffect(() => {
         const updateGraph = () => {
             if (dataPoints.length > 0) {
-                const {data, width} = makeGraph(dataPoints);
+                const {data, width} = useMakeGraph(dataPoints);
                 setGraphData(data);
                 setGraphWidth(width);
             }
@@ -36,16 +36,17 @@ const ScrollableLiveGraph = () => {
             throttledUpdateGraph.cancel();
         };
     }, [dataPoints, scrollViewRef]);
-    /*
-    useEffect(() => {
-        console.log('first data point timestamp', dataPoints[0]?.timestamp);
-        console.log(
-            'last data point timestamp',
-            dataPoints[dataPoints.length - 1]?.timestamp,
-        );
-    }, [dataPoints]);
 */
-    return graphData ? (
+    useEffect(() => {
+        if (graphData && graphData.width) {
+            setGraphWidth(graphData.width);
+        }
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollToEnd({animated: false});
+        }
+    }, [graphData, scrollViewRef]);
+
+    return graphData?.data ? (
         <ScrollView
             ref={scrollViewRef}
             showsHorizontalScrollIndicator={false}
@@ -54,7 +55,7 @@ const ScrollableLiveGraph = () => {
                 height: GRAPH_HEIGHT + 20,
             }}
             horizontal>
-            <View style={{height: GRAPH_HEIGHT + 20}}>
+            <View style={{height: GRAPH_HEIGHT + 20, paddingLeft: 5}}>
                 <Canvas
                     style={{
                         width: graphWidth,
@@ -64,28 +65,28 @@ const ScrollableLiveGraph = () => {
                     }}>
                     <Path
                         style="stroke"
-                        path={graphData.curve ?? ''}
+                        path={graphData.data.curve ?? ''}
                         strokeWidth={4}
                         color="#6B4E71"
                     />
                 </Canvas>
                 <Svg width={graphWidth} height={20}>
-                    {graphData.xAxisTicks.map((tick: any, index) => (
-                        <G key={index}>
+                    {graphData.data.xAxisTicks.map((tick: any, index) => (
+                        <G key={index} transform="translate(3,0)">
                             <Line
-                                x1={graphData.xAxisTickPositions[index]}
+                                x1={graphData.data.xAxisTickPositions[index]}
                                 y1={0}
-                                x2={graphData.xAxisTickPositions[index]}
+                                x2={graphData.data.xAxisTickPositions[index]}
                                 y2={5}
                                 stroke="black"
                                 strokeWidth={1}
                             />
                             <SvgText
-                                x={graphData.xAxisTickPositions[index]}
+                                x={graphData.data.xAxisTickPositions[index]}
                                 y={15}
                                 fontSize={12}
                                 textAnchor="middle">
-                                {tick >= 5000 ? `${tick / 1000}s` : ''}
+                                {tick}
                             </SvgText>
                         </G>
                     ))}
@@ -100,31 +101,3 @@ const ScrollableLiveGraph = () => {
 };
 
 export default ScrollableLiveGraph;
-/*
-      <Svg width={graphWidth} height={20}>
-                    {graphData.xAxisTicks.map((tick: any, index) => (
-                        <G key={index}>
-                            {tick >= 5000 && (
-                                <>
-                                    <Line
-                                        x1={graphData.xAxisTickPositions[index]}
-                                        y1={0}
-                                        x2={graphData.xAxisTickPositions[index]}
-                                        y2={5}
-                                        stroke="black"
-                                        strokeWidth={1}
-                                    />
-                                    <SvgText
-                                        x={graphData.xAxisTickPositions[index]}
-                                        y={15}
-                                        fontSize={12}
-                                        textAnchor="middle">
-                                        {`${tick / 1000}s`}
-                                    </SvgText>
-                                </>
-                            )}
-                        </G>
-                    ))}
-                </Svg>
-
-*/

@@ -13,8 +13,10 @@ import type {
     SetData,
     DBWorkoutInstructions,
     WorkoutInstructions,
+    FullRepeaterWorkoutData,
+    RepeaterSet,
 } from '../types/workoutTypes';
-import {cleanWorkoutData} from '../utils/cleanData';
+import {cleanRepeaterData, cleanWorkoutData} from '../utils/cleanData';
 function hi() {
     console.log('hi');
 }
@@ -182,6 +184,48 @@ const useDB = () => {
         queryFn: fetchSavedWorkoutInstructions,
     });
 
+    const saveRepeaterWorkoutToDB = async (
+        workoutData: FullRepeaterWorkoutData,
+    ) => {
+        const user = auth().currentUser;
+        if (!user) {
+            throw new Error('No user signed in');
+        }
+        //TODO: add tags to workouts to filter by type so all workouts can be shown in one list
+        return await firestore()
+            .collection('users')
+            .doc(user.uid)
+            .collection('repeater-workouts')
+            .add(workoutData);
+    };
+
+    const {
+        mutate: saveRepeaterWorkout,
+        status: saveRepeaterWorkoutStatus,
+        isError: saveRepeaterWorkoutiSError,
+        error: saveRepeaterWorkoutError,
+        isSuccess: saveRepeaterWorkoutSuccess,
+    } = useMutation({
+        mutationFn: saveRepeaterWorkoutToDB,
+        onSuccess: () => {
+            console.log('Workout data saved to Firestore');
+        },
+        onError: e => {
+            console.error('Error saving workout data:', e);
+        },
+    });
+
+    const handleSaveRepeaterWorkout = (
+        repeaterSetsData: ForceDataPoint[][],
+    ) => {
+        const cleanData = cleanRepeaterData(repeaterSetsData);
+        const workoutData = {
+            createdAt: firestore.FieldValue.serverTimestamp(),
+            sets: cleanData,
+        };
+        saveRepeaterWorkout(workoutData);
+    };
+
     return {
         handleSaveWorkout,
         isSuccess,
@@ -193,6 +237,11 @@ const useDB = () => {
         saveWorkoutInstructionsStatus,
         saveWorkoutInstructionsError,
         errorWorkoutInstructionsError,
+        handleSaveRepeaterWorkout,
+        saveRepeaterWorkoutStatus,
+        saveRepeaterWorkoutiSError,
+        saveRepeaterWorkoutError,
+        saveRepeaterWorkoutSuccess,
     };
 };
 

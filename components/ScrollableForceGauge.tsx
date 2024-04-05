@@ -16,7 +16,8 @@ const ScrollableForceGauge = ({
     isTared,
 }: ForceGaugeProps) => {
     const {forceWeight} = useBLEStore();
-    const {allSetsData, amountOfReps, amountOfSets} = useWorkoutSettingsStore();
+    const {repeaterSetsData, amountOfReps, amountOfSets} =
+        useWorkoutSettingsStore();
 
     const {
         currentRep,
@@ -28,7 +29,7 @@ const ScrollableForceGauge = ({
         isRunningCountdown,
     } = useRepeaterHandlers(isTared);
 
-    const {handleSaveWorkout, isSuccess} = useDB();
+    const {handleSaveRepeaterWorkout, saveRepeaterWorkoutSuccess} = useDB();
     const timerCircleStyle = {
         ...styles.timerCircle,
         backgroundColor: isRunningRest ? 'red' : 'green',
@@ -58,7 +59,10 @@ const ScrollableForceGauge = ({
                 {GraphComponent && <GraphComponent />}
             </View>
             <Text>Force: {forceWeight}lbs</Text>
-            <Text>Sets remaining: {amountOfSets - currentSet}</Text>
+            <Text>
+                Sets remaining:
+                {amountOfSets > currentSet ? amountOfSets - currentSet : 0}
+            </Text>
             <Text>
                 Reps remaining:
                 {amountOfSets > currentSet ? amountOfReps - currentRep : 0}
@@ -66,9 +70,11 @@ const ScrollableForceGauge = ({
             {/* TODO: change button to touchable opacity with same styling*/}
             <Button
                 title="Save Workout Data"
-                onPress={() => handleSaveWorkout(allSetsData)}
+                onPress={() => handleSaveRepeaterWorkout(repeaterSetsData)}
             />
-            {isSuccess && <Text>Workout data saved to Firestore</Text>}
+            {saveRepeaterWorkoutSuccess && (
+                <Text>Workout data saved to Firestore</Text>
+            )}
         </View>
     );
 };

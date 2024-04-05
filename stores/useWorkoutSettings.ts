@@ -21,11 +21,13 @@ type WorkoutSettingsState = {
     maxStrength?: number;
     totalSetTime: number;
 
-    //TODO reorganize a single store for all workout Data
+    //TODO: reorganize a single store for all workout Data
     singleSetData: ForceDataPoint[][];
     addRepToCurrentSet: (singleSetData: ForceDataPoint[]) => void;
     allSetsData: ForceDataPoint[][][];
     addSetToAllSets: () => void;
+    repeaterSetsData: ForceDataPoint[][];
+    addRepeaterSetsData: (repeaterSet: ForceDataPoint[]) => void;
 
     setRestTime: (restTime: number) => void;
     setGripPosition: (gripPosition: GripPosition) => void;
@@ -72,6 +74,11 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
             ...state,
             allSetsData: [...state.allSetsData, [...state.singleSetData]],
             singleSetData: [],
+        })),
+    repeaterSetsData: [],
+    addRepeaterSetsData: (repeaterSet: ForceDataPoint[]) =>
+        set(state => ({
+            repeaterSetsData: [...state.repeaterSetsData, [...repeaterSet]],
         })),
     /*
         set(state => {

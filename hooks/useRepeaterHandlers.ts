@@ -30,8 +30,13 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
         countdownTime,
         secondsBetweenSets,
         minutesBetweenSets,
+        addRepeaterSetsData,
+        repeaterSetsData,
     } = useWorkoutSettingsStore();
 
+    useEffect(() => {
+        console.log('repeatedSetsData', repeaterSetsData);
+    }, [repeaterSetsData]);
     const {
         startMeasuring,
         stopMeasuring,
@@ -128,6 +133,7 @@ const useRepeaterHandlers = (isTared: boolean): UseRepeaterHandlersReturn => {
             startRest();
             if (nextRep >= amountOfReps) {
                 //TODO: add set data to all sets
+                addRepeaterSetsData(dataPoints);
                 setCurrentSet(prevSet => prevSet + 1);
                 stopMeasuring();
                 setMeasurementStarted(false);

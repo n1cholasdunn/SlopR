@@ -28,6 +28,18 @@ export type FullWorkoutData = {
     createdAt: FirebaseFirestoreTypes.FieldValue;
     sets: CleanSetData[];
 };
+export type FullRepeaterWorkoutData = {
+    createdAt: FirebaseFirestoreTypes.FieldValue;
+    sets: RepeaterSet[];
+};
+export type RepeaterSet = {
+    id: number;
+    data: ForceDataPoint[];
+};
+export type CleanRepeaterData = {
+    id: number;
+    data: ForceDataPoint[];
+};
 
 export interface WorkoutInstructions {
     amountOfSets: number;

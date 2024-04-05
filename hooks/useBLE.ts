@@ -1,31 +1,20 @@
 /* eslint-disable no-bitwise */
 
+import {Buffer} from 'buffer';
+import * as ExpoDevice from 'expo-device';
 import {useEffect, useMemo, useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
+import base64 from 'react-native-base64';
 import {
     BleError,
     BleManager,
     Characteristic,
     Device,
 } from 'react-native-ble-plx';
-import * as ExpoDevice from 'expo-device';
-import base64 from 'react-native-base64';
-import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
-import {Buffer} from 'buffer';
-import {ForceDataPoint} from '../types/chartData';
 
-interface BluetoothLowEnergyApi {
-    requestPermissions(): Promise<boolean>;
-    scanForPeripherals(): void;
-    allDevices: Device[];
-    connectToDevice: (deviceId: Device) => Promise<void>;
-    connectedDevice: Device | null;
-    disconnectFromDevice: () => void;
-    forceWeight: number;
-    tareScale: () => void;
-    startMeasuring: () => void;
-    dataPoints: ForceDataPoint[];
-}
+import {useUnitConversion} from './useUnitConversion';
+import {Tindeq, TindeqCommands, TindeqNotificationCodes} from '../tindeq';
+import {BluetoothLowEnergyApi, ForceDataPoint} from '../types/BLETypes';
 
 const useBLE = (): BluetoothLowEnergyApi => {
     const bleManager = useMemo(() => new BleManager(), []);
@@ -33,6 +22,7 @@ const useBLE = (): BluetoothLowEnergyApi => {
     const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
     const [forceWeight, setForceWeight] = useState(0);
     const [dataPoints, setDataPoints] = useState<ForceDataPoint[]>([]);
+    const {convertWeight} = useUnitConversion();
 
     useEffect(() => {
         console.log('Data Points:', dataPoints);
@@ -177,9 +167,10 @@ const useBLE = (): BluetoothLowEnergyApi => {
 
             if (length >= 8) {
                 // Expecting at least 8 bytes (4 for weight + 4 for timestamp)
-                const weight = parseFloat(
+                let weight = parseFloat(
                     dataView.getFloat32(2, true).toFixed(2),
                 );
+                weight = convertWeight(weight);
                 const timestamp = dataView.getUint32(6, true);
 
                 const newDataPoint: ForceDataPoint = {
@@ -246,6 +237,10 @@ const useBLE = (): BluetoothLowEnergyApi => {
     const tareScale = () => writeCommandToDevice(TindeqCommands.TARE_SCALE);
     const startMeasuring = () =>
         writeCommandToDevice(TindeqCommands.START_MEASURING);
+    const stopMeasuring = () => {
+        console.log('Stop Measuring');
+        return writeCommandToDevice(TindeqCommands.STOP_MEASURING);
+    };
 
     return {
         scanForPeripherals,
@@ -257,7 +252,9 @@ const useBLE = (): BluetoothLowEnergyApi => {
         forceWeight,
         tareScale,
         startMeasuring,
+        stopMeasuring,
         dataPoints,
+        setDataPoints,
     };
 };
 

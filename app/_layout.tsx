@@ -1,39 +1,64 @@
-import {Tabs} from 'expo-router';
-import {UnitSystemProvider} from '../context/UnitSystem';
+import {
+    QueryClient,
+    QueryClientProvider,
+    focusManager,
+} from '@tanstack/react-query';
+import {Stack} from 'expo-router';
+import {AppStateStatus, Platform} from 'react-native';
+
+import BackButton from '../components/BackButton';
+import {useAppState} from '../hooks/useAppState';
+import {useOnlineManager} from '../hooks/useOnlineManager';
+
+function onAppStateChange(status: AppStateStatus) {
+    if (Platform.OS !== 'web') {
+        focusManager.setFocused(status === 'active');
+    }
+}
+
+const queryClient = new QueryClient({
+    defaultOptions: {queries: {retry: 2}},
+});
 
 export default function Layout() {
+    useOnlineManager();
+    useAppState(onAppStateChange);
+
     return (
-        <UnitSystemProvider>
-            <Tabs>
-                <Tabs.Screen
-                    name="Home"
+        <QueryClientProvider client={queryClient}>
+            <Stack>
+                <Stack.Screen
+                    name="index"
                     options={{
-                        href: '/',
-                        title: 'Home',
+                        headerShown: false,
                     }}
                 />
-                <Tabs.Screen
-                    name="Settings"
+                <Stack.Screen
+                    name="repeater/index"
                     options={{
-                        href: '/settings',
-                        title: 'Settings',
+                        headerTitle: '',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
                     }}
                 />
-                <Tabs.Screen
-                    name="Graph1"
+                <Stack.Screen
+                    name="settings"
                     options={{
-                        href: '/graph1',
-                        title: 'Graph1',
+                        headerTitle: '',
+
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
                     }}
                 />
-                <Tabs.Screen
-                    name="LiveGraph"
+
+                <Stack.Screen
+                    name="repeater/workout"
                     options={{
-                        href: '/graph1/livegraph',
-                        title: 'Live Graph',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
                     }}
                 />
-            </Tabs>
-        </UnitSystemProvider>
+            </Stack>
+        </QueryClientProvider>
     );
 }

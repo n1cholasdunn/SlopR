@@ -1,3 +1,6 @@
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {router} from 'expo-router';
+import {useState} from 'react';
 import {
     SafeAreaView,
     StyleSheet,
@@ -5,26 +8,23 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import useBLE from '../hooks/useBLE';
-import {useState} from 'react';
+
 import DeviceModal from '../components/BTDeviceConnectionModal';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import LiveGraph from '../components/LiveGraph';
+import SelectModeButton from '../components/SelectModeButton';
+import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
     const {
         requestPermissions,
         scanForPeripherals,
-        allDevices,
+        devices,
         connectToDevice,
         connectedDevice,
         disconnectFromDevice,
-        forceWeight,
-        tareScale,
-        startMeasuring,
-        dataPoints,
-    } = useBLE();
+    } = useBLEStore();
+
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
     GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID,
         offlineAccess: true,
@@ -33,9 +33,6 @@ export default function Page() {
         googleServicePlistPath:
             process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST,
     });
-    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_WEB_CLIENT_ID, 'GWebID');
-    console.log(process.env.EXPO_PUBLIC_DEV_IOS_CLIENT_ID, 'IOS clientid');
-    console.log(process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST, 'PLIST');
 
     const scanForDevices = async () => {
         const isPermissionsEnabled = await requestPermissions();
@@ -58,29 +55,21 @@ export default function Page() {
             <View>
                 {connectedDevice ? (
                     <>
-                        {/* <ForceGauge/>*/}
+                        <Text>Device was not disconnected in time</Text>
                         {/*
-                        <Text>Pulling:</Text>
-                        <Text style={styles.weightDisplay}>
-                            {forceWeight}lbs or kgs
-                        </Text>
-            */}
-                        <LiveGraph dataPoints={dataPoints} />
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={startMeasuring}>
-                            <Text style={styles.buttonText}>
-                                Start Measuring
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={tareScale}>
-                            <Text style={styles.buttonText}>Tare</Text>
-                        </TouchableOpacity>
+
+                        <ForceGauge graphComponent={PeakForceGraph} />
+
+           */}
                     </>
                 ) : (
-                    <Text>Please Connect to a Tindeq Progressor</Text>
+                    <View>
+                        <Text>Please Connect to a Tindeq Progressor</Text>
+                        <SelectModeButton
+                            text="Repeaters"
+                            onPress={() => router.navigate('/repeater')}
+                        />
+                    </View>
                 )}
             </View>
             <TouchableOpacity
@@ -93,7 +82,7 @@ export default function Page() {
                 closeModal={hideModal}
                 visible={isModalVisible}
                 connectToPeripheral={connectToDevice}
-                devices={allDevices}
+                devices={devices}
             />
         </SafeAreaView>
     );

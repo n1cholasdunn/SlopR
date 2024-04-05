@@ -1,5 +1,5 @@
 import {ExpoConfig, ConfigContext} from 'expo/config';
-import 'dotenv/config';
+//import 'dotenv/config';
 const IS_DEV = process.env.APP_VARIANT === 'development';
 // const getFileContent = (path?: string) => {
 //     if (path && fs.existsSync(path)) {

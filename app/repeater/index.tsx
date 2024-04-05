@@ -1,6 +1,6 @@
 import {AntDesign} from '@expo/vector-icons';
 import {router} from 'expo-router';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -41,6 +41,7 @@ const Page = () => {
         startingHand,
         secondsBetweenHands,
         minutesBetweenHands,
+        totalSetTime,
     } = useWorkoutSettingsStore();
     const {scanForPeripherals, requestPermissions} = useBLEStore();
     const [repModalOpen, setRepModalOpen] = useState(false);
@@ -50,6 +51,10 @@ const Page = () => {
     const [scanModalOpen, setScanModalOpen] = useState(false);
     const [singleHandModalOpen, setSingleHandModalOpen] = useState(false);
     const [savedSetupModalOpen, setSavedSetupModalOpen] = useState(false);
+
+    useEffect(() => {
+        console.log('totalSetTime', totalSetTime);
+    }, [totalSetTime]);
 
     const openRepModal = () => {
         setRepModalOpen(true);

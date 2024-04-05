@@ -19,6 +19,7 @@ type WorkoutSettingsState = {
     countdownTime: number;
     //number to use for optional rest and work level of sets
     maxStrength?: number;
+    totalSetTime: number;
 
     //TODO reorganize a single store for all workout Data
     singleSetData: ForceDataPoint[][];
@@ -43,19 +44,21 @@ type WorkoutSettingsState = {
 };
 
 const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
-    restTime: 1,
+    //TODO: set defaults back to 1 or base value after testing
+    restTime: 2,
     gripPosition: 'HC',
     repType: 'peakForce',
     secondsBetweenSets: 1,
     minutesBetweenSets: 0,
     secondsBetweenHands: 1,
     minutesBetweenHands: 0,
-    amountOfReps: 1,
+    amountOfReps: 3,
     singleHand: false,
     startingHand: undefined,
-    repDuration: 1,
+    repDuration: 5,
     amountOfSets: 1,
     countdownTime: 3,
+    totalSetTime: 0,
 
     singleSetData: [],
     addRepToCurrentSet: (rep: ForceDataPoint[]) =>
@@ -82,7 +85,12 @@ const useWorkoutSettingsStore = create<WorkoutSettingsState>((set, get) => ({
     setRestTime: (restTime: number) => set({restTime}),
     setGripPosition: (gripPosition: GripPosition) => set({gripPosition}),
     setRepType: (repType: RepType) => set({repType}),
-    setRepDuration: (repDuration: number) => set({repDuration}),
+    setRepDuration: (repDuration: number) => {
+        const {amountOfReps, restTime} = get();
+        const totalSetTime =
+            (repDuration * amountOfReps + restTime * (amountOfReps - 1)) * 1000;
+        set({repDuration, totalSetTime});
+    },
     setSecondsBetweenSets: (secondsBetweenSets: number) =>
         set({secondsBetweenSets}),
     setMinutesBetweenSets: (minutesBetweenSets: number) =>

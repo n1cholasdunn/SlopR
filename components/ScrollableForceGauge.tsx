@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     },
     graphContainer: {
         width: '100%',
-        height: 550,
+        height: 600,
         flexDirection: 'row',
         justifyContent: 'center',
         marginTop: 20,

@@ -38,6 +38,12 @@ const LiveGraph: React.FC<LiveGraphProps> = ({dataPoints}) => {
                     strokeWidth={4}
                     color="#6B4E71"
                 />
+                <Path
+                    style="stroke"
+                    path={graphData.xAxisPath}
+                    strokeWidth={1}
+                    color="black"
+                />
             </Canvas>
         </View>
     ) : (

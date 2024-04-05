@@ -26,7 +26,7 @@ interface BLEState {
     serviceUUID: string;
     characteristicUUID: string;
     maxForce: number;
-    firstTimestamp: number | null;
+    //firstTimestamp: number | null;
     requestAndroid31Permissions: () => Promise<boolean>;
     requestPermissions: () => Promise<boolean>;
     scanForPeripherals: () => void;
@@ -44,9 +44,9 @@ interface BLEState {
     tareScale: () => void;
     setDataPoints: (dataPoint: ForceDataPoint) => void;
     setRawSetDataPoints: (dataPoint: ForceDataPoint) => void;
-    setFirstTimestamp: (timestamp: number) => void;
+    //setFirstTimestamp: (timestamp: number) => void;
 
-    resetFirstTimestamp: () => void;
+    //    resetFirstTimestamp: () => void;
     resetDataPoints: () => void;
     resetRawSetDataPoints: () => void;
 }
@@ -63,7 +63,7 @@ const useBLEStore = create<BLEState>((set, get) => ({
     serviceUUID: Tindeq.services.uuid,
     characteristicUUID: Tindeq.services.characteristics[0].uuid,
     maxForce: 0,
-    firstTimestamp: null,
+    //firstTimestamp: null,
     requestAndroid31Permissions: async () => {
         const bluetoothScanPermission = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
@@ -170,8 +170,8 @@ const useBLEStore = create<BLEState>((set, get) => ({
         const {convertWeight} = useUnitSystemStore.getState();
         const setDataPoints = get().setDataPoints;
         //   const setRawSetDataPoints = get().setRawSetDataPoints;
-        const firstTimestamp = get().firstTimestamp;
-        const setFirstTimestamp = get().setFirstTimestamp;
+        //   const firstTimestamp = get().firstTimestamp;
+        //  const setFirstTimestamp = get().setFirstTimestamp;
 
         const currentTime = Date.now();
         const lastUpdateTime = get().lastUpdateTime;
@@ -200,19 +200,51 @@ const useBLEStore = create<BLEState>((set, get) => ({
                 );
                 weight = convertWeight(weight);
                 weight = weight < 0 ? 0 : weight;
-                //    const timestamp = dataView.getUint32(6, true);
-                if (firstTimestamp === null) {
-                    setFirstTimestamp(Date.now());
-                }
-                const time = Date.now() - firstTimestamp!;
+                const timestamp = Date.now();
                 const newDataPoint: ForceDataPoint = {
                     weight,
-                    timestamp: time,
+                    timestamp,
                 };
+
+                /*
+                let adjustedTimestamp;
+                if (firstTimestamp === null) {
+                    // Set the first timestamp when it's null
+                    set({firstTimestamp: currentTime});
+                    adjustedTimestamp = 0;
+                } else {
+                    // Calculate the adjusted timestamp
+                    adjustedTimestamp = currentTime - get().firstTimestamp!;
+                }
+
+                const newDataPoint: ForceDataPoint = {
+                    weight,
+                    timestamp: adjustedTimestamp,
+                };
+                //    const timestamp = dataView.getUint32(6, true);
+                let adjustedTimestamp;
+                if (firstTimestamp === null) {
+                    const timestamp = Date.now();
+                    setFirstTimestamp(timestamp);
+                    adjustedTimestamp = 0;
+                } else {
+                    adjustedTimestamp = Date.now() - firstTimestamp;
+                }
+                //    const time = Date.now() - firstTimestamp;
+                const newDataPoint: ForceDataPoint = {
+                    weight,
+                    //     timestamp: time,
+                    timestamp: adjustedTimestamp,
+                };
+       if (adjustedTimestamp > 3000) {
+                    setDataPoints(newDataPoint);
+                }
+
+        */
+                setDataPoints(newDataPoint);
                 if (weight > get().maxForce) {
                     set({maxForce: weight});
                 }
-                setDataPoints(newDataPoint);
                 //            setRawSetDataPoints(newDataPoint);
 
                 set({forceWeight: Math.max(0, parseFloat(weight.toFixed(2)))});
@@ -292,8 +324,8 @@ const useBLEStore = create<BLEState>((set, get) => ({
         get().writeCommandToDevice(TindeqCommands.START_MEASURING),
     stopMeasuring: () =>
         get().writeCommandToDevice(TindeqCommands.STOP_MEASURING),
-    setFirstTimestamp: (timestamp: number) => set({firstTimestamp: timestamp}),
-    resetFirstTimestamp: () => set({firstTimestamp: null}),
+    //    setFirstTimestamp: (timestamp: number) => set({firstTimestamp: timestamp}),
+    //  resetFirstTimestamp: () => set({firstTimestamp: null}),
 }));
 
 export default useBLEStore;

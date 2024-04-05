@@ -1,5 +1,5 @@
 import {Skia} from '@shopify/react-native-skia';
-import {curveBasis, line, scaleLinear} from 'd3';
+import {curveBasis, line, scaleLinear, axisBottom, scaleTime} from 'd3';
 
 import {ForceDataPoint} from '../types/BLETypes';
 import {GraphHookReturn} from '../types/chartData';
@@ -16,11 +16,14 @@ export const useMakeGraph = () => {
         const max = Math.max(...data.map(val => val.weight));
         const min = Math.min(...data.map(val => val.weight));
 
-        const spacing = 5;
+        const firstTimestamp = data[0].timestamp;
+        const timeDiffs = data.map(val => val.timestamp - firstTimestamp);
+
+        const spacing = 7;
         const gWidth = data.length * spacing;
 
         const yAxis = scaleLinear().domain([0, 150]).range([GRAPH_HEIGHT, 35]);
-        const xAxis = scaleLinear()
+        const xAxis = scaleTime()
             .domain([timestampStart(data), timestampEnd(data)])
             .range([0, gWidth]);
 
@@ -30,12 +33,22 @@ export const useMakeGraph = () => {
             .curve(curveBasis)(data);
 
         const skPath = Skia.Path.MakeFromSVGString(curvedLine!);
-
+        const tickInterval = 5000;
+        const xAxisTicks = xAxis.ticks(
+            Math.floor(
+                (timestampEnd(data) - timestampStart(data)) / tickInterval,
+            ),
+        );
+        //   const xAxisTickPositions = xAxisTicks.map(tick => xAxis(tick));
+        const xAxisTickPositions = timeDiffs.map(tick => xAxis(tick));
         return {
             data: {
                 max,
                 min,
                 curve: skPath!,
+                xAxisTicks: timeDiffs,
+                // xAxisTicks,
+                xAxisTickPositions,
             },
             width: gWidth,
         };

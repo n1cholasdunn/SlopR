@@ -27,7 +27,7 @@ const TareModal = ({visible, onClose}: TareModalProps) => {
                 tareScale();
                 startMeasuring();
                 console.log('first mount start measuring');
-            }, 500);
+            }, 750);
             return () => {
                 clearTimeout(timeoutId);
             };

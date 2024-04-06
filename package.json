@@ -22,6 +22,7 @@
         "@react-native-picker/picker": "2.6.1",
         "@shopify/flash-list": "1.6.3",
         "@shopify/react-native-skia": "0.1.221",
+        "@tamagui/config": "^1.94.4",
         "@tanstack/react-query": "^5.21.4",
         "@types/d3": "^7.4.3",
         "@types/lodash": "^4.17.0",
@@ -51,6 +52,7 @@
         "react-native-screens": "~3.29.0",
         "react-native-svg": "^15.1.0",
         "react-timer-hook": "^3.0.7",
+        "tamagui": "^1.94.4",
         "zustand": "^4.5.1"
     },
     "devDependencies": {

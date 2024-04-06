@@ -11,6 +11,7 @@ import {
 
 import DeviceModal from '../components/BTDeviceConnectionModal';
 import SelectModeButton from '../components/SelectModeButton';
+import Demo from '../components/TamaButton';
 import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
@@ -88,6 +89,7 @@ export default function Page() {
             <Link href="livegraph/">
                 <Text>Live Data</Text>
             </Link>
+            <Demo />
         </SafeAreaView>
     );
 }

@@ -1,12 +1,14 @@
+import {Feather} from '@expo/vector-icons';
 import {
     QueryClient,
     QueryClientProvider,
     focusManager,
 } from '@tanstack/react-query';
-import {Stack} from 'expo-router';
+import {Stack, Link} from 'expo-router';
 import {AppStateStatus, Platform} from 'react-native';
 
 import BackButton from '../components/BackButton';
+import IsDeviceConnected from '../components/IsDeviceConnected';
 import {useAppState} from '../hooks/useAppState';
 import {useOnlineManager} from '../hooks/useOnlineManager';
 
@@ -30,7 +32,37 @@ export default function Layout() {
                 <Stack.Screen
                     name="index"
                     options={{
-                        headerShown: false,
+                        headerLeft: () => <IsDeviceConnected />,
+
+                        headerRight: () => (
+                            <Link href="settings">
+                                <Feather
+                                    name="settings"
+                                    size={24}
+                                    color="black"
+                                />
+                            </Link>
+                        ),
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="settings"
+                    options={{
+                        headerTitle: '',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
+                        headerShadowVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="login/index"
+                    options={{
+                        headerTitle: '',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
+                        headerShadowVisible: false,
                     }}
                 />
                 <Stack.Screen
@@ -39,15 +71,7 @@ export default function Layout() {
                         headerTitle: '',
                         headerLeft: () => <BackButton />,
                         headerBackTitleVisible: false,
-                    }}
-                />
-                <Stack.Screen
-                    name="settings"
-                    options={{
-                        headerTitle: '',
-
-                        headerLeft: () => <BackButton />,
-                        headerBackTitleVisible: false,
+                        headerShadowVisible: false,
                     }}
                 />
 
@@ -56,6 +80,16 @@ export default function Layout() {
                     options={{
                         headerLeft: () => <BackButton />,
                         headerBackTitleVisible: false,
+                        headerShadowVisible: false,
+                    }}
+                />
+                <Stack.Screen
+                    name="livegraph/index"
+                    options={{
+                        headerTitle: '',
+                        headerLeft: () => <BackButton />,
+                        headerBackTitleVisible: false,
+                        headerShadowVisible: false,
                     }}
                 />
             </Stack>

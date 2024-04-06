@@ -1,5 +1,5 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {router} from 'expo-router';
+import {router, Link} from 'expo-router';
 import {useState} from 'react';
 import {
     SafeAreaView,
@@ -53,7 +53,7 @@ export default function Page() {
     return (
         <SafeAreaView style={styles.container}>
             <View>
-                {connectedDevice ? (
+                {!connectedDevice && (
                     <>
                         <Text>Device was not disconnected in time</Text>
                         {/*
@@ -62,14 +62,6 @@ export default function Page() {
 
            */}
                     </>
-                ) : (
-                    <View>
-                        <Text>Please Connect to a Tindeq Progressor</Text>
-                        <SelectModeButton
-                            text="Repeaters"
-                            onPress={() => router.navigate('/repeater')}
-                        />
-                    </View>
                 )}
             </View>
             <TouchableOpacity
@@ -84,6 +76,18 @@ export default function Page() {
                 connectToPeripheral={connectToDevice}
                 devices={devices}
             />
+            <Link href="repeater/">
+                <Text>Repeaters</Text>
+            </Link>
+            <Link href="peakforce/">
+                <Text>Peak Force</Text>
+            </Link>
+            <Link href="login/">
+                <Text>Login</Text>
+            </Link>
+            <Link href="livegraph/">
+                <Text>Live Data</Text>
+            </Link>
         </SafeAreaView>
     );
 }

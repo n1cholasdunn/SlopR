@@ -32,7 +32,7 @@ const LoginPage = () => {
 
     if (!user) {
         return (
-            <View>
+            <View style={{backgroundColor: '#fff'}}>
                 <Login />
                 {/*<Text>Login</Text>
                  */}
@@ -43,7 +43,7 @@ const LoginPage = () => {
     }
 
     return (
-        <View>
+        <View style={{backgroundColor: '#fff'}}>
             <Text>Welcome {user.email}</Text>
             <Button title="Logout" onPress={handleLogout} />
             <GoogleSignOutButton />

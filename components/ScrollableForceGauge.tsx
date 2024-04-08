@@ -1,3 +1,4 @@
+import {Toast, useToastState} from '@tamagui/toast';
 import React from 'react';
 import {View, Text, Button, StyleSheet} from 'react-native';
 
@@ -30,6 +31,7 @@ const ScrollableForceGauge = ({
     } = useRepeaterHandlers(isTared);
 
     const {handleSaveRepeaterWorkout, saveRepeaterWorkoutSuccess} = useDB();
+    const currentToast = useToastState();
     const timerCircleStyle = {
         ...styles.timerCircle,
         backgroundColor: isRunningRest ? 'red' : 'green',

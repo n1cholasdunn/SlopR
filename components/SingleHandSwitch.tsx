@@ -1,4 +1,5 @@
-import {Switch, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
+import {Switch} from 'tamagui';
 
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
@@ -15,8 +16,8 @@ const SingleHandSwitch = () => {
             }}>
             <Text>Single Hand Mode?</Text>
             <Switch
-                value={singleHand}
-                onValueChange={input => setSingleHand(input)}
+                checked={singleHand}
+                onCheckedChange={input => setSingleHand(input)}
             />
         </View>
     );

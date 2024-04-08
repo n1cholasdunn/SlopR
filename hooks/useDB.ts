@@ -15,13 +15,8 @@ import type {
     DBWorkoutInstructions,
     WorkoutInstructions,
     FullRepeaterWorkoutData,
-    RepeaterSet,
 } from '../types/workoutTypes';
 import {cleanRepeaterData, cleanWorkoutData} from '../utils/cleanData';
-function hi() {
-    console.log('hi');
-}
-hi();
 const useDB = () => {
     const toast = useToastController();
 
@@ -59,9 +54,17 @@ const useDB = () => {
         mutationFn: saveFullWorkoutToDB,
         onSuccess: () => {
             console.log('Workout data saved to Firestore');
+            toast.show('Success', {
+                message: 'Workout saved!',
+                native: true,
+            });
         },
         onError: e => {
             console.error('Error saving workout data:', e);
+            toast.show('Failed', {
+                message: 'Failed to save data',
+                native: true,
+            });
         },
     });
 
@@ -129,9 +132,17 @@ const useDB = () => {
         mutationFn: saveWorkoutInstructionsToDB,
         onSuccess: () => {
             console.log('Workout data saved to Firestore');
+            toast.show('Success', {
+                message: 'Workout saved!',
+                native: true,
+            });
         },
         onError: e => {
             console.error('Error saving workout data:', e);
+            toast.show('Failed', {
+                message: 'Failed to save data',
+                native: true,
+            });
         },
     });
 
@@ -217,7 +228,6 @@ const useDB = () => {
             });
         },
         onError: e => {
-            console.error('Error saving workout data:', e);
             toast.show('Failed', {
                 message: 'Failed to save data',
                 native: true,

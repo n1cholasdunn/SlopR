@@ -1,13 +1,6 @@
-import {AntDesign} from '@expo/vector-icons';
 import {router} from 'expo-router';
 import {useEffect, useState} from 'react';
-import {
-    Dimensions,
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-} from 'react-native';
+import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import {Button} from 'tamagui';
 
 import CountdownPicker from '../../components/Countdown';
@@ -84,13 +77,11 @@ const Page = () => {
     return (
         <View style={styles.container}>
             <View style={styles.saveOrLoadSetupContainer}>
-                <SetupButton
-                    onPress={() => setSavedSetupModalOpen(prev => !prev)}
-                    text="Load Saved Setup"
-                    style={{width: '66%', height: '100%'}}
-                />
+                <Button onPress={() => setSavedSetupModalOpen(prev => !prev)}>
+                    Load Saved Setup
+                </Button>
                 {savedSetupModalOpen && <WorkoutSetupModal />}
-                <TouchableOpacity
+                <Button
                     onPress={() =>
                         handleSaveWorkoutInstructions({
                             amountOfSets,
@@ -102,10 +93,9 @@ const Page = () => {
                             singleHand,
                             startingHand,
                         })
-                    }
-                    style={styles.button}>
-                    <Text style={styles.saveSetupText}>Save Current Setup</Text>
-                </TouchableOpacity>
+                    }>
+                    Save Current Setup
+                </Button>
             </View>
             <View
                 style={{
@@ -116,51 +106,51 @@ const Page = () => {
                     marginVertical: 10,
                 }}>
                 <SetupButton
-                    onPress={() => setSetModalOpen(true)}
-                    text={`Sets: ${amountOfSets}`}
-                />
+                    headerText="Sets"
+                    onPress={() => setSetModalOpen(true)}>
+                    <Text>{`${amountOfSets}`} </Text>
+                </SetupButton>
 
-                <TouchableOpacity
-                    onPress={openRepModal}
-                    style={styles.setupButtons}>
+                <SetupButton onPress={openRepModal} style={{height: 'auto'}}>
                     <View style={styles.setTextContainer}>
                         <Text style={styles.setContainerHeaderText}>Set</Text>
                         <Text>Reps: {amountOfReps}</Text>
                         <Text>Rep Duration: {repDuration}s</Text>
                         <Text>Rest: {restTime}s</Text>
                     </View>
-                    <AntDesign name="rightcircle" size={20} color="black" />
-                </TouchableOpacity>
+                </SetupButton>
+
                 <SetupButton
                     onPress={() => setPauseModalOpen(true)}
-                    headerText="Pause"
-                    text={`${minutesBetweenSets}m ${secondsBetweenSets}s`}
-                />
+                    headerText="Pause">
+                    <Text>
+                        {`${minutesBetweenSets}m ${secondsBetweenSets}s`}
+                    </Text>
+                </SetupButton>
                 <SetupButton
                     onPress={() => setCountdownModalOpen(true)}
-                    headerText="Countdown"
-                    text={`${countdownTime}s`}
-                />
+                    headerText="Countdown">
+                    <Text>{`${countdownTime}s`}</Text>
+                </SetupButton>
             </View>
-            <View>
+            <View style={styles.singleHandSwitchContainer}>
                 <SingleHandSwitch />
                 {singleHand && (
                     <View style={styles.singleHandContainer}>
                         <SideToggleButton />
-                        <Text>Pause Between Sides</Text>
-                        <TouchableOpacity
+                        <SetupButton
                             onPress={() => setSingleHandModalOpen(true)}
-                            style={styles.setupButtons}>
+                            headerText="Pause Between Hands">
                             <Text>
-                                Pause
                                 {minutesBetweenHands !== 0
                                     ? ` ${minutesBetweenHands}:`
                                     : ' '}
-                                {secondsBetweenHands < 10
+                                {secondsBetweenHands < 10 &&
+                                minutesBetweenHands !== 0
                                     ? `0${secondsBetweenHands}`
-                                    : `${secondsBetweenHands}`}
+                                    : `${secondsBetweenHands}s`}
                             </Text>
-                        </TouchableOpacity>
+                        </SetupButton>
                         <PickerModal
                             visible={singleHandModalOpen}
                             onClose={() => setSingleHandModalOpen(false)}
@@ -209,6 +199,7 @@ const styles = StyleSheet.create({
     },
     singleHandContainer: {
         flexDirection: 'column',
+        gap: 10,
         alignItems: 'center',
     },
     saveOrLoadSetupContainer: {
@@ -252,5 +243,8 @@ const styles = StyleSheet.create({
     saveSetupText: {
         alignSelf: 'center',
         justifyContent: 'center',
+    },
+    singleHandSwitchContainer: {
+        marginBottom: 15,
     },
 });

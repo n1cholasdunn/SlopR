@@ -14,7 +14,6 @@ const IsDeviceConnected = () => {
                         size={24}
                         color="black"
                     />
-                    <Text>Tindeq not connected</Text>
                 </View>
             ) : (
                 <View>
@@ -24,6 +23,7 @@ const IsDeviceConnected = () => {
                         color="black"
                         onPress={disconnectFromDevice}
                     />
+                    <Text>Tindeq not connected</Text>
                 </View>
             )}
         </View>

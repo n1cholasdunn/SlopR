@@ -1,5 +1,5 @@
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {router, Link} from 'expo-router';
+import {Link} from 'expo-router';
 import {useState} from 'react';
 import {
     SafeAreaView,
@@ -8,20 +8,18 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import {Button} from 'tamagui';
 
 import DeviceModal from '../components/BTDeviceConnectionModal';
-import SelectModeButton from '../components/SelectModeButton';
-import Demo from '../components/TamaButton';
 import useBLEStore from '../stores/useBLEStore';
 
 export default function Page() {
     const {
-        requestPermissions,
-        scanForPeripherals,
         devices,
         connectToDevice,
         connectedDevice,
         disconnectFromDevice,
+        scanForDevices,
     } = useBLEStore();
 
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -34,14 +32,6 @@ export default function Page() {
         googleServicePlistPath:
             process.env.EXPO_PUBLIC_DEV_GOOGLE_SERVICE_PLIST,
     });
-
-    const scanForDevices = async () => {
-        const isPermissionsEnabled = await requestPermissions();
-        if (isPermissionsEnabled) {
-            scanForPeripherals();
-        }
-    };
-
     const hideModal = () => {
         setIsModalVisible(false);
     };
@@ -53,18 +43,6 @@ export default function Page() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View>
-                {!connectedDevice && (
-                    <>
-                        <Text>Device was not disconnected in time</Text>
-                        {/*
-
-                        <ForceGauge graphComponent={PeakForceGraph} />
-
-           */}
-                    </>
-                )}
-            </View>
             <TouchableOpacity
                 onPress={connectedDevice ? disconnectFromDevice : openModal}>
                 <Text style={styles.buttonText}>
@@ -77,19 +55,20 @@ export default function Page() {
                 connectToPeripheral={connectToDevice}
                 devices={devices}
             />
-            <Link href="repeater/">
-                <Text>Repeaters</Text>
-            </Link>
-            <Link href="peakforce/">
-                <Text>Peak Force</Text>
-            </Link>
-            <Link href="login/">
-                <Text>Login</Text>
-            </Link>
-            <Link href="livegraph/">
-                <Text>Live Data</Text>
-            </Link>
-            <Demo />
+            <View style={styles.navLinks}>
+                <Link asChild href="repeater/">
+                    <Button>Repeaters</Button>
+                </Link>
+                <Link href="peakforce/" asChild>
+                    <Button>Peak Force</Button>
+                </Link>
+                <Link href="login/" asChild>
+                    <Button>Login</Button>
+                </Link>
+                <Link href="livegraph/" asChild>
+                    <Button>Live Data</Button>
+                </Link>
+            </View>
         </SafeAreaView>
     );
 }
@@ -116,5 +95,10 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#007BFF',
         fontSize: 16,
+    },
+    navLinks: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
     },
 });

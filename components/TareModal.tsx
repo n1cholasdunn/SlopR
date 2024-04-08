@@ -1,12 +1,6 @@
 import React, {useEffect} from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Modal,
-    StyleSheet,
-    Dimensions,
-} from 'react-native';
+import {View, Text, Modal, StyleSheet, Dimensions} from 'react-native';
+import {Button} from 'tamagui';
 
 import useBLEStore from '../stores/useBLEStore';
 
@@ -46,14 +40,12 @@ const TareModal = ({visible, onClose}: TareModalProps) => {
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContent}>
                     <Text>{forceWeight}</Text>
-                    <TouchableOpacity onPress={handleTare}>
+                    <Button onPress={handleTare}>
                         <Text>Tare Weight</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={onClose}>
+                    </Button>
+                    <Button onPress={onClose}>
                         <Text style={styles.closeButtonText}>Close</Text>
-                    </TouchableOpacity>
+                    </Button>
                 </View>
             </View>
         </Modal>

@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {ToggleGroup} from 'tamagui';
 
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
         alignItems: 'center',
+        gap: 10,
     },
     toggleContainer: {
         flexDirection: 'row',

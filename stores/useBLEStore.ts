@@ -49,6 +49,7 @@ interface BLEState {
     //    resetFirstTimestamp: () => void;
     resetDataPoints: () => void;
     resetRawSetDataPoints: () => void;
+    scanForDevices: () => Promise<void>;
 }
 
 const useBLEStore = create<BLEState>((set, get) => ({
@@ -324,6 +325,15 @@ const useBLEStore = create<BLEState>((set, get) => ({
         get().writeCommandToDevice(TindeqCommands.START_MEASURING),
     stopMeasuring: () =>
         get().writeCommandToDevice(TindeqCommands.STOP_MEASURING),
+    scanForDevices: async () => {
+        const requestPermissions = get().requestPermissions;
+        const scanForPeripherals = get().scanForPeripherals;
+        const isPermissionsEnabled = await requestPermissions();
+        if (isPermissionsEnabled) {
+            scanForPeripherals();
+        }
+    },
+
     //    setFirstTimestamp: (timestamp: number) => set({firstTimestamp: timestamp}),
     //  resetFirstTimestamp: () => set({firstTimestamp: null}),
 }));

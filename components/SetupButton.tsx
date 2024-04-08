@@ -1,29 +1,23 @@
 import {AntDesign} from '@expo/vector-icons';
 import React from 'react';
-import {
-    TouchableOpacity,
-    Text,
-    Dimensions,
-    StyleSheet,
-    TouchableOpacityProps,
-    View,
-} from 'react-native';
+import {Text, Dimensions, StyleSheet, View} from 'react-native';
+import {Button, ButtonProps} from 'tamagui';
 
 const {width, height} = Dimensions.get('window');
 
-interface SetupButtonProps extends TouchableOpacityProps {
-    text: string;
+interface SetupButtonProps extends ButtonProps {
     headerText?: string;
+    children: React.ReactNode; // A
 }
 const SetupButton: React.FC<SetupButtonProps> = ({
     onPress,
     headerText,
-    text,
     style,
+    children,
     ...rest
 }) => {
     return (
-        <TouchableOpacity
+        <Button
             onPress={onPress}
             style={[styles.setupButtons, style]}
             {...rest}>
@@ -33,11 +27,16 @@ const SetupButton: React.FC<SetupButtonProps> = ({
                         <Text style={styles.HeaderText}>{headerText}</Text>
                     )}
 
-                    <Text>{text}</Text>
+                    {children}
                 </View>
-                <AntDesign name="rightcircle" size={20} color="black" />
+                <AntDesign
+                    name="rightcircle"
+                    size={20}
+                    color="black"
+                    style={styles.arrowIcon}
+                />
             </View>
-        </TouchableOpacity>
+        </Button>
     );
 };
 
@@ -45,38 +44,27 @@ export default SetupButton;
 
 const styles = StyleSheet.create({
     setupButtons: {
-        borderColor: 'red',
-        borderWidth: 2,
-        borderRadius: 5,
-        paddingHorizontal: 10,
         paddingVertical: 5,
-        flexDirection: 'row',
-        gap: 10,
-        alignItems: 'center',
         width: width * (2 / 3),
         height: height * (1 / 10),
     },
-    button: {
-        borderColor: 'blue',
-        borderWidth: 2,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-    },
     TextContainer: {
-        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        width: '100%',
     },
     infoTextContainer: {
+        flex: 1,
         flexDirection: 'column',
-        gap: 3,
         alignItems: 'center',
     },
     HeaderText: {
         fontSize: 15,
         fontWeight: '600',
+        alignSelf: 'center',
+    },
+    arrowIcon: {
         alignSelf: 'center',
     },
 });

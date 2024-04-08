@@ -1,31 +1,28 @@
 import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import {ToggleGroup} from 'tamagui';
 
 import useWorkoutSettingsStore from '../stores/useWorkoutSettings';
 
 const SideToggleButton = () => {
-    const {startingHand, setStartingHand} = useWorkoutSettingsStore();
+    const {setStartingHand} = useWorkoutSettingsStore();
 
     //TODO: add transition slide animation for the switch
     return (
         <View style={styles.container}>
             <Text>Start with which side?</Text>
             <View style={styles.toggleContainer}>
-                <TouchableOpacity
-                    onPress={() => setStartingHand('L')}
-                    style={[
-                        styles.sideOption,
-                        startingHand === 'L' && styles.activeSide,
-                    ]}>
-                    <Text>Left</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => setStartingHand('R')}
-                    style={[
-                        styles.sideOption,
-                        startingHand === 'R' && styles.activeSide,
-                    ]}>
-                    <Text>Right</Text>
-                </TouchableOpacity>
+                <ToggleGroup
+                    type="single"
+                    onValueChange={(value: 'L' | 'R') =>
+                        setStartingHand(value)
+                    }>
+                    <ToggleGroup.Item value="L">
+                        <Text>Left</Text>
+                    </ToggleGroup.Item>
+                    <ToggleGroup.Item value="R">
+                        <Text>Right</Text>
+                    </ToggleGroup.Item>
+                </ToggleGroup>
             </View>
         </View>
     );

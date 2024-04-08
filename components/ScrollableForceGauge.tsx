@@ -1,6 +1,6 @@
-import {Toast, useToastState} from '@tamagui/toast';
 import React from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
+import {Button} from 'tamagui';
 
 import useDB from '../hooks/useDB';
 import useRepeaterHandlers from '../hooks/useRepeaterHandlers';
@@ -31,7 +31,6 @@ const ScrollableForceGauge = ({
     } = useRepeaterHandlers(isTared);
 
     const {handleSaveRepeaterWorkout, saveRepeaterWorkoutSuccess} = useDB();
-    const currentToast = useToastState();
     const timerCircleStyle = {
         ...styles.timerCircle,
         backgroundColor: isRunningRest ? 'red' : 'green',
@@ -70,10 +69,9 @@ const ScrollableForceGauge = ({
                 {amountOfSets > currentSet ? amountOfReps - currentRep : 0}
             </Text>
             {/* TODO: change button to touchable opacity with same styling*/}
-            <Button
-                title="Save Workout Data"
-                onPress={() => handleSaveRepeaterWorkout(repeaterSetsData)}
-            />
+            <Button onPress={() => handleSaveRepeaterWorkout(repeaterSetsData)}>
+                Save Workout Data
+            </Button>
             {saveRepeaterWorkoutSuccess && (
                 <Text>Workout data saved to Firestore</Text>
             )}

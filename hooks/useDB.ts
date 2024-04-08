@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {useToastController} from '@tamagui/toast';
 import {useMutation, useQuery} from '@tanstack/react-query';
 
 import type {ForceDataPoint} from '../types/BLETypes';
@@ -22,6 +23,8 @@ function hi() {
 }
 hi();
 const useDB = () => {
+    const toast = useToastController();
+
     const saveWorkoutToDB = async (workoutData: SetData) => {
         const user = auth().currentUser;
         if (!user) {
@@ -208,10 +211,17 @@ const useDB = () => {
     } = useMutation({
         mutationFn: saveRepeaterWorkoutToDB,
         onSuccess: () => {
-            console.log('Workout data saved to Firestore');
+            toast.show('Success', {
+                message: 'Workout saved!',
+                native: true,
+            });
         },
         onError: e => {
             console.error('Error saving workout data:', e);
+            toast.show('Failed', {
+                message: 'Failed to save data',
+                native: true,
+            });
         },
     });
 

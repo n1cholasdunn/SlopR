@@ -18,6 +18,7 @@ const SingleHandSwitch = () => {
             <Switch
                 checked={singleHand}
                 onCheckedChange={input => setSingleHand(input)}
+                native
             />
         </View>
     );

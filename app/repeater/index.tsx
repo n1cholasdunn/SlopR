@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
 } from 'react-native';
+import {Button} from 'tamagui';
 
 import CountdownPicker from '../../components/Countdown';
 import DurationPicker from '../../components/DurationPicker';
@@ -193,11 +194,7 @@ const Page = () => {
             />
             <ScanModal visible={scanModalOpen} onClose={handleCloseScanModal} />
 
-            <TouchableOpacity
-                onPress={handleOpenScanModal}
-                style={styles.button}>
-                <Text>Start Session</Text>
-            </TouchableOpacity>
+            <Button onPress={handleOpenScanModal}>Start Session</Button>
         </View>
     );
 };
